@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/article_head_content"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginTop="0dp"
+	android:layout_marginBottom="0dp"
+	android:background="@android:color/white"
+	android:paddingTop="12dp"
+	android:paddingLeft="@dimen/card_content_horizontal_margin_with_4dp_padding"
+	android:paddingRight="@dimen/card_content_horizontal_margin"
+	android:visibility="visible"
+     >
+
+	<me.zhanghai.android.douya.ui.SimpleCircleImageView
+		android:id="@+id/user_avatar"
+		android:layout_width="@dimen/touch_target_size"
+		android:layout_height="@dimen/touch_target_size"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+		android:padding="@dimen/avatar_padding" />
+
+	<TextView
+		android:id="@+id/user_name"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/user_avatar"
+		android:layout_alignTop="@id/user_avatar"
+		android:layout_marginLeft="@dimen/card_content_horizontal_space_with_4dp_padding"
+		android:layout_marginTop="@dimen/avatar_padding"
+		android:text="月与萧"
+		android:ellipsize="end"
+		android:maxLines="1"
+		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+		android:textStyle="bold" />
+
+	<me.zhanghai.android.douya.ui.TimeActionTextView
+		android:id="@+id/time_format"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@id/user_name"
+		android:layout_alignBottom="@id/user_avatar"
+		android:layout_marginBottom="@dimen/avatar_padding"
+		android:text="2016-09-04 19:56:53"
+		android:ellipsize="end"
+		android:maxLines="1"
+		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+		android:textColor="?android:textColorSecondary" />
+
+	<me.zhanghai.android.douya.ui.TimeActionTextView
+		android:id="@+id/view_count"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginRight="4dp"
+		android:layout_alignParentRight="true"
+		android:layout_alignBottom="@id/user_avatar"
+		android:layout_marginBottom="@dimen/avatar_padding"
+		android:text="99999 围观"
+		android:ellipsize="end"
+		android:maxLines="1"
+		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+		android:textColor="?android:textColorSecondary" />
+
+	<me.zhanghai.android.douya.ui.TimeActionTextView
+		android:id="@+id/comment_count"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginRight="12dp"
+		android:text="9999 评论"
+		android:ellipsize="end"
+		android:visibility="gone"
+		android:maxLines="1"
+		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+		android:textColor="?android:textColorSecondary"
+		android:layout_alignBaseline="@id/view_count"
+		android:layout_alignBottom="@id/view_count"
+		android:layout_toLeftOf="@id/view_count"
+		android:layout_toStartOf="@id/view_count" />
+
+	<View
+		android:id="@+id/divider"
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:layout_marginBottom="@dimen/card_content_vertical_space"
+		android:layout_marginTop="16dp"
+		android:layout_below="@id/user_avatar"
+		android:background="?dividerHorizontal" />
+
+	<TextView
+		android:id="@+id/article_title"
+		android:text="title"
+		android:layout_alignParentLeft="true"
+		android:layout_marginRight="16dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/divider"
+		android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+</RelativeLayout>

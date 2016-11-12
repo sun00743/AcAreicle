@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <declare-styleable name="PagerSlidingTabStrip">
+        <attr name="pstsIndicatorColor" format="color"/>
+        <attr name="pstsUnderlineColor" format="color"/>
+        <attr name="pstsDividerColor" format="color"/>
+        <attr name="pstsIndicatorHeight" format="dimension"/>
+        <attr name="pstsUnderlineHeight" format="dimension"/>
+        <attr name="pstsDividerPadding" format="dimension"/>
+        <attr name="pstsTabPaddingLeftRight" format="dimension"/>
+        <attr name="pstsScrollOffset" format="dimension"/>
+        <attr name="pstsTabBackground" format="reference"/>
+        <attr name="pstsShouldExpand" format="boolean"/>
+        <attr name="pstsTextAllCaps" format="boolean"/>
+        <attr name="tabTextSize" format="dimension"/>
+        <attr name="mtabTextColor" format="color"/>
+        <attr name="selectedTabTextColor" format="color"/>
+        <attr name="selectedTabColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="CardIconButton">
+        <attr name="android:src" />
+        <attr name="android:text" />
+    </declare-styleable>
+
+    <declare-styleable name="ContentStateLayout">
+        <attr name="animationEnabled" format="boolean|reference" />
+        <attr name="loadingView" format="reference" />
+        <attr name="contentView" format="reference" />
+        <attr name="emptyView" format="reference" />
+        <attr name="errorView" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="FriendlySwipeRefreshLayout">
+        <attr name="progressOffset" format="dimension|reference" />
+        <attr name="progressDistanceOffset" format="dimension|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ImageLayout">
+        <attr name="fillOrientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="InsetBackgroundFrameLayout">
+        <attr name="insetBackground" format="color|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="RatioHeightRecyclerView">
+        <attr name="ratio" format="string|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="TintStateListImageView">
+        <attr name="tint" format="color|reference" />
+    </declare-styleable>
+</resources>

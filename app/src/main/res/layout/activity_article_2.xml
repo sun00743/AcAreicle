@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<me.zhanghai.android.douya.ui.DetectsSoftKeyBoardFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/art_Progress_wrap"
+        android:layout_marginTop="164dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="visible">
+
+        <ProgressBar
+            android:id="@+id/art_Progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"/>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/art_com_recycle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"/>
+
+    <RelativeLayout
+        android:id="@+id/article_send_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/toolbar_height"
+        android:layout_gravity="bottom"
+        android:background="@color/card_background_light"
+        android:clickable="true"
+        android:elevation="@dimen/sendbar_elevation">
+
+        <ImageButton
+            android:id="@+id/article_send"
+            android:layout_width="@dimen/toolbar_height"
+            android:layout_height="@dimen/toolbar_height"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="发送评论"
+            android:padding="@dimen/icon_button_padding"
+            android:src="@drawable/send_icon_black_24dp"
+            android:tint="?colorAccent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <ProgressBar
+            android:id="@+id/article_send_progress"
+            android:layout_width="@dimen/toolbar_height"
+            android:layout_height="@dimen/toolbar_height"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="@dimen/icon_button_padding"
+            android:tint="?colorAccent"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <ImageButton
+            android:id="@+id/article_insert_emoticon"
+            android:layout_width="@dimen/toolbar_height"
+            android:layout_height="@dimen/toolbar_height"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="添加表情"
+            android:padding="@dimen/icon_button_padding"
+            android:src="@drawable/insert_emoticon_icon_black_24dp"
+            android:tint="?colorAccent" />
+
+        <me.zhanghai.android.materialedittext.MaterialEditText
+            android:id="@+id/article_comment_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:minHeight="48dp"
+            android:hint="@string/article_send_comment_hint"
+            android:textSize="16sp"
+            android:maxLines="5"
+            android:layout_marginRight="@dimen/toolbar_height"
+            android:layout_toRightOf="@id/article_insert_emoticon"
+            android:layout_alignParentTop="true">
+        </me.zhanghai.android.materialedittext.MaterialEditText>
+
+        <RelativeLayout
+            android:layout_below="@id/article_comment_edit"
+            android:id="@+id/article_emoticon_layout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <me.zhanghai.android.douya.ui.PagerSlidingTabStrip
+                android:id="@+id/article_emoticon_tap"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="@color/grey_200"
+                app:pstsShouldExpand="false"
+                app:pstsIndicatorColor="@android:color/white"
+                app:pstsDividerColor="@color/grey_200"
+                app:selectedTabColor="@color/grey_50"
+                app:selectedTabTextColor="@color/black_87"
+                app:pstsUnderlineColor="@android:color/white"
+                app:pstsUnderlineHeight="1dp"
+                app:pstsIndicatorHeight="0dp"
+                app:pstsTabPaddingLeftRight="24dp"
+                app:tabTextSize="14sp"
+                android:visibility="visible"/>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/article_emoticon_pager"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/grey_50"
+                android:layout_below="@id/article_emoticon_tap"
+                android:visibility="visible"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <me.zhanghai.android.douya.ui.AppBarWrapperLayout
+        android:id="@+id/appBarWrapper_art"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorPrimary"
+            android:elevation="@dimen/appbar_elevation"
+            android:theme="?actionBarTheme">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_art"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:paddingLeft="@dimen/toolbar_navigation_button_left_margin"
+                android:paddingRight="@dimen/toolbar_overflow_button_right_margin"
+                android:background="?colorPrimary"
+                android:elevation="@dimen/appbar_elevation"
+                android:theme="?actionBarTheme"
+                app:navigationIcon="@drawable/back_icon_white_24dp"
+                app:popupTheme="?actionBarPopupTheme"
+                app:titleMarginStart="@dimen/toolbar_title_left_margin" />
+        </LinearLayout>
+    </me.zhanghai.android.douya.ui.AppBarWrapperLayout>
+
+</me.zhanghai.android.douya.ui.DetectsSoftKeyBoardFrameLayout>
