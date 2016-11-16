@@ -19,11 +19,12 @@
     <color name="grey_600">#757575</color>
     <color name="grey_800">#424242</color>
 
-
     <color name="purple_100">#C5CAE9</color>
     <color name="purple_300">#7986CB</color>
     <color name="purple_400">#5C6BC0</color>
     <color name="purple_500">#3F51B5</color>
+
+    <color name="red_500">#F44336</color>
 
     <color name="dark_30_percent">#4d000000</color>
     <color name="dark_50_percent">#80000000</color>

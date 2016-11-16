@@ -13,11 +13,14 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.util.SparseArray;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -70,6 +73,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     private static final String[] tabs = {"AC娘", "(=ﾟωﾟ)="};
 
+    @BindView(R.id.toolbar_art)
+    Toolbar mToolbar;
     @BindView(R.id.art_Progress_wrap)
     RelativeLayout mProgress;
     @BindDimen(R.dimen.toolbar_height)
@@ -101,7 +106,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     private int contentId;
     private Acer acer;
-
     private AnimatorSet mAnimator;
     private boolean isSendBarShowing = true;
     private boolean isFirstLoad = true;
@@ -111,26 +115,31 @@ public class ArticleActivity2 extends AppCompatActivity implements
     private boolean isEmoticonLayoutShow = false;
     private boolean isKeyBoardShow = false;
     private boolean isSending = false;
-
     private DetectsSoftKeyBoardFrameLayout mainLayout;
     private InputMethodManager inputMethodManager;
-
     private Comment quote;
     private PostCommentRequest postCommentRequest;
     private PostCommentResult postCommentResult;
+    private MenuItem menuStar;
+    private MenuItem menuUnquote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        createUI();
+        acer = DouyaApplication.getInstance().getAcer();
+        contentId = getIntent().getExtras().getInt("aid", 0);
+        mCommentListResource = CommentListResource.attachTo(null, contentId, this);
+    }
+
+    private void createUI() {
         setContentView(R.layout.activity_article_2);
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mainLayout = (DetectsSoftKeyBoardFrameLayout) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
         mainLayout.setSoftKeyBoardListener(this);
         ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
         setPaddingTop();
-        acer = DouyaApplication.getInstance().getAcer();
-        contentId = getIntent().getExtras().getInt("aid", 0);
-        mCommentListResource = CommentListResource.attachTo(null, contentId, this);
         initRecycleView();
         initSendBar();
     }
@@ -209,6 +218,39 @@ public class ArticleActivity2 extends AppCompatActivity implements
         list.add(DouyaApplication.ITEM_ARTICLE);
         list.add(DouyaApplication.ITEM_SUBTITLE);
         return list;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.article,menu);
+        menuStar = menu.findItem(R.id.action_star);
+        setStarImage(menuStar);
+        menuUnquote = menu.findItem(R.id.action_unquote);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.home:
+                return true;
+            case R.id.action_star:
+                return true;
+            case R.id.action_top:
+                return true;
+            case R.id.action_unquote:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * 设置menu 收藏图标
+     * @param menuStar
+     */
+    private void setStarImage(MenuItem menuStar) {
+//        menuStar.setIcon(ContextCompat.getDrawable(this,R.drawable.star_icon_white_24dp));
     }
 
     /**

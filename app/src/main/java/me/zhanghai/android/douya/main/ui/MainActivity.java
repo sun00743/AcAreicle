@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectAll()
@@ -61,9 +60,7 @@ public class MainActivity extends AppCompatActivity
                     .penaltyLog()
                     .build());
         }
-
-        // Was Theme.Douya.MainActivity.ColdStart.
-        setTheme(R.style.Theme_Douya_MainActivity);
+        setTheme(R.style.Theme_AcWen_MainActivity);
 
         TransitionUtils.setupTransitionBeforeDecorate(this);
 

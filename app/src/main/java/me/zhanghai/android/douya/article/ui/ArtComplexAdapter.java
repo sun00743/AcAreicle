@@ -286,8 +286,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer,RecyclerView.ViewHo
         int oldSize = mCommentIdList.size()-3;
         int newSize = commentIdList.size();
         int diff = newSize - oldSize;
-
-        if(diff > 0 || !mCommentIdList.get(3).equals(((ArrayList)commentIdList).get(0))){
+        if(newSize <= 0){
+            return;
+        }else if (diff > 0 || !mCommentIdList.get(3).equals(((ArrayList)commentIdList).get(0))){
             mCommentIdList.clear();
             mCommentIdList.add(DouyaApplication.ITEM_HEAD);
             mCommentIdList.add(DouyaApplication.ITEM_ARTICLE);
@@ -296,50 +297,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer,RecyclerView.ViewHo
             mCommentList = commentMaps;
 
             notifyItemRangeInserted(3, newSize);
-
             mEventListener.DataReplaceOk();
-
             notifyItemRangeRemoved(3+newSize, oldSize);
         }
-
-/*
-//      有新的评论就添加评论
-        if(diff > 0){           //评论count 小于40条
-//          有新的评论，重置map的引用
-            mCommentList.clear();
-            mCommentList = commentMaps;
-//          添加新的评论id
-            for(int i = 0; i < diff; i++){
-//              从第３个location开始　
-                mCommentIdList.add(i+3, (Integer) ((ArrayList)commentIdList).get(i));
-            }
-            notifyItemRangeChanged(3, newSize);
-
-        }else if(mCommentIdList.size()>0 && commentIdList.size()>0 &&
-                !mCommentIdList.get(3).equals(((ArrayList)commentIdList).get(0))){
-            //刷新，大于40条时,有新的评论
-            mCommentList.clear();
-            mCommentIdList.clear();
-            mCommentIdList.add(DouyaApplication.ITEM_HEAD);
-            mCommentIdList.add(DouyaApplication.ITEM_ARTICLE);
-            mCommentIdList.add(DouyaApplication.ITEM_SUBTITLE);
-            mCommentIdList.addAll(commentIdList);
-            mCommentList = commentMaps;
-
-            notifyItemRangeChanged(3,newSize);
-        }
-*/
-
-//      已经加载过评论了，并且有新的评论，更新旧评论
-//        if(oldSize > 0 && diff > 0){
-//          更新以前的评论
-//            for(int i = 3 + diff; i < newSize + 3; i++ ){
-//              从第 3+新的评论的个数 个开始
-//                notifyItemRemoved(i);
-//                mCommentIdList.set(i, (Integer) ((ArrayList)commentIdList).get(i-3));
-//                notifyItemChanged(i);
-//            }
-//        }
         mSubTitleHolder.subtitle_pro.setVisibility(View.GONE);
     }
 

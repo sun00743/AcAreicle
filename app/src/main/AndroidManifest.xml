@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) 2015 Zhang Hai <Dreaming.in.Code.ZH@Gmail.com>
-  ~ All Rights Reserved.
--->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by mika <sun00743@gmail.com>  on 16-11-14 下午3:21
+  ~ Copyright (c) 2016. All rights reserved
+  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="me.zhanghai.android.douya">
@@ -62,7 +63,7 @@
             android:name=".main.ui.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.Douya.MainActivity.ColdStart">
+            android:theme="@style/Theme.AcWen.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -103,8 +104,12 @@
             android:name=".settings.ui.AboutActivity"
             android:label="@string/about_title"
             android:theme="@style/Theme.Douya.PrimaryColorBackground" />
-        <activity android:name=".main.ui.TestActivity" />
-        <activity android:name=".article.ui.ArticleActivity2" />
+        <activity android:name=".main.ui.TestActivity" >
+        </activity>
+        <activity android:name=".article.ui.ArticleActivity2"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AcWen.MainActivity">
+        </activity>
         <activity
             android:name=".article.ui.ArticleActivity"
             android:launchMode="singleTop" />

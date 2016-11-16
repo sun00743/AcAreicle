@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
-  ~ Copyright (c) 2015 Zhang Hai <Dreaming.in.Code.ZH@Gmail.com>
-  ~ All Rights Reserved.
+  ~ Created by mika <sun00743@gmail.com>  on 16-11-14 上午10:58
+  ~ Copyright (c) 2016. All rights reserved
   -->
-
 <resources>
 
-    <color name="preference_fallback_accent_color">@color/douya_primary</color>
+    <color name="preference_fallback_accent_color">@color/AcWen_primary</color>
     <style name="Base.ThemeOverlay.Preference" parent="">
 
         <item name="listPreferredItemPaddingLeft">@dimen/screen_edge_horizontal_margin</item>
@@ -120,6 +118,10 @@
 
     <style name="Theme.Douya.MainActivity.ColdStart">
         <item name="android:windowBackground">@drawable/window_background_statusbar_toolbar_tab</item>
+    </style>
+
+    <style name="Theme.AcWen.MainActivity">
+        <item name="android:windowBackground">@color/grey_200</item>
     </style>
 
     <style name="Base.Theme.Douya.Gallery" parent="Theme.Design">
