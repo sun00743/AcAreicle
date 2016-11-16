@@ -1,3 +1,8 @@
+<!--
+  ~ Created by mika <sun00743@gmail.com>  on 16-11-14 下午2:13
+  ~ Copyright (c) 2016. All rights reserved
+  -->
+
 <resources>
 
     <string name="ok">确定</string>
@@ -115,7 +120,7 @@
     <string name="api_error_rebroadcast_broadcast_already_rebroadcasted">你已经转播过这条广播了</string>
     <string name="api_error_rebroadcast_broadcast_not_rebroadcasted_yet">你还没有转播过这条广播</string>
 
-    <string name="auth_title_new">登录豆芽</string>
+    <string name="auth_title_new">登录</string>
     <string name="auth_title_add">添加账户</string>
     <string name="auth_title_update">更新密码</string>
     <string name="auth_title_confirm">确认密码</string>
@@ -162,6 +167,9 @@
 
     <string name="articlelist_gotop">返回顶部</string>
     <string name="app_ac_video_link">http://www.coolapk.com/apk/tv.ac.fun</string>
+
+    <string name="article_star">收藏</string>
+    <string name="article_comment_unquote">取消引用</string>
 
     <string name="broadcast_list_title_default">广播列表</string>
     <string name="broadcast_list_title_user_format">%s 的广播</string>

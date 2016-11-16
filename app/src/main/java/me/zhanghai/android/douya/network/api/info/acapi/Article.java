@@ -77,6 +77,7 @@ import java.util.regex.Pattern;
  */
 public class Article {
     private static String TAG = "Article";
+//    private static Pattern emoticonReg = Pattern.compile("");
     private static Pattern imageReg = Pattern.compile("<img.+?src=[\"|'](.+?)[\"|']");
     static Pattern pageReg = Pattern.compile("\\[NextPage\\]([^\\[\\]]+)\\[/NextPage\\]");
     public int channelId;

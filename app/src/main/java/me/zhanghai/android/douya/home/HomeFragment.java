@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.zhanghai.android.douya.R;
@@ -60,13 +62,14 @@ public class HomeFragment extends Fragment implements AppBarManager {
         super.onViewCreated(view, savedInstanceState);
 
         ButterKnife.bind(this, view);
-
-        FileUtil.deleteFiles(getActivity().getExternalCacheDir());
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        File file = getActivity().getExternalCacheDir();
+        FileUtil.deleteFiles(getActivity().getExternalCacheDir());
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbar);

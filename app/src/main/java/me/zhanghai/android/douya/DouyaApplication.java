@@ -8,6 +8,8 @@ package me.zhanghai.android.douya;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 
@@ -134,6 +136,22 @@ public class DouyaApplication extends Application {
 
     public void setAcer(Acer acer) {
         this.acer = acer;
+    }
+
+    /**
+     * 检测wifi是否连接
+     *
+     */
+    public boolean isWifiConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+            if (networkInfo != null
+                    && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

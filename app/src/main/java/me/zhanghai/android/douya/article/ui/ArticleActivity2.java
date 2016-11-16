@@ -13,11 +13,14 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.util.SparseArray;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -59,6 +62,7 @@ import me.zhanghai.android.douya.ui.OnVerticalScrollWithPagingTouchSlopListener;
 import me.zhanghai.android.douya.ui.PagerSlidingTabStrip;
 import me.zhanghai.android.douya.util.DensityUtil;
 import me.zhanghai.android.douya.util.RecyclerViewUtils;
+import me.zhanghai.android.douya.util.ToastUtil;
 import me.zhanghai.android.materialedittext.MaterialEditText;
 
 import static android.view.View.TRANSLATION_Y;
@@ -70,6 +74,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     private static final String[] tabs = {"AC娘", "(=ﾟωﾟ)="};
 
+    @BindView(R.id.toolbar_art)
+    Toolbar mToolbar;
     @BindView(R.id.art_Progress_wrap)
     RelativeLayout mProgress;
     @BindDimen(R.dimen.toolbar_height)
@@ -78,9 +84,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     RecyclerView mRecycleView;
     @BindView(R.id.appBarWrapper_art)
     AppBarWrapperLayout mAppBarWrapperLayout;
-    /**
-     * 底部sendBar
-     */
+    //底部sendBar
     @BindView(R.id.article_send_bar)
     RelativeLayout mSendBar;
     @BindView(R.id.article_send)
@@ -91,7 +95,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     MaterialEditText mCommentEdit;
     @BindView(R.id.article_send_progress)
     ProgressBar sendProgress;
-
+    //表情
     @BindView(R.id.article_emoticon_tap)
     PagerSlidingTabStrip mEmoticonTab;
     @BindView(R.id.article_emoticon_pager)
@@ -101,7 +105,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     private int contentId;
     private Acer acer;
-
     private AnimatorSet mAnimator;
     private boolean isSendBarShowing = true;
     private boolean isFirstLoad = true;
@@ -111,26 +114,39 @@ public class ArticleActivity2 extends AppCompatActivity implements
     private boolean isEmoticonLayoutShow = false;
     private boolean isKeyBoardShow = false;
     private boolean isSending = false;
-
+    private boolean isEditing = false;
     private DetectsSoftKeyBoardFrameLayout mainLayout;
     private InputMethodManager inputMethodManager;
-
     private Comment quote;
     private PostCommentRequest postCommentRequest;
     private PostCommentResult postCommentResult;
+    private MenuItem menuStar;
+    private MenuItem menuUnquote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        createUI();
+        acer = DouyaApplication.getInstance().getAcer();
+        contentId = getIntent().getExtras().getInt("aid", 0);
+        mCommentListResource = CommentListResource.attachTo(null, contentId, this);
+    }
+
+    private void createUI() {
         setContentView(R.layout.activity_article_2);
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mainLayout = (DetectsSoftKeyBoardFrameLayout) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
         mainLayout.setSoftKeyBoardListener(this);
         ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
+        mToolbar.setTitle(getIntent().getExtras().getString("title" , "ac/" + contentId));
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         setPaddingTop();
-        acer = DouyaApplication.getInstance().getAcer();
-        contentId = getIntent().getExtras().getInt("aid", 0);
-        mCommentListResource = CommentListResource.attachTo(null, contentId, this);
         initRecycleView();
         initSendBar();
     }
@@ -183,7 +199,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 }
             }
         });
-
         mEmoticonPager.setAdapter(new EmoticonPagerAdapter());
         mEmoticonTab.setViewPager(mEmoticonPager);
     }
@@ -200,8 +215,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     /**
      * 先给文章head 内容 和评论标题 加到list中
-     *
-     * @return
+     *\
      */
     private List<Integer> initList() {
         List<Integer> list = new ArrayList<>();
@@ -209,6 +223,53 @@ public class ArticleActivity2 extends AppCompatActivity implements
         list.add(DouyaApplication.ITEM_ARTICLE);
         list.add(DouyaApplication.ITEM_SUBTITLE);
         return list;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.article,menu);
+        menuStar = menu.findItem(R.id.action_star);
+        setStarImage(menuStar);
+        menuUnquote = menu.findItem(R.id.action_unquote);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_star:
+                // TODO 收藏
+                return true;
+            case R.id.action_top:
+                if(((LinearLayoutManager)mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= 2 && ((LinearLayoutManager)mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() < 12){
+                    mRecycleView.smoothScrollToPosition(2);
+                }else if(((LinearLayoutManager)mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= 12){
+                    mRecycleView.scrollToPosition(4);
+                    mRecycleView.smoothScrollToPosition(2);
+                }
+                return true;
+            case R.id.action_unquote:
+                menuUnquote.setVisible(false);
+                unQuote();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void unQuote() {
+        isEditing = false;
+        mCommentEdit.setText("");
+        mCommentEdit.setHint("发评论...");
+        ToastUtil.show("( ´_ゝ`) 已取消引用",this);
+    }
+
+    /**
+     * 设置menu 收藏图标
+     */
+    private void setStarImage(MenuItem menuStar) {
+        // TODO 修改图标状态
+//        menuStar.setIcon(ContextCompat.getDrawable(this,R.drawable.star_icon_white_24dp));
     }
 
     /**
@@ -225,7 +286,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 if (RecyclerViewUtils.hasFirstChildReachedTop(mRecycleView)) {
                     mAppBarWrapperLayout.hide();
                 }
-                if (!isEmoticonLayoutShow && !isKeyBoardShow && !isSending) {
+                if (!isEmoticonLayoutShow && !isKeyBoardShow && !isSending && !isEditing) {
                     sendBarHide(mSendBar);
                 }
             }
@@ -284,7 +345,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
                     changeSendState(false);
                     updateComment();
                 }else{
-                    Toast.makeText(ArticleActivity2.this, "服务器抽风，评论失败! (|||ﾟдﾟ)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ArticleActivity2.this, "(|||ﾟдﾟ) 服务器抽风，刷新看看吧", Toast.LENGTH_SHORT).show();
                     changeSendState(false);
                 }
             }
@@ -310,12 +371,11 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     /**
      * 改变发送评论时的状态
-     * @param sending
      */
     private void changeSendState(boolean sending) {
         isSending = sending;
-        send.setVisibility(sending == true ? View.GONE : View.VISIBLE);
-        sendProgress.setVisibility(sending == true ? View.VISIBLE : View.GONE);
+        send.setVisibility(sending ? View.GONE : View.VISIBLE);
+        sendProgress.setVisibility(sending ? View.VISIBLE : View.GONE);
         if(sending){
             if(isEmoticonLayoutShow){
                 isEmoticonLayoutShow = false;
@@ -326,6 +386,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
             }
         }else{
             if(postCommentResult != null && postCommentResult.success){
+                isEditing = false;
                 mCommentEdit.setText("");
                 mCommentEdit.setHint("发评论...");
             }
@@ -347,20 +408,20 @@ public class ArticleActivity2 extends AppCompatActivity implements
     /**
      * 输入评论/引用评论
      *
-     * @param quote
      */
     @Override
     public void insertComment(Comment quote) {
         if (!isSendBarShowing)
             sendBarShow(mSendBar);
         mCommentEdit.setHint("引用" + quote.username + "的评论...");
+        menuUnquote.setVisible(true);
+        isEditing = true;
         this.quote = quote;
     }
 
     /**
      * 评论post请求 的text参数
      *
-     * @return
      */
     private String getCommentText() {
         Editable text = SpannableStringBuilder.valueOf(mCommentEdit.getText());
@@ -370,7 +431,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
     /**
      * 检查评论是否合法
      *
-     * @return
      */
     private boolean isCTextOk() {
         Editable text = SpannableStringBuilder.valueOf(mCommentEdit.getText());
@@ -571,7 +631,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
-            object = null;
         }
     }
 
@@ -579,7 +638,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
             if (convertView == null) {
                 convertView = new EmotionView(getApplicationContext());
             }
@@ -594,9 +652,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
         @Override
         public String getItem(int position) {
-            String cat = position >= 54 ? "ais" : "ac";
-            int id = position >= 54 ? position - 53 : position + 1;
-
+            String cat;
+            int id;
             if (position < 54) {
                 cat = "ac";
                 id = position + 1;
@@ -604,7 +661,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 cat = position >= 94 ? "ac2" : "ac";
                 id = position >= 94 ? position - 93 : position - 53;
             }
-
             return String.format(Locale.US, "[emot=%s,%02d/]", cat, id);
         }
 

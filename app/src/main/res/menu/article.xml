@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Created by mika <sun00743@gmail.com>  on 16-11-14 上午11:58
+  ~ Copyright (c) 2016. All rights reserved
+  -->
+
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".article.ui.ArticleActivity2">
+
+    <item
+        android:id="@+id/action_star"
+        android:orderInCategory="100"
+        android:title="@string/navigation_star"
+        android:icon="@drawable/star_icon_white_24dp"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_top"
+        android:icon="@drawable/upward_icon_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/articlelist_gotop"
+        app:showAsAction="always" />
+
+    <item
+        android:visible="false"
+        android:id="@+id/action_unquote"
+        android:icon="@drawable/unquote_icon_white_24dp"
+        android:title="@string/article_comment_unquote"
+        app:showAsAction="always"/>
+
+</menu>

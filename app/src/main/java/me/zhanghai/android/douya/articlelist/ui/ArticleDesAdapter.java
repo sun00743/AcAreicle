@@ -1,3 +1,8 @@
+/*
+ * Created by mingkai <sun00743@gmail.com>
+ * Copyright (c) 16-11-16 下午3:19
+ */
+
 package me.zhanghai.android.douya.articlelist.ui;
 
 import android.content.Context;
@@ -16,16 +21,12 @@ import me.zhanghai.android.douya.network.api.info.acapi.ArticleList;
 import me.zhanghai.android.douya.ui.SimpleAdapter;
 import me.zhanghai.android.douya.util.ViewUtils;
 
-/**
- * Created by Administrator on 2016/9/6.
- */
-
-public class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdapter.ViewHolder> {
+class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdapter.ViewHolder> {
 
     private OnBtnClickedListener mOnBtnClickedListener;
     private int lastPosition;
 
-    public ArticleDesAdapter(List<ArticleList> articleLists, OnBtnClickedListener listener){
+    ArticleDesAdapter(List<ArticleList> articleLists, OnBtnClickedListener listener){
         super(articleLists);
         this.mOnBtnClickedListener = listener;
         setHasStableIds(true);
@@ -48,8 +49,8 @@ public class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdap
 //            //加载头像
 //        }
 
-        ArticleList originalArticleList = getItem(position);
-        final ArticleList articleList = originalArticleList;
+//        ArticleList originalArticleList = getItem(position);
+        final ArticleList articleList = getItem(position);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,9 +109,9 @@ public class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdap
     static class ViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.card)
-        public CardView cardView;
+        CardView cardView;
         @BindView(R.id.articledes)
-        public ArticleListLayout articleDesLayout;
+        ArticleListLayout articleDesLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -119,21 +120,19 @@ public class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdap
         }
     }
 
-    public interface OnBtnClickedListener {
+    interface OnBtnClickedListener {
         void onStartClicked(ArticleList articleList, boolean start);
         void onBananaClicked(ArticleList articleList, boolean Bananaed);
 
         /**
          * 评论按钮
-         * @param articleList
-         * @param sharedView
+         *
          */
         void onCommentClicked(ArticleList articleList, View sharedView);
 
         /**
          * 打开文章
-         * @param articleList
-         * @param sharedView
+         *
          */
         void onOpenArticle(ArticleList articleList, View sharedView);
     }

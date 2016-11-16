@@ -195,7 +195,7 @@ public class ArticleListResFragment extends ResourceFragment implements
 //            }
 //        }
 
-        if(!loadMore)pageNo = 0;
+        if(!loadMore)pageNo = 1;
         ApiRequest<ArticleListResult> request =
                 ApiRequests.newArticleListResultRequest(channelId,sort,pageNo);
         State state = new State(loadMore,DEFAULT_COUNT_PER_LOAD);
