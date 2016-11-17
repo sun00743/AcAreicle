@@ -30,12 +30,12 @@
 
     <!-- Don't set background color on this layout because it will mess up with wrap_content. -->
     <!-- Appbar layout must be on top of content so that transition can have correct z-order. -->
-    <me.zhanghai.android.douya.ui.AppBarWrapperLayout
+    <mika.com.android.ac.ui.AppBarWrapperLayout
         android:id="@+id/appBarWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="?actionBarTheme">
 
         <include layout="@layout/webview_acitivity_toolbar" />
-    </me.zhanghai.android.douya.ui.AppBarWrapperLayout>
+    </mika.com.android.ac.ui.AppBarWrapperLayout>
 </merge>

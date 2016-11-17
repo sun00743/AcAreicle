@@ -10,7 +10,7 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        applicationId "me.zhanghai.android.douya"
+        applicationId "mika.com.android.ac"
         minSdkVersion 15
         // We haven't been ready for Marshmallow's permission model yet.
         //noinspection OldTargetApi

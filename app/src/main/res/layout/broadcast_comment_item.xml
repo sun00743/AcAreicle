@@ -5,7 +5,7 @@
   ~ All Rights Reserved.
   -->
 
-<me.zhanghai.android.douya.ui.ForegroundRelativeLayout
+<mika.com.android.ac.ui.ForegroundRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
     android:focusable="true"
     android:foreground="?selectableItemBackground">
 
-    <me.zhanghai.android.douya.ui.SimpleCircleImageView
+    <mika.com.android.ac.ui.SimpleCircleImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/touch_target_size"
         android:layout_height="@dimen/touch_target_size"
@@ -38,7 +38,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textStyle="bold" />
 
-    <me.zhanghai.android.douya.ui.TimeTextView
+    <mika.com.android.ac.ui.TimeTextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,4 +67,4 @@
         android:layout_below="@id/text"
         android:layout_marginTop="@dimen/card_content_vertical_margin"
         android:background="?android:dividerHorizontal" />
-</me.zhanghai.android.douya.ui.ForegroundRelativeLayout>
+</mika.com.android.ac.ui.ForegroundRelativeLayout>

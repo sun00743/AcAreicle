@@ -8,7 +8,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- LayoutParams will be set the same as parent after inflation. -->
-    <me.zhanghai.android.douya.ui.RatioImageView
+    <mika.com.android.ac.ui.RatioImageView
         android:id="@+id/imagelayout_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -28,7 +28,7 @@
             android:layout_marginBottom="@dimen/toolbar_height"
             android:background="@color/grey_100">
 
-            <me.zhanghai.android.douya.ui.FriendlySwipeRefreshLayout
+            <mika.com.android.ac.ui.FriendlySwipeRefreshLayout
                 android:id="@+id/swipe_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -40,7 +40,7 @@
                     android:clipToPadding="false"
                     android:scrollbars="vertical"
                     android:scrollbarStyle="outsideOverlay" />
-            </me.zhanghai.android.douya.ui.FriendlySwipeRefreshLayout>
+            </mika.com.android.ac.ui.FriendlySwipeRefreshLayout>
 
             <me.zhanghai.android.materialprogressbar.MaterialProgressBar
                 android:id="@+id/progress"
@@ -97,7 +97,7 @@
     </LinearLayout>
 
     <!-- Appbar layout must be on top of content so that transition can have correct z-order. -->
-    <me.zhanghai.android.douya.ui.AppBarWrapperLayout
+    <mika.com.android.ac.ui.AppBarWrapperLayout
         android:id="@+id/appBarWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -114,5 +114,5 @@
             app:navigationIcon="@drawable/back_icon_white_24dp"
             app:popupTheme="?actionBarPopupTheme"
             app:titleMarginStart="@dimen/toolbar_title_left_margin" />
-    </me.zhanghai.android.douya.ui.AppBarWrapperLayout>
+    </mika.com.android.ac.ui.AppBarWrapperLayout>
 </FrameLayout>

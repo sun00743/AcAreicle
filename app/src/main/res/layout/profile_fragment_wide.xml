@@ -5,19 +5,19 @@
   ~ All Rights Reserved.
   -->
 
-<me.zhanghai.android.douya.profile.ui.ProfileLayout
+<mika.com.android.ac.profile.ui.ProfileLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".profile.ui.ProfileActivity">
+    tools:context="mika.com.android.ac.profile.ui.ProfileActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <me.zhanghai.android.douya.profile.ui.ProfileHeaderLayout
+        <mika.com.android.ac.profile.ui.ProfileHeaderLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,16 +40,16 @@
             </LinearLayout>
             <!--头像-->
             <include layout="@layout/profile_header_avatar_include" />
-        </me.zhanghai.android.douya.profile.ui.ProfileHeaderLayout>
+        </mika.com.android.ac.profile.ui.ProfileHeaderLayout>
 
-        <me.zhanghai.android.douya.profile.ui.ProfileContentLayout
+        <mika.com.android.ac.profile.ui.ProfileContentLayout
             android:id="@+id/contentState"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:elevation="@dimen/appbar_elevation"
             android:theme="?actionBarTheme">
 
-            <me.zhanghai.android.douya.ui.FlexibleSpaceContentRecyclerView
+            <mika.com.android.ac.ui.FlexibleSpaceContentRecyclerView
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -69,6 +69,6 @@
                 android:layout_marginRight="@dimen/card_content_horizontal_margin"
                 android:text="@string/nothing"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-        </me.zhanghai.android.douya.profile.ui.ProfileContentLayout>
+        </mika.com.android.ac.profile.ui.ProfileContentLayout>
     </FrameLayout>
-</me.zhanghai.android.douya.profile.ui.ProfileLayout>
+</mika.com.android.ac.profile.ui.ProfileLayout>

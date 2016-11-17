@@ -11,14 +11,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.ui.MainActivity">
+    tools:context="mika.com.android.ac.main.ui.MainActivity">
 
     <FrameLayout
         android:id="@+id/broadcast_list_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <me.zhanghai.android.douya.ui.AppBarWrapperLayout
+    <mika.com.android.ac.ui.AppBarWrapperLayout
         android:id="@+id/appBarWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -35,5 +35,5 @@
             app:navigationIcon="@drawable/back_icon_white_24dp"
             app:popupTheme="?actionBarPopupTheme"
             app:titleMarginStart="@dimen/toolbar_title_left_margin" />
-    </me.zhanghai.android.douya.ui.AppBarWrapperLayout>
+    </mika.com.android.ac.ui.AppBarWrapperLayout>
 </FrameLayout>

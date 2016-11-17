@@ -87,7 +87,7 @@
         <item name="preferenceTheme">@style/ThemeOverlay.Preference</item>
     </style>
 
-    <style name="Theme.Douya.NoDisplay">
+    <style name="Theme.AcWen.NoDisplay">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowBackground">@null</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -106,7 +106,7 @@
         <item name="android:windowBackground">@color/dark_70_percent</item>
     </style>
 
-    <style name="Theme.Douya.PrimaryColorBackground">
+    <style name="Theme.AcWen.PrimaryColorBackground">
         <item name="android:windowBackground">?colorPrimary</item>
     </style>
 
@@ -123,6 +123,26 @@
     <style name="Theme.AcWen.MainActivity">
         <item name="android:windowBackground">@color/grey_200</item>
     </style>
+
+    <style name="Base.Theme.AcWen.Gallery" parent="Theme.Design">
+
+        <item name="actionModeBackground">@color/background_material_dark</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="windowNoTitle">true</item>
+
+        <!-- Fixes. -->
+        <item name="actionMenuTextAppearance">@style/TextAppearance.Douya.Widget.ActionBar.Menu</item>
+        <item name="android:textColorLink">?colorAccent</item>
+        <item name="toolbarNavigationButtonStyle">@style/Widget.Douya.Toolbar.Button.Navigation</item>
+
+        <item name="colorPrimary">@color/AcWen_primary</item>
+        <item name="colorPrimaryDark">@color/AcWen_primary_dark</item>
+        <item name="colorAccent">@android:color/white</item>
+    </style>
+
+    <style name="Theme.AcWen..Gallery" parent="Base.Theme.AcWen.Gallery" />
 
     <style name="Base.Theme.Douya.Gallery" parent="Theme.Design">
 

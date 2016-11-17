@@ -12,7 +12,7 @@
     android:orientation="vertical"
     android:background="@color/card_background_light">
 
-    <me.zhanghai.android.douya.broadcast.ui.BroadcastLayout
+    <mika.com.android.ac.broadcast.ui.BroadcastLayout
         android:id="@+id/broadcast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

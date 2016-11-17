@@ -5,7 +5,7 @@
   -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="me.zhanghai.android.douya">
+    package="mika.com.android.ac">
 
     <uses-permission
         android:name="android.permission.AUTHENTICATE_ACCOUNTS"
@@ -40,17 +40,17 @@
             android:name=".account.ui.AuthenticatorActivity"
             android:label="@string/auth_title_new"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.Douya.PrimaryColorBackground" />
+            android:theme="@style/Theme.AcWen.PrimaryColorBackground" />
         <activity
             android:name=".account.ui.AddAccountActivity"
             android:launchMode="singleTop"
             android:noHistory="true"
-            android:theme="@style/Theme.Douya.NoDisplay" />
+            android:theme="@style/Theme.AcWen.NoDisplay" />
         <activity
             android:name=".account.ui.SelectAccountActivity"
             android:launchMode="singleTop"
             android:noHistory="true"
-            android:theme="@style/Theme.Douya.NoDisplay" />
+            android:theme="@style/Theme.AcWen.NoDisplay" />
         <activity
             android:name=".ui.WebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -58,7 +58,7 @@
         <activity
             android:name=".ui.GalleryActivity"
             android:label="@string/gallery_title"
-            android:theme="@style/Theme.Douya.Gallery" />
+            android:theme="@style/Theme.AcWen.Gallery" />
         <activity
             android:name=".main.ui.MainActivity"
             android:label="@string/app_name"
@@ -84,16 +84,16 @@
         <activity
             android:name=".followship.ui.FollowerListActivity"
             android:label="@string/profile_follower_list_title"
-            android:theme="@style/Theme.Douya" />
+            android:theme="@style/Theme.AcWen" />
         <activity
             android:name=".followship.ui.FollowingListActivity"
             android:label="@string/profile_following_list_title"
-            android:theme="@style/Theme.Douya" />
+            android:theme="@style/Theme.AcWen" />
         <activity
             android:name=".settings.ui.SettingsActivity"
             android:exported="false"
             android:label="@string/settings_title"
-            android:theme="@style/Theme.Douya">
+            android:theme="@style/Theme.AcWen">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
 
@@ -103,7 +103,7 @@
         <activity
             android:name=".settings.ui.AboutActivity"
             android:label="@string/about_title"
-            android:theme="@style/Theme.Douya.PrimaryColorBackground" />
+            android:theme="@style/Theme.AcWen.PrimaryColorBackground" />
         <activity android:name=".main.ui.TestActivity" >
         </activity>
         <activity android:name=".article.ui.ArticleActivity2"
@@ -140,7 +140,7 @@
         </receiver>
 
         <meta-data
-            android:name="me.zhanghai.android.douya.ui.GlideConfiguration"
+            android:name="mika.com.android.ac.ui.GlideConfiguration"
             android:value="GlideModule" />
         <meta-data
             android:name="io.fabric.ApiKey"

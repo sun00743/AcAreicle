@@ -15,7 +15,7 @@
     android:layout_marginRight="-1px"
     android:orientation="vertical">
 
-    <me.zhanghai.android.douya.ui.AutoGoneTextView
+    <mika.com.android.ac.ui.AutoGoneTextView
         android:id="@+id/rearticledes_by"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="?android:textColorTertiary" />
 
-    <me.zhanghai.android.douya.ui.FriendlyCardView
+    <mika.com.android.ac.ui.FriendlyCardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,9 +42,9 @@
         app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardMaxElevation="@dimen/card_elevation">
 
-        <me.zhanghai.android.douya.articlelist.ui.ArticleListLayout
+        <mika.com.android.ac.articlelist.ui.ArticleListLayout
             android:id="@+id/articledes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </me.zhanghai.android.douya.ui.FriendlyCardView>
+    </mika.com.android.ac.ui.FriendlyCardView>
 </LinearLayout>

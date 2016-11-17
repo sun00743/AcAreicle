@@ -45,7 +45,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <me.zhanghai.android.douya.ui.AutoGoneTextView
+        <mika.com.android.ac.ui.AutoGoneTextView
             android:id="@+id/username"
             android:text="username"
             android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textSize="26sp" />
 
-        <me.zhanghai.android.douya.ui.AutoGoneTextView
+        <mika.com.android.ac.ui.AutoGoneTextView
             android:id="@+id/signature"
             android:text="signature"
             android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-        <me.zhanghai.android.douya.ui.JoinedAtLocationAutoGoneTextView
+        <mika.com.android.ac.ui.JoinedAtLocationAutoGoneTextView
             android:id="@+id/joined_at_location"
             android:text="joined_at_location"
             android:layout_width="wrap_content"
@@ -94,7 +94,7 @@
         android:paddingRight="@dimen/screen_edge_horizontal_margin"
         android:animateLayoutChanges="true">
 
-        <me.zhanghai.android.douya.ui.AnimateCompoundDrawableButton
+        <mika.com.android.ac.ui.AnimateCompoundDrawableButton
             android:id="@+id/follow"
             android:text="follow"
             android:layout_width="wrap_content"

@@ -5,7 +5,7 @@
   ~ All Rights Reserved.
   -->
 
-<me.zhanghai.android.douya.ui.ForegroundRelativeLayout
+<mika.com.android.ac.ui.ForegroundRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -46,4 +46,4 @@
         android:maxLines="3"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="?android:textColorSecondary" />
-</me.zhanghai.android.douya.ui.ForegroundRelativeLayout>
+</mika.com.android.ac.ui.ForegroundRelativeLayout>

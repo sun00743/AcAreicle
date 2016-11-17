@@ -14,7 +14,7 @@
     android:layout_marginLeft="-1px"
     android:layout_marginRight="-1px">
 
-    <me.zhanghai.android.douya.profile.ui.ProfileMusicLayout
+    <mika.com.android.ac.profile.ui.ProfileMusicLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/card_horizontal_margin"

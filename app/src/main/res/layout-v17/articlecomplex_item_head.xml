@@ -13,7 +13,7 @@
 	android:visibility="visible"
      >
 
-	<me.zhanghai.android.douya.ui.SimpleCircleImageView
+	<mika.com.android.ac.ui.SimpleCircleImageView
 		android:id="@+id/user_avatar"
 		android:layout_width="@dimen/touch_target_size"
 		android:layout_height="@dimen/touch_target_size"
@@ -35,7 +35,7 @@
 		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 		android:textStyle="bold" />
 
-	<me.zhanghai.android.douya.ui.TimeActionTextView
+	<mika.com.android.ac.ui.TimeActionTextView
 		android:id="@+id/time_format"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
 		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 		android:textColor="?android:textColorSecondary" />
 
-	<me.zhanghai.android.douya.ui.TimeActionTextView
+	<mika.com.android.ac.ui.TimeActionTextView
 		android:id="@+id/view_count"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
 		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 		android:textColor="?android:textColorSecondary" />
 
-	<me.zhanghai.android.douya.ui.TimeActionTextView
+	<mika.com.android.ac.ui.TimeActionTextView
 		android:id="@+id/comment_count"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

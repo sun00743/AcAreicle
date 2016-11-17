@@ -38,7 +38,7 @@
             android:layout_weight="1" />
 
         <!-- Using app:cardMaxElevation as margin. -->
-        <me.zhanghai.android.douya.ui.FriendlyCardView
+        <mika.com.android.ac.ui.FriendlyCardView
             android:layout_width="@dimen/card_view_width"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/screen_edge_horizontal_margin_negative_half"
@@ -108,7 +108,7 @@
                 android:indeterminate="true"
                 android:visibility="invisible"
                 style="@style/Widget.MaterialProgressBar.ProgressBar" />
-        </me.zhanghai.android.douya.ui.FriendlyCardView>
+        </mika.com.android.ac.ui.FriendlyCardView>
 
         <Space
             android:layout_width="0dp"

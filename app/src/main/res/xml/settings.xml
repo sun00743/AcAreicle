@@ -32,14 +32,14 @@
 
     <PreferenceCategory android:title="@string/settings_about_title">
 
-        <me.zhanghai.android.douya.settings.ui.LicensesDialogPreference
+        <mika.com.android.ac.settings.ui.LicensesDialogPreference
             android:title="@string/settings_open_source_licenses_title" />
 
         <Preference
             android:title="@string/settings_about_douya_title">
             <intent
-                android:targetPackage="me.zhanghai.android.douya"
-                android:targetClass="me.zhanghai.android.douya.settings.ui.AboutActivity" />
+                android:targetPackage="mika.com.android.ac"
+                android:targetClass="mika.com.android.ac.settings.ui.AboutActivity" />
         </Preference>
     </PreferenceCategory>
 

@@ -11,12 +11,12 @@
 
     <fragment
         android:id="@+id/settings"
-        android:name="me.zhanghai.android.douya.settings.ui.SettingsFragment"
+        android:name="mika.com.android.ac.settings.ui.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/toolbar_height" />
 
-    <me.zhanghai.android.douya.ui.AppBarWrapperLayout
+    <mika.com.android.ac.ui.AppBarWrapperLayout
         android:id="@+id/appBarWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -39,5 +39,5 @@
                 app:popupTheme="?actionBarPopupTheme"
                 app:titleMarginStart="@dimen/toolbar_title_left_margin" />
         </LinearLayout>
-    </me.zhanghai.android.douya.ui.AppBarWrapperLayout>
+    </mika.com.android.ac.ui.AppBarWrapperLayout>
 </merge>

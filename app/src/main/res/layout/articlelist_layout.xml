@@ -17,7 +17,7 @@
         android:paddingLeft="@dimen/card_content_horizontal_margin_with_4dp_padding"
         android:paddingRight="@dimen/card_content_horizontal_margin">
 
-        <me.zhanghai.android.douya.ui.SimpleCircleImageView
+        <mika.com.android.ac.ui.SimpleCircleImageView
             android:id="@+id/user_avatar"
             android:layout_width="@dimen/touch_target_size"
             android:layout_height="@dimen/touch_target_size"
@@ -39,7 +39,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textStyle="bold" />
 
-        <me.zhanghai.android.douya.ui.TimeActionTextView
+        <mika.com.android.ac.ui.TimeActionTextView
             android:id="@+id/time_format"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="?android:textColorSecondary" />
 
-        <me.zhanghai.android.douya.ui.TimeActionTextView
+        <mika.com.android.ac.ui.TimeActionTextView
             android:id="@+id/view_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="?android:textColorSecondary" />
 
-        <me.zhanghai.android.douya.ui.TimeActionTextView
+        <mika.com.android.ac.ui.TimeActionTextView
             android:id="@+id/comment_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
             android:layout_toStartOf="@+id/view_count" />
     </RelativeLayout>
 
-   <me.zhanghai.android.douya.ui.ForegroundRelativeLayout
+   <mika.com.android.ac.ui.ForegroundRelativeLayout
         android:id="@+id/attachment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
             android:layout_below="@id/divider"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-        <me.zhanghai.android.douya.ui.AutoGoneTextView
+        <mika.com.android.ac.ui.AutoGoneTextView
             android:id="@+id/article_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -128,9 +128,9 @@
             android:layout_below="@id/article_title"
             android:layout_marginTop="8dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-    </me.zhanghai.android.douya.ui.ForegroundRelativeLayout>
+    </mika.com.android.ac.ui.ForegroundRelativeLayout>
 
-    <me.zhanghai.android.douya.ui.ImageLayout
+    <mika.com.android.ac.ui.ImageLayout
         android:id="@+id/single_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <me.zhanghai.android.douya.ui.NestedRatioHeightRecyclerView
+        <mika.com.android.ac.ui.NestedRatioHeightRecyclerView
             android:id="@+id/image_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/card_content_vertical_space" />
 
-    <me.zhanghai.android.douya.ui.AutoGoneTextView
+    <mika.com.android.ac.ui.AutoGoneTextView
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -191,7 +191,7 @@
         android:paddingRight="@dimen/card_content_horizontal_margin"
         android:orientation="horizontal">
 
-        <me.zhanghai.android.douya.ui.CardIconButton
+        <mika.com.android.ac.ui.CardIconButton
             android:id="@+id/art_banana"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -203,7 +203,7 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <me.zhanghai.android.douya.ui.CardIconButton
+        <mika.com.android.ac.ui.CardIconButton
             android:id="@+id/art_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -211,7 +211,7 @@
             android:contentDescription="@string/articlelist_comment"
             android:src="@drawable/comment_icon_black_18dp" />
 
-        <me.zhanghai.android.douya.ui.CardIconButton
+        <mika.com.android.ac.ui.CardIconButton
             android:id="@+id/art_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

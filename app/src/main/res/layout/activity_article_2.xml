@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<me.zhanghai.android.douya.ui.DetectsSoftKeyBoardFrameLayout
+<mika.com.android.ac.ui.DetectsSoftKeyBoardFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -94,7 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <me.zhanghai.android.douya.ui.PagerSlidingTabStrip
+            <mika.com.android.ac.ui.PagerSlidingTabStrip
                 android:id="@+id/article_emoticon_tap"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
@@ -121,7 +121,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <me.zhanghai.android.douya.ui.AppBarWrapperLayout
+    <mika.com.android.ac.ui.AppBarWrapperLayout
         android:id="@+id/appBarWrapper_art"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -146,6 +146,6 @@
                 app:popupTheme="?actionBarPopupTheme"
                 app:titleMarginStart="@dimen/toolbar_title_left_margin" />
         </LinearLayout>
-    </me.zhanghai.android.douya.ui.AppBarWrapperLayout>
+    </mika.com.android.ac.ui.AppBarWrapperLayout>
 
-</me.zhanghai.android.douya.ui.DetectsSoftKeyBoardFrameLayout>
+</mika.com.android.ac.ui.DetectsSoftKeyBoardFrameLayout>

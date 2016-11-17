@@ -15,7 +15,7 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <me.zhanghai.android.douya.ui.SimpleCircleImageView
+    <mika.com.android.ac.ui.SimpleCircleImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/touch_target_size"
         android:layout_height="@dimen/touch_target_size"
