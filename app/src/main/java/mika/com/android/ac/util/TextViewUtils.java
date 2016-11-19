@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
 import mika.com.android.ac.network.api.info.acapi.Comment;
 
@@ -57,11 +57,11 @@ public class TextViewUtils {
                 @Override
                 public Drawable getDrawable(String source) {
                     try {
-                        Bitmap bm = DouyaApplication.getBitmapInCache(source);
+                        Bitmap bm = AcWenApplication.getBitmapInCache(source);
                         if (bm == null) {
                             bm = BitmapFactory.decodeStream(textView.getContext().getAssets()
                                     .open(source));
-                            DouyaApplication.putBitmapInCache(source, bm);
+                            AcWenApplication.putBitmapInCache(source, bm);
                         }
                         Drawable drawable = new BitmapDrawable(textView.getResources(), bm);
                         if (drawable != null) {

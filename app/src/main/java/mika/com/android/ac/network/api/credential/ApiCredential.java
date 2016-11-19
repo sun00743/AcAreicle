@@ -9,7 +9,7 @@
 
 package mika.com.android.ac.network.api.credential;
 
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
 
 public final class ApiCredential {
 
@@ -29,10 +29,10 @@ public final class ApiCredential {
 class HackyApiCredentialHelper {
 
     public static String getApiKey() {
-        return ApiCredentialManager.getApiKey(DouyaApplication.getInstance());
+        return ApiCredentialManager.getApiKey(AcWenApplication.getInstance());
     }
 
     public static String getApiSecret() {
-        return ApiCredentialManager.getApiSecret(DouyaApplication.getInstance());
+        return ApiCredentialManager.getApiSecret(AcWenApplication.getInstance());
     }
 }

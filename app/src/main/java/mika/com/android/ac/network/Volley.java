@@ -18,7 +18,7 @@ import com.android.volley.toolbox.HttpStack;
 
 import java.io.File;
 
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.account.info.AccountContract;
 import mika.com.android.ac.account.util.AccountUtils;
 
@@ -39,7 +39,7 @@ public class Volley {
     }
 
     private void createAuthenticatorForActiveAccount() {
-        Context context = DouyaApplication.getInstance();
+        Context context = AcWenApplication.getInstance();
         mAuthenticator = new SynchronizedAndroidAuthenticator(context,
                 AccountUtils.getActiveAccount(context), AccountContract.AUTH_TOKEN_TYPE, true);
     }
@@ -57,7 +57,7 @@ public class Volley {
      */
     private void createAndStartRequestQueue() {
         mRequestQueue = new RequestQueue(new DiskBasedCache(new File(
-                DouyaApplication.getInstance().getCacheDir(), "volley")), new BasicNetwork(
+                AcWenApplication.getInstance().getCacheDir(), "volley")), new BasicNetwork(
                 new HurlStack()));
         mRequestQueue.start();
     }

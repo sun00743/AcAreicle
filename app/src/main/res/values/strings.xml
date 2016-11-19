@@ -169,6 +169,7 @@
     <string name="app_ac_video_link">http://www.coolapk.com/apk/tv.ac.fun</string>
 
     <string name="article_star">收藏</string>
+    <string name="article_subtitle_refresh">刷新评论</string>
     <string name="article_comment_unquote">取消引用</string>
 
     <string name="broadcast_list_title_default">广播列表</string>

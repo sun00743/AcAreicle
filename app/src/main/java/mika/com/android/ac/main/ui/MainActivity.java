@@ -22,8 +22,8 @@ import android.widget.FrameLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.BuildConfig;
-import mika.com.android.ac.DouyaApplication;
 import mika.com.android.ac.home.HomeFragment;
 import mika.com.android.ac.navigation.ui.NavigationFragment;
 import mika.com.android.ac.network.api.info.acapi.Acer;
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(!DouyaApplication.LOGIN){
+        if(!AcWenApplication.LOGIN){
             if(!isRemoveAcerinfo) {
                 mNavigationFragment.onUserInfoChanged(0, null);
                 isRemoveAcerinfo = true;

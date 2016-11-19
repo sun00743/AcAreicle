@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.network.Request;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.BaseArticleRequest;
@@ -123,7 +123,7 @@ public class ArticleActivity extends BaseWebViewActivity implements
     @Override
     protected void initView(Bundle savedInstanceState) {
         //文章缓存路径
-        ARTICLE_PATH = DouyaApplication.getExternalCacheFiledir("article").getAbsolutePath();
+        ARTICLE_PATH = AcWenApplication.getExternalCacheFiledir("article").getAbsolutePath();
         
 //        Uri data = getIntent().getData();
 //        if(Intent.ACTION_VIEW.equalsIgnoreCase(getIntent().getAction()) && data!=null){

@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
 
 /**
  * 
@@ -63,8 +63,8 @@ public class Connectivity {
      */
     public static RequestQueue newRequestQueue(HttpStack stack) {
 
-        File cacheDir = DouyaApplication.isExternalStorageAvailable() ? DouyaApplication
-                .getExternalCacheFiledir(DEFAULT_CACHE_DIR) : new File(DouyaApplication
+        File cacheDir = AcWenApplication.isExternalStorageAvailable() ? AcWenApplication
+                .getExternalCacheFiledir(DEFAULT_CACHE_DIR) : new File(AcWenApplication
                 .getInstance().getCacheDir(), DEFAULT_CACHE_DIR);
 
         if (stack == null) {

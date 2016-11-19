@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
 
 public class
 FileUtil {
@@ -93,7 +93,7 @@ FileUtil {
      */
     @SuppressWarnings("deprecation")
     public static long getExternalAvailable() {
-        if (DouyaApplication.isExternalStorageAvailable()) {
+        if (AcWenApplication.isExternalStorageAvailable()) {
             StatFs sf = new StatFs(Environment.getExternalStorageDirectory().getPath());
             long blockSize = sf.getBlockSize();
             long availCount = sf.getAvailableBlocks();
@@ -199,7 +199,7 @@ FileUtil {
         int hashCode = fileUri.hashCode();
         String folderName = String.format("%x", hashCode & 0xf);
         String fileName = String.format("%x", hashCode >>> 4)+getUrlExt(fileUri);
-        File cache =new File(DouyaApplication.getExternalCacheFiledir(type+"/"+folderName),fileName);
+        File cache =new File(AcWenApplication.getExternalCacheFiledir(type+"/"+folderName),fileName);
         return cache;
         
     }
@@ -209,7 +209,7 @@ FileUtil {
      * @return
      */
     public static File generateImageCacheFile(String imgUri){
-        return generateCacheFile(DouyaApplication.IMAGE,imgUri);
+        return generateCacheFile(AcWenApplication.IMAGE,imgUri);
     }
     
     public static boolean deleteFiles(File file){

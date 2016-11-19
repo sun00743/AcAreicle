@@ -59,7 +59,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.R;
 import mika.com.android.ac.network.Request;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.ArticleRequest;
@@ -77,23 +78,18 @@ import mika.com.android.ac.util.ImageUtils;
 import mika.com.android.ac.util.TextViewUtils;
 import mika.com.android.ac.util.ViewUtils;
 
-/**
- * Created by mika <sun00743@gmail.com> on 2016/9/13.
- */
-
 public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewHolder> {
 
-    public static final String UA = "acfun/1.0 (Linux; U; Android " + Build.VERSION.RELEASE + "; " + Build.MODEL + "; " + Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry().toLowerCase() + ") AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 ";
+    private static final String UA = "acfun/1.0 (Linux; U; Android " + Build.VERSION.RELEASE + "; " + Build.MODEL + "; " + Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry().toLowerCase() + ") AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 ";
     private static final int VIEW_TYPE_ARTICLE = 0x02;
     private static final int VIEW_TYPE_COMMENT = 0x04;
     private static final int VIEW_TYPE_SUBTITLE = 0x03;
     private static final int VIEW_TYPE_HEAD = 0x01;
-    private static int VIEW_TYPE = 0x00;
 
     private AppCompatActivity activity;
 
     public static final String TAG = "Article";
-    //    private static final Pattern sAreg = Pattern.compile("/a/ac(\\d{5,})");
+//    private static final Pattern sAreg = Pattern.compile("/a/ac(\\d{5,})");
 //    private static final Pattern sVreg = Pattern.compile("/v/ac(\\d{5,})");
 //    private static final Pattern sLiteAreg = Pattern.compile("/v/#ac=(\\d{5,});type=article");
 //    private static final Pattern sLiteVreg = Pattern.compile("/v/#ac=(\\d{5,})$");
@@ -101,7 +97,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 //    public static final int MAX_AGE = 7 * 24 * 60 * 60 * 1000;
     private static String ARTICLE_PATH;
     private static final String NAME_ARTICLE_HTML = "a63-article.html";
-    private Request<?> request;
     private Article mArticle;
     private Document mDoc;
     private List<String> imgUrls;
@@ -158,6 +153,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
+        int VIEW_TYPE;
         switch (position) {
             case 0:
                 VIEW_TYPE = 0x01;
@@ -180,16 +176,16 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         RecyclerView.ViewHolder holder;
         switch (viewType) {
             case VIEW_TYPE_HEAD:
-                holder = new HeadHolder(ViewUtils.inflate(mika.com.android.ac.R.layout.articlecomplex_item_head, parent));
+                holder = new HeadHolder(ViewUtils.inflate(R.layout.articlecomplex_item_head, parent));
                 break;
             case VIEW_TYPE_ARTICLE:
-                holder = new ArticleHolder(ViewUtils.inflate(mika.com.android.ac.R.layout.articlecomplex_item_article, parent));
+                holder = new ArticleHolder(ViewUtils.inflate(R.layout.articlecomplex_item_article, parent));
                 break;
             case VIEW_TYPE_SUBTITLE:
-                holder = new SubTitleHolder(ViewUtils.inflate(mika.com.android.ac.R.layout.articlecomplex_item_subtitle, parent));
+                holder = new SubTitleHolder(ViewUtils.inflate(R.layout.articlecomplex_item_subtitle, parent));
                 break;
             default:
-                holder = new CommentHolder(ViewUtils.inflate(mika.com.android.ac.R.layout.articlecomplex_item_comment, parent));
+                holder = new CommentHolder(ViewUtils.inflate(R.layout.articlecomplex_item_comment, parent));
                 break;
         }
         return holder;
@@ -209,7 +205,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     ((HeadHolder) holder).articleTitle.setText(mBundle.getString("title"));
                 }
                 break;
-
             case VIEW_TYPE_ARTICLE:
                 mCurrentHolder = (ArticleHolder) holder;
                 if (isContentFirstLoad) {
@@ -221,10 +216,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     ((ArticleHolder) holder).mWeb.getSettings().setUseWideViewPort(true);
                     ((ArticleHolder) holder).mWeb.getSettings().setLoadWithOverviewMode(true);
                     initView();
-                    initData();
+                    requestData();
                 }
                 break;
-
             case VIEW_TYPE_SUBTITLE:
                 mSubTitleHolder = (SubTitleHolder) holder;
                 mSubTitleHolder.updateComment.setOnClickListener(new View.OnClickListener() {
@@ -235,10 +229,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     }
                 });
                 break;
-
             default:
                 final Comment comment = getComment(position);
-//                isCommentFirstLoad
                 CommentHolder cHolder = (CommentHolder) holder;
                 releaseComment((CommentHolder) holder);
 
@@ -262,14 +254,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 cHolder.quoteItemsView.setQuoteList(quoteViewList);
                 if (!quoteViewList.isEmpty()) {
                     RelativeLayout.LayoutParams quoteItemsParams = new RelativeLayout.LayoutParams(-1, -2);
-                    quoteItemsParams.addRule(RelativeLayout.BELOW, mika.com.android.ac.R.id.comment_requote);
+                    quoteItemsParams.addRule(RelativeLayout.BELOW, R.id.comment_requote);
                     cHolder.reQuoteContent.addView(cHolder.quoteItemsView, quoteItemsParams);
                 }
-
-//                RelativeLayout.LayoutParams userNameParams = (RelativeLayout.LayoutParams) cHolder.userName.getLayoutParams();
-//                userNameParams.addRule(RelativeLayout.BELOW,
-//                        cHolder.quoteItemsView.getChildCount()>0 ? quotesId : R.id.comment_requote);
-//                cHolder.userName.setLayoutParams(userNameParams);
                 setItemPadding(cHolder);
                 break;
         }
@@ -298,9 +285,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             return;
         } else if (diff > 0 || !mCommentIdList.get(3).equals(((ArrayList) commentIdList).get(0))) {
             mCommentIdList.clear();
-            mCommentIdList.add(DouyaApplication.ITEM_HEAD);
-            mCommentIdList.add(DouyaApplication.ITEM_ARTICLE);
-            mCommentIdList.add(DouyaApplication.ITEM_SUBTITLE);
+            mCommentIdList.add(AcWenApplication.ITEM_HEAD);
+            mCommentIdList.add(AcWenApplication.ITEM_ARTICLE);
+            mCommentIdList.add(AcWenApplication.ITEM_SUBTITLE);
             mCommentIdList.addAll(commentIdList);
             mCommentList = commentMaps;
 
@@ -330,7 +317,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private void addQuoteViews(int position, CommentHolder cHolder, int quoteId, List<View> quoteViewList) {
         if (cHolder.hasQuote || cHolder.quoteItemsView == null) {
             FloorsView floors = new FloorsView(activity);
-            floors.setId(mika.com.android.ac.R.id.quote_item_floor);
+            floors.setId(R.id.quote_item_floor);
             cHolder.quoteItemsView = floors;
         }
 
@@ -362,16 +349,14 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     /**
      * 生成引用的评论的view
      *
-     * @param quote
-     * @return
      */
     private View generateQuotesView(final Comment quote) {
-        RelativeLayout quoteLayout = (RelativeLayout) LayoutInflater.from(activity).inflate(mika.com.android.ac.R.layout.articlecomplex_item_quote, null);
-        TextView username = (TextView) quoteLayout.findViewById(mika.com.android.ac.R.id.quote_item_username);
-        TextView content = (TextView) quoteLayout.findViewById(mika.com.android.ac.R.id.quote_item_comments_content);
-        SimpleCircleImageView avatar = (SimpleCircleImageView) quoteLayout.findViewById(mika.com.android.ac.R.id.quote_item_avatar);
-        ImageView quoted = (ImageView) quoteLayout.findViewById(mika.com.android.ac.R.id.comment_quoteimg);
-        ImageView more = (ImageView) quoteLayout.findViewById(mika.com.android.ac.R.id.comment_more);
+        RelativeLayout quoteLayout = (RelativeLayout) LayoutInflater.from(activity).inflate(R.layout.articlecomplex_item_quote, null);
+        TextView username = (TextView) quoteLayout.findViewById(R.id.quote_item_username);
+        TextView content = (TextView) quoteLayout.findViewById(R.id.quote_item_comments_content);
+        SimpleCircleImageView avatar = (SimpleCircleImageView) quoteLayout.findViewById(R.id.quote_item_avatar);
+        ImageView quoted = (ImageView) quoteLayout.findViewById(R.id.comment_quoteimg);
+        ImageView more = (ImageView) quoteLayout.findViewById(R.id.comment_more);
 
         username.setText("#" + quote.floor + " " + quote.username);
         TextViewUtils.setCommentContent(content, quote);
@@ -399,7 +384,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     private void initView() {
         //文章缓存路径
-        ARTICLE_PATH = DouyaApplication.getExternalCacheFiledir("article").getAbsolutePath();
+        ARTICLE_PATH = AcWenApplication.getExternalCacheFiledir("article").getAbsolutePath();
         if (!isWebMode) {
             if (aid == 0)
                 throw new IllegalArgumentException("没有 id");
@@ -453,8 +438,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     /**
      * 加载网络数据
      */
-    private void initData() {
-        request = new ArticleRequest(activity.getApplicationContext(), aid, new Response.Listener<Article>() {
+    private void requestData() {
+        Request<?> request = new ArticleRequest(activity.getApplicationContext(), aid, new Response.Listener<Article>() {
             @Override
             public void onResponse(Article response) {
                 mArticle = response;
@@ -509,17 +494,17 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
      */
     static class HeadHolder extends RecyclerView.ViewHolder {
 
-        @BindView(mika.com.android.ac.R.id.article_head_content)
+        @BindView(R.id.article_head_content)
         RelativeLayout headContent;
-        @BindView(mika.com.android.ac.R.id.user_avatar)
+        @BindView(R.id.user_avatar)
         SimpleCircleImageView avatar;
-        @BindView(mika.com.android.ac.R.id.user_name)
+        @BindView(R.id.user_name)
         TextView username;
-        @BindView(mika.com.android.ac.R.id.time_format)
+        @BindView(R.id.time_format)
         TimeActionTextView time;
-        @BindView(mika.com.android.ac.R.id.view_count)
+        @BindView(R.id.view_count)
         TimeActionTextView viewCount;
-        @BindView(mika.com.android.ac.R.id.article_title)
+        @BindView(R.id.article_title)
         TextView articleTitle;
 
         HeadHolder(View itemView) {
@@ -533,21 +518,15 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
      */
     static class ArticleHolder extends RecyclerView.ViewHolder {
 
-        @BindView(mika.com.android.ac.R.id.article_content)
+        @BindView(R.id.article_content)
         RelativeLayout mContent;
-        @BindView(mika.com.android.ac.R.id.article_webview)
+        @BindView(R.id.article_webview)
         WebView mWeb;
 
         ArticleHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-//        void setContentHeight(int height){
-//            ViewGroup.LayoutParams layoutParams = mContent.getLayoutParams();
-//            layoutParams.height = (int) (height * DouyaApplication.density);
-//            mContent.setLayoutParams(layoutParams);
-//        }
 
         void setSupportProgressBarIndeterminateVisibility(boolean visible) {
             mWeb.setVisibility(visible ? View.INVISIBLE : View.VISIBLE);
@@ -576,36 +555,36 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
      */
     static class CommentHolder extends RecyclerView.ViewHolder {
 
-        @BindView(mika.com.android.ac.R.id.comment_requote_content)
+        @BindView(R.id.comment_requote_content)
         RelativeLayout reQuoteContent;
 
         FloorsView quoteItemsView;
         boolean hasQuote;
 
-        @BindView(mika.com.android.ac.R.id.comments_content)
+        @BindView(R.id.comments_content)
         TextView content;
 
-        @BindView(mika.com.android.ac.R.id.comment_username)
+        @BindView(R.id.comment_username)
         TextView userName;
         /**
          * 引用当前条目
          */
-        @BindView(mika.com.android.ac.R.id.comment_quoteimg)
+        @BindView(R.id.comment_quoteimg)
         ImageView quoted;
         /**
          * 更多选择
          */
-        @BindView(mika.com.android.ac.R.id.comment_more)
+        @BindView(R.id.comment_more)
         ImageView more;
 
-        @BindView(mika.com.android.ac.R.id.comment_avatar)
+        @BindView(R.id.comment_avatar)
         SimpleCircleImageView avatar;
-        @BindView(mika.com.android.ac.R.id.comment_time)
+        @BindView(R.id.comment_time)
         TextView tiem;
         /**
          * 重复引用提示
          */
-        @BindView(mika.com.android.ac.R.id.comment_requote)
+        @BindView(R.id.comment_requote)
         TextView reQuote;
 
         CommentHolder(View itemView) {
@@ -619,12 +598,12 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
      */
     static class SubTitleHolder extends RecyclerView.ViewHolder {
 
-        @BindView(mika.com.android.ac.R.id.subtitle_comment)
-        public RelativeLayout subtitle;
-        @BindView(mika.com.android.ac.R.id.subtitle_update_comment)
-        public ImageButton updateComment;
-        @BindView(mika.com.android.ac.R.id.subtitle_Progress)
-        public ProgressBar subtitle_pro;
+        @BindView(R.id.subtitle_comment)
+        RelativeLayout subtitle;
+        @BindView(R.id.subtitle_update_comment)
+        ImageButton updateComment;
+        @BindView(R.id.subtitle_Progress)
+        ProgressBar subtitle_pro;
 
         SubTitleHolder(View itemView) {
             super(itemView);
@@ -654,7 +633,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         @Override
         protected Boolean doInBackground(Article... params) {
             try {
-                mDoc = DouyaApplication.getThemedDoc();
+                mDoc = AcWenApplication.getThemedDoc();
                 initCaches();
 
                 Element content = mDoc.getElementById("content");
@@ -743,7 +722,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 if (!"http".equals(parsedUri.getScheme())) {
                     parsedUri = parsedUri.buildUpon()
                             .scheme("http")
-                            .authority(Constants.HOME)
+                            .authority("www.acfun.tv")
                             .build();
                 }
                 // url may have encoded path
@@ -835,12 +814,11 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             isDocBuilding.set(false);
             if (activity.isFinishing()) return;
 //            mCurrentHolder.setSupportProgressBarIndeterminateVisibility(false);
-
             if (result) {
                 if (cacheFile.exists()) {
                     mCurrentHolder.mWeb.loadUrl(Uri.fromFile(cacheFile).toString());
                 } else
-                    mCurrentHolder.mWeb.loadDataWithBaseURL(Constants.HOME, mDoc.html(), "text/html", "UTF-8", null);
+                    mCurrentHolder.mWeb.loadDataWithBaseURL("www.acfun.tv", mDoc.html(), "text/html", "UTF-8", null);
 
                 if (hasUseMap)
                     mCurrentHolder.mWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);

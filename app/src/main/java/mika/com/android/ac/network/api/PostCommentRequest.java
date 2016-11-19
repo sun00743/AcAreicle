@@ -20,10 +20,6 @@ import java.util.Map;
 import mika.com.android.ac.network.Request;
 import mika.com.android.ac.util.Connectivity;
 
-/**
- * Created by Administrator on 2016/9/30.
- */
-
 public class PostCommentRequest extends Request {
 
     private static final String POST_COMMENT_URL = "http://mobile.acfun.tv/comment.aspx";
@@ -73,11 +69,6 @@ public class PostCommentRequest extends Request {
     @Override
     public Request addHeader(String name, String value) {
         return super.addHeader(name, value);
-    }
-
-    @Override
-    public Request addHeader(Map.Entry header) {
-        return super.addHeader(header);
     }
 
     @Override

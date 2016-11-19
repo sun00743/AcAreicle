@@ -21,7 +21,7 @@ import android.view.View;
 
 import java.io.IOException;
 
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
 
 
 public class EmotionView extends View {
@@ -35,14 +35,14 @@ public class EmotionView extends View {
     public EmotionView(Context context) {
         super(context);
         mWidth = mHeight = getResources().getDimensionPixelSize(mika.com.android.ac.R.dimen.emotions_column_width);
-        mPadding = (int) (4 * DouyaApplication.density + 0.5f);
+        mPadding = (int) (4 * AcWenApplication.density + 0.5f);
     }
 
     public void setEmotionId(int id) {
         if (mId != id) {
             String name = getEmotionName(id);
             try {
-                Bitmap bm = DouyaApplication.getBitmapInCache(name);
+                Bitmap bm = AcWenApplication.getBitmapInCache(name);
                 if (bm == null) {
                     Options opts = new Options();
                     opts.inJustDecodeBounds = true;
@@ -57,7 +57,7 @@ public class EmotionView extends View {
 
                     bm = BitmapFactory
                             .decodeStream(getContext().getAssets().open(name), null, opts);
-                    DouyaApplication.putBitmapInCache(name, bm);
+                    AcWenApplication.putBitmapInCache(name, bm);
 //                    Log.d(TAG, "put emotion in cache : " + name);
                 }
                 mDrawable = new BitmapDrawable(getResources(), bm);

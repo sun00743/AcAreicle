@@ -24,7 +24,7 @@ import com.android.volley.VolleyError;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.db.AcerDB;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.AcerInfoRequest;
@@ -88,8 +88,8 @@ public class AcerSignInActivity extends AppCompatActivity {
                 if(mLoginResult.success){
                     acer = mLoginResult.data;
                     new AcerDB(getApplicationContext()).saveAcer(acer);
-                    DouyaApplication.getInstance().setAcer(acer);
-                    DouyaApplication.LOGIN = true;
+                    AcWenApplication.getInstance().setAcer(acer);
+                    AcWenApplication.LOGIN = true;
                     //请求acer详细信息
                     requestAcerInfo(acer.userId);
                 }else{

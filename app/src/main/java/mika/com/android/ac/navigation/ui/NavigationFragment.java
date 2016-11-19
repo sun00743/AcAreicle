@@ -26,7 +26,7 @@ import com.android.volley.VolleyError;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
 import mika.com.android.ac.account.content.AccountUserInfoResource;
 import mika.com.android.ac.account.ui.AcerSignInActivity;
@@ -101,8 +101,8 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
 
         mAcer = new AcerDB(getActivity().getApplicationContext()).getAcer();
         if(mAcer != null){
-            DouyaApplication.getInstance().setAcer(mAcer);
-            DouyaApplication.LOGIN = true;
+            AcWenApplication.getInstance().setAcer(mAcer);
+            AcWenApplication.LOGIN = true;
             //请求acerinfo
             AcerInfoRequest mAcerInfoRequest = new AcerInfoRequest(mAcer.userId);
             Volley.getInstance().addToRequestQueue(mAcerInfoRequest);
@@ -126,7 +126,7 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
             });
 
         }else{
-            DouyaApplication.LOGIN = false;
+            AcWenApplication.LOGIN = false;
             mHeaderLayout.bind();
         }
 
@@ -214,17 +214,17 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
 //        }
 //        startActivity(intent);
 
-        if(DouyaApplication.LOGIN){
+        if(AcWenApplication.LOGIN){
             startActivity(ProfileActivity.makeIntent("" , getActivity()));
         }else{
-            startActivityForResult(new Intent(getActivity(), AcerSignInActivity.class), DouyaApplication.REQUEST_CODE_SIGN_IN);
+            startActivityForResult(new Intent(getActivity(), AcerSignInActivity.class), AcWenApplication.REQUEST_CODE_SIGN_IN);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK){
-            if(requestCode == DouyaApplication.REQUEST_CODE_SIGN_IN){
+            if(requestCode == AcWenApplication.REQUEST_CODE_SIGN_IN){
                 acerInfo = data.getParcelableExtra("acer_info");
                 mHeaderLayout.bindAcer(acerInfo);
             }

@@ -51,7 +51,6 @@
         android:layout_marginTop="-2dp"
         android:gravity="top"
         android:textSize="12dp"
-        android:text="sadasdasd"
         android:id="@+id/comment_username"
         android:textColor="@color/black_54"
         android:layout_width="wrap_content"
@@ -62,7 +61,6 @@
     <TextView
         android:layout_marginTop="8dp"
         android:textSize="12dp"
-        android:text="1天前"
         android:id="@+id/comment_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -77,7 +75,6 @@
         android:layout_marginTop="-4dp"
         android:textSize="14sp"
         android:layout_marginRight="16dp"
-        android:text="评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论评论论评论评论"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black_87"

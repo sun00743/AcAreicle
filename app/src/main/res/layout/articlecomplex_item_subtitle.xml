@@ -28,11 +28,11 @@
         android:layout_height="@dimen/touch_target_size"
         android:layout_gravity="center_vertical|end"
         android:background="?selectableItemBackgroundBorderless"
-        android:contentDescription="刷新评论"
+        android:contentDescription="@string/article_subtitle_refresh"
         android:padding="@dimen/icon_button_padding"
         android:src="@drawable/update_icon_black_24dp"
         android:tint="@color/black_54"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

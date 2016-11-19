@@ -53,7 +53,7 @@ import java.util.Map;
 import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import mika.com.android.ac.DouyaApplication;
+import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.account.ui.AcerSignInActivity;
 import mika.com.android.ac.article.content.CommentListResource;
 import mika.com.android.ac.network.Volley;
@@ -135,7 +135,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         createUI();
-        acer = DouyaApplication.getInstance().getAcer();
+        acer = AcWenApplication.getInstance().getAcer();
         contentId = getIntent().getExtras().getInt("aid", 0);
         mCommentListResource = CommentListResource.attachTo(null, contentId, this);
     }
@@ -177,7 +177,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 if (!isEmoticonLayoutShow && !isKeyBoardShow) {
                     isEmoticonLayoutShow = true;
                     mEmoticonLayout.setVisibility(View.VISIBLE);
-                } else if (!isEmoticonLayoutShow && isKeyBoardShow) {
+                } else if (!isEmoticonLayoutShow) {
                     isEmoticonLayoutShow = true;
                     isKeyBoardShow = false;
                     inputMethodManager.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
@@ -187,7 +187,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
                             mEmoticonLayout.setVisibility(View.VISIBLE);
                         }
                     }, 70);
-                } else if (isEmoticonLayoutShow && !isKeyBoardShow) {
+                } else if (!isKeyBoardShow) {
                     isKeyBoardShow = true;
                     isEmoticonLayoutShow = false;
                     mEmoticonLayout.setVisibility(View.GONE);
@@ -227,9 +227,9 @@ public class ArticleActivity2 extends AppCompatActivity implements
      */
     private List<Integer> initList() {
         List<Integer> list = new ArrayList<>();
-        list.add(DouyaApplication.ITEM_HEAD);
-        list.add(DouyaApplication.ITEM_ARTICLE);
-        list.add(DouyaApplication.ITEM_SUBTITLE);
+        list.add(AcWenApplication.ITEM_HEAD);
+        list.add(AcWenApplication.ITEM_ARTICLE);
+        list.add(AcWenApplication.ITEM_SUBTITLE);
         return list;
     }
 
@@ -244,6 +244,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()){
             case mika.com.android.ac.R.id.action_star:
                 // TODO 收藏
@@ -325,8 +326,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
      */
     private void doSendComment() {
 
-        if (!DouyaApplication.LOGIN) {
-            startActivityForResult(new Intent(this, AcerSignInActivity.class), DouyaApplication.REQUEST_CODE_SIGN_IN);
+        if (!AcWenApplication.LOGIN) {
+            startActivityForResult(new Intent(this, AcerSignInActivity.class), AcWenApplication.REQUEST_CODE_SIGN_IN);
             return;
         }
 
@@ -371,8 +372,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == DouyaApplication.REQUEST_CODE_SIGN_IN) {
-                acer = DouyaApplication.getInstance().getAcer();
+            if (requestCode == AcWenApplication.REQUEST_CODE_SIGN_IN) {
+                acer = AcWenApplication.getInstance().getAcer();
             }
         }
     }
