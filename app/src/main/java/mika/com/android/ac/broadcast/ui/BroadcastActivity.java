@@ -48,12 +48,9 @@ public class BroadcastActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         TransitionUtils.setupTransitionBeforeDecorate(this);
-
         super.onCreate(savedInstanceState);
-
         // Calls ensureSubDecor().
         findViewById(android.R.id.content);
-
         TransitionUtils.postponeTransition(this);
 
         if (savedInstanceState == null) {

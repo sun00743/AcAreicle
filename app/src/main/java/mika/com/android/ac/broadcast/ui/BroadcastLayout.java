@@ -36,7 +36,6 @@ import mika.com.android.ac.network.api.info.apiv2.Attachment;
 import mika.com.android.ac.network.api.info.apiv2.Broadcast;
 import mika.com.android.ac.network.api.info.apiv2.Image;
 import mika.com.android.ac.network.api.info.apiv2.Photo;
-import mika.com.android.ac.profile.ui.ProfileActivity;
 import mika.com.android.ac.ui.CardIconButton;
 import mika.com.android.ac.ui.GalleryActivity;
 import mika.com.android.ac.ui.HorizontalImageAdapter;
@@ -204,7 +203,7 @@ public class BroadcastLayout extends LinearLayout {
             mAvatarImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    context.startActivity(ProfileActivity.makeIntent(broadcast.author, context));
+//                    context.startActivity(ProfileActivity.makeIntent(broadcast.author, context));
                 }
             });
         }

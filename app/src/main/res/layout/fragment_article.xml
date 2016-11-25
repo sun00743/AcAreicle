@@ -1,33 +1,55 @@
-<?xml version="1.0" encoding="utf-8"?>
-<mika.com.android.ac.ui.DetectsSoftKeyBoardFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Created mika <sun00743@gmail.com>
+  ~ Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <RelativeLayout
-        android:id="@+id/art_Progress_wrap"
+    <!--确保transition 顺序正确-->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="164dp"
-        android:background="@android:color/white"
-        android:gravity="center"
-        android:visibility="visible">
+        android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/art_Progress"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible" />
-    </RelativeLayout>
+        <FrameLayout
+            android:id="@+id/shared"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/art_com_recycle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:scrollbars="vertical" />
+            <RelativeLayout
+                android:id="@+id/art_Progress_wrap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="164dp"
+                android:background="@android:color/white"
+                android:gravity="center"
+                android:visibility="visible">
+
+                <ProgressBar
+                    android:id="@+id/art_Progress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/art_com_recycle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
+
+        </FrameLayout>
+    </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/article_send_bar"
@@ -120,6 +142,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <!-- Appbar layout must be on top of content so that transition can have correct z-order. -->
     <mika.com.android.ac.ui.AppBarWrapperLayout
         android:id="@+id/appBarWrapper"
         android:layout_width="match_parent"
@@ -147,4 +170,4 @@
         </LinearLayout>
     </mika.com.android.ac.ui.AppBarWrapperLayout>
 
-</mika.com.android.ac.ui.DetectsSoftKeyBoardFrameLayout>
+</FrameLayout>

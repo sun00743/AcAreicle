@@ -22,6 +22,8 @@
     <string name="navigation_quote">回复</string>
     <string name="navigation_message">私信</string>
 
+    <string name="articlelist_lookcount">围观</string>
+
     <string name="article_send_comment_hint">发评论…</string>
 
     <string name="nothing">这里空无一物</string>

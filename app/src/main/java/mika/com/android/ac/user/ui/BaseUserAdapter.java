@@ -19,7 +19,6 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.network.api.info.apiv2.User;
-import mika.com.android.ac.profile.ui.ProfileActivity;
 import mika.com.android.ac.ui.SimpleAdapter;
 import mika.com.android.ac.util.ImageUtils;
 import mika.com.android.ac.util.RecyclerViewUtils;
@@ -49,7 +48,7 @@ public abstract class BaseUserAdapter extends SimpleAdapter<User, BaseUserAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(ProfileActivity.makeIntent(user, context));
+//                context.startActivity(ProfileActivity.makeIntent(user, context));
             }
         });
         ImageUtils.loadAvatar(holder.avatarImage, user.avatar);

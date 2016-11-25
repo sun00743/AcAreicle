@@ -18,6 +18,8 @@ import mika.com.android.ac.broadcast.ui.BroadcastActivity;
 import mika.com.android.ac.broadcast.ui.BroadcastListActivity;
 import mika.com.android.ac.followship.ui.FollowerListActivity;
 import mika.com.android.ac.followship.ui.FollowingListActivity;
+import mika.com.android.ac.network.api.info.acapi.Acer;
+import mika.com.android.ac.network.api.info.acapi.AcerInfo2;
 import mika.com.android.ac.profile.ui.ProfileActivity;
 import mika.com.android.ac.util.UriUtils;
 
@@ -90,7 +92,7 @@ public class DoubanUriHandler {
                 intent = BroadcastActivity.makeIntent(UriUtils.parseId(uri), context);
                 break;
             case USER:
-                intent = ProfileActivity.makeIntent(uri.getLastPathSegment(), context);
+                intent = ProfileActivity.makeIntent(new Acer(), new AcerInfo2(), context);
                 break;
             case USER_FOLLOWER_LIST:
             case USER_FOLLOWER_LIST_FRODO:

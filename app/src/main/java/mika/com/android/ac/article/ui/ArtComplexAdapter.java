@@ -14,7 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -61,6 +61,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
+import mika.com.android.ac.network.NetState;
 import mika.com.android.ac.network.Request;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.ArticleRequest;
@@ -86,7 +87,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private static final int VIEW_TYPE_SUBTITLE = 0x03;
     private static final int VIEW_TYPE_HEAD = 0x01;
 
-    private AppCompatActivity activity;
+    private FragmentActivity activity;
 
     public static final String TAG = "Article";
 //    private static final Pattern sAreg = Pattern.compile("/a/ac(\\d{5,})");
@@ -117,12 +118,13 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private EventListener mEventListener;
     private ArticleHolder mCurrentHolder;
     private SubTitleHolder mSubTitleHolder;
-    //    private HeadHolder mHeadHolder;
+    private HeadHolder mHeadHolder;
+
     private int mWebViewHeight;
     private boolean isContentFirstLoad = true;
     private boolean isHeadFirstLoad = true;
 
-    public ArtComplexAdapter(List<Integer> list, AppCompatActivity activity, Bundle bundle) {
+    public ArtComplexAdapter(List<Integer> list, FragmentActivity activity, Bundle bundle) {
         super(null);
         mCommentIdList = list;
         this.activity = activity;
@@ -197,7 +199,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             case VIEW_TYPE_HEAD:
                 if (isHeadFirstLoad) {
                     isHeadFirstLoad = false;
-//                    mHeadHolder = (HeadHolder) holder;
+//                    mEventListener.setHeadView(mHeadHolder.headContent);
                     ImageUtils.loadAvatar(((HeadHolder) holder).avatar, mBundle.getString("avatar"));
                     ((HeadHolder) holder).username.setText(mBundle.getString("username"));
                     ((HeadHolder) holder).time.setText(mBundle.getString("time"));
@@ -276,6 +278,11 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         holder.reQuote.setVisibility(View.GONE);
     }
 
+    /**
+     * 初次加载/刷新
+     * @param commentIdList 评论id list
+     * @param commentMaps 评论bean map
+     */
     public void replace(Collection<? extends Integer> commentIdList,
                         SparseArray<Comment> commentMaps) {
         int oldSize = mCommentIdList.size() - 3;
@@ -298,6 +305,11 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         mSubTitleHolder.subtitle_pro.setVisibility(View.GONE);
     }
 
+    /**
+     * 加载更多
+     * @param commentIdList 评论id list
+     * @param commentMaps 评论bean map
+     */
     public void insert(Collection<? extends Integer> commentIdList,
                        Map<String, Comment> commentMaps) {
         int oldSize = mCommentIdList.size();
@@ -419,10 +431,10 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     return;
 
                 if ((url.equals(Constants.HOME) || url.contains(NAME_ARTICLE_HTML))
-                        && imgUrls.size() > 0 && !isDownloaded) {
+                        && imgUrls.size() > 0 && !isDownloaded && AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI) {
                     String[] arr = new String[imgUrls.size()];
                     mDownloadTask = new DownloadImageTask();
-//                    mDownloadTask.execute(imgUrls.toArray(arr));
+                    mDownloadTask.execute(imgUrls.toArray(arr));
                 }
             }
 
@@ -457,7 +469,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         Volley.getInstance().addToRequestQueue(request);
     }
 
-
     public void pause() {
         mCurrentHolder.mWeb.pauseTimers();
     }
@@ -466,6 +477,14 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         if (mCurrentHolder != null) {
             mCurrentHolder.mWeb.resumeTimers();
         }
+    }
+
+    public View getHeadView(){
+        return mHeadHolder.headContent;
+    }
+
+    public View getArticleView(){
+        return mCurrentHolder.mContent;
     }
 
     public void setEventListener(EventListener listener) {
@@ -487,6 +506,12 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         void updateComment();
 
         void DataReplaceOk();
+
+        /**
+         *
+         * @param headview headview
+         */
+        void setHeadView(View headview);
     }
 
     /**
@@ -734,10 +759,10 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 img.attr("org", src);
                 String localUri = FileUtil.getLocalFileUri(cache).toString();
 
-                if (0 == Constants.MODE_NO_PIC)
+                if (0 == Constants.MODE_NO_PIC || AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI)
                     img.attr("src", "file:///android_asset/loading.gif");
                 else {
-                    // no image , click to load and display image
+//                     no image mode , click to load and display image
 //                    img.after("<p >[图片]</p>");
 //                    img.remove();
                     img.attr("src", "file:///android_asset/emotion/td/08.gif");

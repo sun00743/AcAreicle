@@ -29,6 +29,7 @@ import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import mika.com.android.ac.R;
 import mika.com.android.ac.followship.content.FollowUserManager;
 import mika.com.android.ac.network.api.info.apiv2.User;
 import mika.com.android.ac.network.api.info.apiv2.UserInfo;
@@ -49,7 +50,7 @@ import mika.com.android.ac.util.ViewUtils;
  */
 public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHeaderView {
 
-    @BindColor(mika.com.android.ac.R.color.system_window_scrim)
+    @BindColor(R.color.system_window_scrim)
     int mStatusBarColorScrim;
     private int mStatusBarColorFullscreen;
     @BindDimen(mika.com.android.ac.R.dimen.profile_large_avatar_size)
@@ -61,25 +62,25 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
     @BindDimen(mika.com.android.ac.R.dimen.toolbar_height)
     int mToolbarHeight;
 
-    @BindView(mika.com.android.ac.R.id.dismiss)
+    @BindView(R.id.dismiss)
     View mDismissView;
-    @BindView(mika.com.android.ac.R.id.appBar)
+    @BindView(R.id.appBar)
     LinearLayout mAppBarLayout;
-    @BindView(mika.com.android.ac.R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(mika.com.android.ac.R.id.toolbar_username)
+    @BindView(R.id.toolbar_username)
     TextView mToolbarUsernameText;
-    @BindView(mika.com.android.ac.R.id.username)
+    @BindView(R.id.username)
     TextView mUsernameText;
-    @BindView(mika.com.android.ac.R.id.signature)
+    @BindView(R.id.signature)
     TextView mSignatureText;
-    @BindView(mika.com.android.ac.R.id.joined_at_location)
-    JoinedAtLocationAutoGoneTextView mJoinedAtLocationText;
-    @BindView(mika.com.android.ac.R.id.follow)
+    @BindView(R.id.banana)
+    JoinedAtLocationAutoGoneTextView banana;
+    @BindView(R.id.follow)
     Button mFollowButton;
-    @BindView(mika.com.android.ac.R.id.avatar_container)
+    @BindView(R.id.avatar_container)
     FrameLayout mAvatarContainerLayout;
-    @BindView(mika.com.android.ac.R.id.avatar)
+    @BindView(R.id.avatar)
     CircleImageView mAvatarImage;
 
     private boolean mUseWideLayout;
@@ -143,7 +144,7 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
 
         ButterKnife.bind(this);
         Context context = getContext();
-        mStatusBarColorFullscreen = ViewUtils.getColorFromAttrRes(mika.com.android.ac.R.attr.colorPrimaryDark, 0,
+        mStatusBarColorFullscreen = ViewUtils.getColorFromAttrRes(R.attr.colorPrimaryDark, 0,
                 context);
         mUseWideLayout = ProfileUtils.shouldUseWideLayout(context);
 
@@ -302,7 +303,7 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
         mToolbarUsernameText.setText(user.name);
         mUsernameText.setText(user.name);
         mSignatureText.setText(null);
-        mJoinedAtLocationText.setText(null);
+        banana.setText(null);
         TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mFollowButton, 0, 0, 0, 0);
         mFollowButton.setVisibility(GONE);
     }
@@ -323,11 +324,11 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
         mToolbarUsernameText.setText(userInfo.name);
         mUsernameText.setText(userInfo.name);
         mSignatureText.setText(userInfo.signature);
-        mJoinedAtLocationText.setJoinedAtAndLocation(userInfo.createdAt, userInfo.locationName);
+        banana.setJoinedAtAndLocation(userInfo.createdAt, userInfo.locationName);
         if (userInfo.isOneself(context)) {
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mFollowButton,
-                    mika.com.android.ac.R.drawable.edit_icon_white_24dp, 0, 0, 0);
-            mFollowButton.setText(mika.com.android.ac.R.string.profile_edit);
+                    R.drawable.edit_icon_white_24dp, 0, 0, 0);
+            mFollowButton.setText(R.string.profile_edit);
             mFollowButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -343,21 +344,21 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
                 TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mFollowButton,
                         new WhiteIndeterminateProgressIconDrawable(context), null, null, null);
                 mFollowButton.setText(followUserManager.isWritingFollow(userIdOrUid) ?
-                        mika.com.android.ac.R.string.user_following : mika.com.android.ac.R.string.user_unfollowing);
+                        R.string.user_following : R.string.user_unfollowing);
             } else {
                 int followDrawableId;
                 int followStringId;
                 if (userInfo.isFollowed) {
                     if (userInfo.isFollower) {
-                        followDrawableId = mika.com.android.ac.R.drawable.mutual_icon_white_24dp;
-                        followStringId = mika.com.android.ac.R.string.profile_following_mutual;
+                        followDrawableId = R.drawable.mutual_icon_white_24dp;
+                        followStringId = R.string.profile_following_mutual;
                     } else {
-                        followDrawableId = mika.com.android.ac.R.drawable.ok_icon_white_24dp;
-                        followStringId = mika.com.android.ac.R.string.profile_following;
+                        followDrawableId = R.drawable.ok_icon_white_24dp;
+                        followStringId = R.string.profile_following;
                     }
                 } else {
-                    followDrawableId = mika.com.android.ac.R.drawable.add_icon_white_24dp;
-                    followStringId = mika.com.android.ac.R.string.profile_follow;
+                    followDrawableId = R.drawable.add_icon_white_24dp;
+                    followStringId = R.string.profile_follow;
                 }
                 TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mFollowButton,
                         followDrawableId, 0, 0, 0);

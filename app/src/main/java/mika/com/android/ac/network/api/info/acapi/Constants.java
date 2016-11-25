@@ -60,7 +60,7 @@ String URL_RANK = "http://api.acfun.tv/apiserver/content/rank?channelIds=110,73,
     int MODE_NO_PIC = 1;
     int MODE_COMMIC = 2;
     
-    public static final class id {
+    final class id {
 
         public static final int ANIMATION = 1;
         public static final int MUSIC     = 58;

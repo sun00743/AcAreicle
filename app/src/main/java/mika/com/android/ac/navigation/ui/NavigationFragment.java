@@ -114,14 +114,14 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
                         acerInfo = ((AcerInfoResult2)response).userjson;
                         mHeaderLayout.bindAcer(acerInfo);
                     }else{
-                        //显示服务器错误信息
+                        //todo 显示服务器错误信息
                     }
                 }
             });
             mAcerInfoRequest.setErrorListener(new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    //显示请求错误
+                    //todo 显示请求错误
                 }
             });
 
@@ -142,7 +142,7 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
                                 openSettings();
                                 break;
                             case R.id.navigation_star:
-
+                                //todo 收藏界面
                                 break;
                             default:
 
@@ -215,7 +215,7 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
 //        startActivity(intent);
 
         if(AcWenApplication.LOGIN){
-            startActivity(ProfileActivity.makeIntent("" , getActivity()));
+            startActivity(ProfileActivity.makeIntent(mAcer, acerInfo, getActivity()));
         }else{
             startActivityForResult(new Intent(getActivity(), AcerSignInActivity.class), AcWenApplication.REQUEST_CODE_SIGN_IN);
         }

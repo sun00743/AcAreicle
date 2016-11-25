@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +47,7 @@ import mika.com.android.ac.util.CardUtils;
 import mika.com.android.ac.util.LogUtils;
 import mika.com.android.ac.util.RecyclerViewUtils;
 import mika.com.android.ac.util.ToastUtil;
+import mika.com.android.ac.util.TransitionUtils;
 import mika.com.android.ac.util.ViewUtils;
 
 /**
@@ -189,8 +191,10 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
 
     private void openArticle(ArticleList articleList, View sharedView, boolean b) {
         //打开文章
-        Intent intent = new Intent(getActivity(), ArticleActivity2.class);
+        Activity activity = getActivity();
+        Intent intent = new Intent(activity, ArticleActivity2.class);
         Bundle bundle = new Bundle();
+        bundle.putParcelable("articleList", articleList);
         bundle.putInt("aid",articleList.id);
         bundle.putString("title",articleList.title);
         bundle.putString("username",articleList.username);
@@ -203,7 +207,9 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
             bundle.putInt("userId",mAcer.userId);
         }
         intent.putExtras(bundle);
-        startActivity(intent);
+        Bundle options = TransitionUtils.makeActivityOptionsBundle(activity, sharedView);
+        ActivityCompat.startActivity(activity, intent, options);
+//        startActivity(intent);
     }
 
     public void scrollToTop(){

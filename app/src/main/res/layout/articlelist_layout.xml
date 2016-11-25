@@ -10,6 +10,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
+        android:id="@+id/item_head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/card_content_vertical_margin_with_4dp_padding"
@@ -33,7 +34,6 @@
             android:layout_alignTop="@id/user_avatar"
             android:layout_marginLeft="@dimen/card_content_horizontal_space_with_4dp_padding"
             android:layout_marginTop="@dimen/avatar_padding"
-            android:text="月与萧"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -46,7 +46,6 @@
             android:layout_alignLeft="@id/user_name"
             android:layout_alignBottom="@id/user_avatar"
             android:layout_marginBottom="@dimen/avatar_padding"
-            android:text="2016-09-04 19:56:53"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -60,7 +59,6 @@
             android:layout_alignParentRight="true"
             android:layout_alignBottom="@id/user_avatar"
             android:layout_marginBottom="@dimen/avatar_padding"
-            android:text="99999 围观"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -71,7 +69,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="12dp"
-            android:text="9999 评论"
             android:ellipsize="end"
             android:visibility="gone"
             android:maxLines="1"
@@ -137,6 +134,8 @@
         android:foreground="?selectableItemBackground"
         app:fillOrientation="horizontal" />
 
+    <!--imageList layout-->
+<!--
     <FrameLayout
         android:id="@+id/image_list_layout"
         android:layout_width="match_parent"
@@ -168,6 +167,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1.Inverse" />
         </FrameLayout>
     </FrameLayout>
+-->
 
     <Space
         android:id="@+id/text_space"
@@ -183,6 +183,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <LinearLayout
+        android:id="@+id/item_foot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/card_content_vertical_space"

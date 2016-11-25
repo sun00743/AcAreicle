@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.util.UUID;
 
 import mika.com.android.ac.fabric.FabricUtils;
+import mika.com.android.ac.network.NetState;
 import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.util.BitmapCache;
 
@@ -59,6 +60,8 @@ public class AcWenApplication extends Application {
     private static BitmapCache mBitmapCache;
 
     private Acer acer;
+
+    public int CONNECTIVITY_TYPE;
 
     public static AcWenApplication getInstance() {
         return sInstance;
@@ -93,6 +96,7 @@ public class AcWenApplication extends Application {
     }
 
     private void init() {
+        CONNECTIVITY_TYPE = NetState.MOBILE;
         density = sInstance.getResources().getDisplayMetrics().density;
         mBitmapCache = new BitmapCache();
     }

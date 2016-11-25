@@ -20,6 +20,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import mika.com.android.ac.R;
 import mika.com.android.ac.network.api.info.acapi.ArticleList;
 import mika.com.android.ac.ui.SimpleAdapter;
 import mika.com.android.ac.util.ViewUtils;
@@ -88,32 +89,29 @@ class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdapter.Vie
             }
         });
         ViewCompat.setTransitionName(getSharedView(holder), articleList.makeTransitionName());
-
-
     }
 
     @Override
     public void onViewRecycled(ViewHolder holder) {
-//        Log.i("rrrrrrrr: ", getItem(lastPosition).title + "" + holder.itemView.isShown());
         holder.articleDesLayout.releaseArticleList();
     }
 
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
-//        holder.articleDesLayout.cleanAvatarImage();
         super.onViewDetachedFromWindow(holder);
     }
 
     private static View getSharedView(ViewHolder holder){
         Context context = holder.itemView.getContext();
-        return ViewUtils.hasSw600Dp(context) ? holder.itemView : holder.articleDesLayout;
+//        return ViewUtils.hasSw600Dp(context) ? holder.cardView : holder.articleDesLayout;
+        return holder.articleDesLayout.getItemHeadLayout();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
-        @BindView(mika.com.android.ac.R.id.card)
+        @BindView(R.id.card)
         CardView cardView;
-        @BindView(mika.com.android.ac.R.id.articledes)
+        @BindView(R.id.articledes)
         ArticleListLayout articleDesLayout;
 
         public ViewHolder(View itemView) {

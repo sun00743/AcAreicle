@@ -53,12 +53,15 @@ import java.util.Map;
 import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.zhanghai.android.materialedittext.MaterialEditText;
 import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.R;
 import mika.com.android.ac.account.ui.AcerSignInActivity;
 import mika.com.android.ac.article.content.CommentListResource;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.PostCommentRequest;
 import mika.com.android.ac.network.api.info.acapi.Acer;
+import mika.com.android.ac.network.api.info.acapi.ArticleList;
 import mika.com.android.ac.network.api.info.acapi.Comment;
 import mika.com.android.ac.network.api.info.acapi.PostCommentResult;
 import mika.com.android.ac.ui.AppBarWrapperLayout;
@@ -71,7 +74,6 @@ import mika.com.android.ac.ui.PagerSlidingTabStrip;
 import mika.com.android.ac.util.DensityUtil;
 import mika.com.android.ac.util.RecyclerViewUtils;
 import mika.com.android.ac.util.ToastUtil;
-import me.zhanghai.android.materialedittext.MaterialEditText;
 
 import static android.view.View.TRANSLATION_Y;
 
@@ -82,33 +84,34 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     private static final String[] tabs = {"AC娘", "(=ﾟωﾟ)="};
 
-    @BindView(mika.com.android.ac.R.id.toolbar_art)
+    @BindView(R.id.toolbar_art)
     Toolbar mToolbar;
-    @BindView(mika.com.android.ac.R.id.art_Progress_wrap)
+    @BindView(R.id.art_Progress_wrap)
     RelativeLayout mProgress;
-    @BindDimen(mika.com.android.ac.R.dimen.toolbar_height)
+    @BindDimen(R.dimen.toolbar_height)
     int mToolbarHeight;
-    @BindView(mika.com.android.ac.R.id.art_com_recycle)
+    @BindView(R.id.art_com_recycle)
     RecyclerView mRecycleView;
-    @BindView(mika.com.android.ac.R.id.appBarWrapper_art)
+    @BindView(R.id.appBarWrapper)
     AppBarWrapperLayout mAppBarWrapperLayout;
+
     //底部sendBar
-    @BindView(mika.com.android.ac.R.id.article_send_bar)
+    @BindView(R.id.article_send_bar)
     RelativeLayout mSendBar;
-    @BindView(mika.com.android.ac.R.id.article_send)
+    @BindView(R.id.article_send)
     ImageButton send;
-    @BindView(mika.com.android.ac.R.id.article_insert_emoticon)
+    @BindView(R.id.article_insert_emoticon)
     ImageButton insertEmo;
-    @BindView(mika.com.android.ac.R.id.article_comment_edit)
+    @BindView(R.id.article_comment_edit)
     MaterialEditText mCommentEdit;
-    @BindView(mika.com.android.ac.R.id.article_send_progress)
+    @BindView(R.id.article_send_progress)
     ProgressBar sendProgress;
     //表情
-    @BindView(mika.com.android.ac.R.id.article_emoticon_tap)
+    @BindView(R.id.article_emoticon_tap)
     PagerSlidingTabStrip mEmoticonTab;
-    @BindView(mika.com.android.ac.R.id.article_emoticon_pager)
+    @BindView(R.id.article_emoticon_pager)
     ViewPager mEmoticonPager;
-    @BindView(mika.com.android.ac.R.id.article_emoticon_layout)
+    @BindView(R.id.article_emoticon_layout)
     RelativeLayout mEmoticonLayout;
 
     private int contentId;
@@ -130,30 +133,46 @@ public class ArticleActivity2 extends AppCompatActivity implements
     private PostCommentResult postCommentResult;
     private MenuItem menuStar;
     private MenuItem menuUnquote;
+    ArticleList articleDes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+//        TransitionUtils.setupTransitionBeforeDecorate(this);
         super.onCreate(savedInstanceState);
+//        findViewById(android.R.id.content);
+//        TransitionUtils.postponeTransition(this);
+
         createUI();
         acer = AcWenApplication.getInstance().getAcer();
         contentId = getIntent().getExtras().getInt("aid", 0);
         mCommentListResource = CommentListResource.attachTo(null, contentId, this);
+
+//        if(savedInstanceState == null){
+//            Bundle bundle = getIntent().getExtras();
+//            articleDes = bundle.getParcelable("articleList");
+//            FragmentUtils.add(ArticleFragment.newInstance(bundle, articleDes), this, android.R.id.content);
+//        }
     }
 
     private void createUI() {
-        setContentView(mika.com.android.ac.R.layout.activity_article_2);
+        setContentView(R.layout.activity_article_2);
+//        TransitionUtils.setupTransitionAfterSetContentView(this);
+
+        ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mainLayout = (DetectsSoftKeyBoardFrameLayout) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
         mainLayout.setSoftKeyBoardListener(this);
-        ButterKnife.bind(this);
-        setSupportActionBar(mToolbar);
-        mToolbar.setTitle(getIntent().getExtras().getString("title" , "ac/" + contentId));
+        setTitle(getIntent().getExtras().getString("title" , "ac/" + contentId));
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+//                ActivityCompat.finishAfterTransition(ArticleActivity2.this);
             }
         });
+
         setPaddingTop();
         initRecycleView();
         initSendBar();
@@ -217,7 +236,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
         mArtComplexAdapter = new ArtComplexAdapter(initList(), this, getIntent().getExtras());
         mArtComplexAdapter.setEventListener(this);
-        mLoadMoreAdapter = new LoadMoreAdapter(mika.com.android.ac.R.layout.load_more_card_item, mArtComplexAdapter);
+        mLoadMoreAdapter = new LoadMoreAdapter(R.layout.load_more_card_item, mArtComplexAdapter);
         mRecycleView.setAdapter(mLoadMoreAdapter);
     }
 
@@ -235,10 +254,10 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(mika.com.android.ac.R.menu.article,menu);
-        menuStar = menu.findItem(mika.com.android.ac.R.id.action_star);
+        getMenuInflater().inflate(R.menu.article,menu);
+        menuStar = menu.findItem(R.id.action_star);
         setStarImage(menuStar);
-        menuUnquote = menu.findItem(mika.com.android.ac.R.id.action_unquote);
+        menuUnquote = menu.findItem(R.id.action_unquote);
         return true;
     }
 
@@ -246,10 +265,10 @@ public class ArticleActivity2 extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
-            case mika.com.android.ac.R.id.action_star:
+            case R.id.action_star:
                 // TODO 收藏
                 return true;
-            case mika.com.android.ac.R.id.action_top:
+            case R.id.action_top:
                 if(((LinearLayoutManager)mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= 2 && ((LinearLayoutManager)mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() < 12){
                     mRecycleView.smoothScrollToPosition(2);
                 }else if(((LinearLayoutManager)mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= 12){
@@ -257,7 +276,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
                     mRecycleView.smoothScrollToPosition(2);
                 }
                 return true;
-            case mika.com.android.ac.R.id.action_unquote:
+            case R.id.action_unquote:
                 menuUnquote.setVisible(false);
                 unQuote();
                 return true;
@@ -464,6 +483,11 @@ public class ArticleActivity2 extends AppCompatActivity implements
     }
 
     @Override
+    public void setHeadView(View headview) {
+
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         mArtComplexAdapter.resume();
@@ -503,6 +527,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     @Override
     protected void onStop() {
         mArtComplexAdapter.pause();
+
         if (isKeyBoardShow) {
             inputMethodManager.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
         }
@@ -623,7 +648,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            GridView gridView = (GridView) getLayoutInflater().inflate(mika.com.android.ac.R.layout.article_emoticon_grid, null);
+            GridView gridView = (GridView) getLayoutInflater().inflate(R.layout.article_emoticon_grid, null);
             switch (position) {
                 case 0:
                     gridView.setAdapter(new EmoticonGridAdapter());

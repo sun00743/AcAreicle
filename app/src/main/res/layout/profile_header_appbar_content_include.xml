@@ -47,7 +47,7 @@
 
         <mika.com.android.ac.ui.AutoGoneTextView
             android:id="@+id/username"
-            android:text="username"
+            android:text="月与萧"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="36dp"
@@ -59,7 +59,7 @@
 
         <mika.com.android.ac.ui.AutoGoneTextView
             android:id="@+id/signature"
-            android:text="signature"
+            android:text="这个人很撒比，什么都瞎写..."
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="24dp"
@@ -69,15 +69,15 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <mika.com.android.ac.ui.JoinedAtLocationAutoGoneTextView
-            android:id="@+id/joined_at_location"
-            android:text="joined_at_location"
+            android:id="@+id/banana"
+            android:text="168个大香蕉，0个大金香蕉"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="24dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            />
     </LinearLayout>
 
     <Space

@@ -71,6 +71,8 @@ public class AcerInfo2 implements Parcelable{
     public String regTime;
     public int uid;
 
+    public AcerInfo2(){}
+
     protected AcerInfo2(Parcel in) {
         name = in.readString();
         sign = in.readString();

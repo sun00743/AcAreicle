@@ -21,7 +21,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.network.api.info.apiv2.Comment;
-import mika.com.android.ac.profile.ui.ProfileActivity;
 import mika.com.android.ac.ui.ClickableSimpleAdapter;
 import mika.com.android.ac.ui.TimeTextView;
 import mika.com.android.ac.util.ImageUtils;
@@ -58,7 +57,7 @@ public class CommentAdapter extends ClickableSimpleAdapter<Comment, CommentAdapt
         holder.avatarImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(ProfileActivity.makeIntent(comment.author, context));
+//                context.startActivity(ProfileActivity.makeIntent(comment.author, context));
             }
         });
         holder.nameText.setText(comment.author.name);

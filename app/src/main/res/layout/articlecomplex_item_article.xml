@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by mika <sunoo743@qq.com>
+  ~ Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/article_content"
-        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <WebView
-        android:id="@+id/article_webview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-<!--
-    <ProgressBar
-        android:id="@+id/article_Progress"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
         android:layout_height="match_parent"
-        android:layout_gravity="center" />
--->
-    </RelativeLayout>
+        android:gravity="center">
 
+        <WebView
+            android:id="@+id/article_webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
 </FrameLayout>

@@ -102,7 +102,7 @@ public class ProfileFollowshipLayout extends FriendlyCardView {
             userLayout.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    context.startActivity(ProfileActivity.makeIntent(user, context));
+//                    context.startActivity(ProfileActivity.makeIntent(user, context));
                 }
             });
 

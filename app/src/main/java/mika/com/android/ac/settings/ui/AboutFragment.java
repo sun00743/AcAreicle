@@ -25,7 +25,6 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.BuildConfig;
-import mika.com.android.ac.profile.ui.ProfileActivity;
 import mika.com.android.ac.scalpel.ScalpelHelperFragment;
 import mika.com.android.ac.ui.KonamiCodeDetector;
 
@@ -94,7 +93,7 @@ public class AboutFragment extends Fragment implements ConfirmEnableScalpelDialo
         mDoubanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activity.startActivity(ProfileActivity.makeIntent("douban-douya", activity));
+//                activity.startActivity(ProfileActivity.makeIntent("douban-douya", activity));
             }
         });
     }

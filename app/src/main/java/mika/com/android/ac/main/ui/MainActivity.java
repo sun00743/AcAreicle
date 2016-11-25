@@ -9,6 +9,8 @@
 
 package mika.com.android.ac.main.ui;
 
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
@@ -26,6 +28,7 @@ import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.BuildConfig;
 import mika.com.android.ac.home.HomeFragment;
 import mika.com.android.ac.navigation.ui.NavigationFragment;
+import mika.com.android.ac.network.NetWorkStateReceiver;
 import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.notification.ui.NotificationListFragment;
 import mika.com.android.ac.scalpel.ScalpelHelperFragment;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity
 //    private NotificationListFragment mNotificationListFragment;
     private boolean isRemoveAcerinfo;
     private HomeFragment homeFragment;
+    private NetWorkStateReceiver netWorkStateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,7 @@ public class MainActivity extends AppCompatActivity
 //        }
 
         setContentView(mika.com.android.ac.R.layout.main_activity);
+        doRegisterReceiver(); // 注册广播
         TransitionUtils.setupTransitionAfterSetContentView(this);
         ButterKnife.bind(this);
 
@@ -86,6 +91,12 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null) {
             FragmentUtils.add(homeFragment, this, mika.com.android.ac.R.id.container);
         }
+    }
+
+    private void doRegisterReceiver() {
+        netWorkStateReceiver = new NetWorkStateReceiver();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netWorkStateReceiver,filter);
     }
 
     @Override
@@ -185,6 +196,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
+        unregisterReceiver(netWorkStateReceiver);
         super.onDestroy();
     }
 }

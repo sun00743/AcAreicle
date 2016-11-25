@@ -24,6 +24,8 @@ import android.view.Window;
 
 import java.util.ArrayList;
 
+import mika.com.android.ac.R;
+
 /**
  * Facts:
  * - System window must be shared elements if fullscreen, otherwise overlap occurs.
@@ -90,7 +92,7 @@ public class TransitionUtils {
             return;
         }
 
-        View appbar = fragment.getView().findViewById(mika.com.android.ac.R.id.appBarWrapper);
+        View appbar = fragment.getView().findViewById(R.id.appBarWrapper);
         if (appbar != null) {
             appbar.setTransitionName(TRANSITION_NAME_APPBAR);
         }

@@ -14,9 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,9 +30,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.zhanghai.android.customtabshelper.CustomTabsHelperFragment;
+import mika.com.android.ac.R;
 import mika.com.android.ac.followship.content.FollowUserManager;
 import mika.com.android.ac.link.NotImplementedManager;
 import mika.com.android.ac.network.api.ApiError;
+import mika.com.android.ac.network.api.info.acapi.Acer;
+import mika.com.android.ac.network.api.info.acapi.AcerInfo2;
 import mika.com.android.ac.network.api.info.apiv2.Broadcast;
 import mika.com.android.ac.network.api.info.apiv2.User;
 import mika.com.android.ac.network.api.info.apiv2.UserInfo;
@@ -48,7 +49,6 @@ import mika.com.android.ac.ui.CopyTextDialogFragment;
 import mika.com.android.ac.util.FragmentUtils;
 import mika.com.android.ac.util.LogUtils;
 import mika.com.android.ac.util.ToastUtil;
-import mika.com.android.ac.util.ViewUtils;
 
 public class ProfileFragment extends Fragment implements ProfileResource.Listener,
         ProfileHeaderLayout.Listener,
@@ -57,44 +57,39 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
 
     private static final String KEY_PREFIX = ProfileFragment.class.getName() + '.';
 
-    private static final String EXTRA_USER_ID_OR_UID = KEY_PREFIX + "user_id_or_uid";
-    private static final String EXTRA_USER = KEY_PREFIX + "user";
-    private static final String EXTRA_USER_INFO = KEY_PREFIX + "user_info";
+    private static final String EXTRA_ACER = KEY_PREFIX + "acer";
+    private static final String EXTRA_ACER_INFO = KEY_PREFIX + "acer_info";
 
-    @BindView(mika.com.android.ac.R.id.scroll)
+    @BindView(R.id.scroll)
     ProfileLayout mScrollLayout;
-    @BindView(mika.com.android.ac.R.id.header)
+    @BindView(R.id.header)
     ProfileHeaderLayout mHeaderLayout;
-    @BindView(mika.com.android.ac.R.id.dismiss)
+    @BindView(R.id.dismiss)
     View mDismissView;
-    @BindView(mika.com.android.ac.R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(mika.com.android.ac.R.id.contentState)
+    @BindView(R.id.contentState)
     ContentStateLayout mContentStateLayout;
-    @BindView(mika.com.android.ac.R.id.content)
+    @BindView(R.id.content)
     RecyclerView mContentList;
 
     private String mUserIdOrUid;
-    private User mUser;
-    private UserInfo mUserInfo;
+    private Acer mAcer;
+    private AcerInfo2 mAcerInfo;
 
-    private ProfileResource mProfileResource;
+//    private ProfileResource mProfileResource;
 
     private ProfileAdapter mProfileAdapter;
 
-    public static ProfileFragment newInstance(String userIdOrUid, User user, UserInfo userInfo) {
+    public static ProfileFragment newInstance(Acer acer, AcerInfo2 acerInfo2) {
         //noinspection deprecation
         ProfileFragment fragment = new ProfileFragment();
         Bundle arguments = FragmentUtils.ensureArguments(fragment);
-        arguments.putString(EXTRA_USER_ID_OR_UID, userIdOrUid);
-        arguments.putParcelable(EXTRA_USER, user);
-        arguments.putParcelable(EXTRA_USER_INFO, userInfo);
+        arguments.putParcelable(EXTRA_ACER, acer);
+        arguments.putParcelable(EXTRA_ACER_INFO, acerInfo2);
         return fragment;
     }
 
-    /**
-     * @deprecated Use {@link #newInstance(String, User, UserInfo)} instead.
-     */
     public ProfileFragment() {}
 
     @Override
@@ -102,10 +97,8 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
         super.onCreate(savedInstanceState);
 
         Bundle arguments = getArguments();
-        mUserIdOrUid = arguments.getString(EXTRA_USER_ID_OR_UID);
-        mUser = arguments.getParcelable(EXTRA_USER);
-        mUserInfo = arguments.getParcelable(EXTRA_USER_INFO);
-
+        mAcer = arguments.getParcelable(EXTRA_ACER);
+        mAcerInfo = arguments.getParcelable(EXTRA_ACER_INFO);
         setHasOptionsMenu(true);
     }
 
@@ -114,7 +107,7 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         int layoutRes = ProfileUtils.shouldUseWideLayout(inflater.getContext()) ?
-                mika.com.android.ac.R.layout.profile_fragment_wide : mika.com.android.ac.R.layout.profile_fragment;
+                R.layout.profile_fragment_wide : R.layout.profile_fragment;
         return inflater.inflate(layoutRes, container, false);
     }
 
@@ -130,7 +123,7 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
         super.onActivityCreated(savedInstanceState);
 
         CustomTabsHelperFragment.attachTo(this);
-        mProfileResource = ProfileResource.attachTo(mUserIdOrUid, mUser, mUserInfo, this);
+//        mProfileResource = ProfileResource.attachTo(mUserIdOrUid, new User(), new UserInfo(), this);
 
         mScrollLayout.setListener(new ProfileLayout.Listener() {
             @Override
@@ -157,33 +150,33 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
         activity.setSupportActionBar(mToolbar);
         activity.getSupportActionBar().setTitle(null);
 
-        if (mProfileResource.hasUserInfo()) {
-            mHeaderLayout.bindUserInfo(mProfileResource.getUserInfo());
-        } else if (mProfileResource.hasUser()) {
-            mHeaderLayout.bindUser(mProfileResource.getUser());
-        }
-        mHeaderLayout.setListener(this);
-
-        if (ViewUtils.hasSw600Dp(activity)) {
-            mContentList.setLayoutManager(new StaggeredGridLayoutManager(2,
-                    StaggeredGridLayoutManager.VERTICAL));
-        } else {
-            mContentList.setLayoutManager(new LinearLayoutManager(activity));
-        }
-        mProfileAdapter = new ProfileAdapter(this);
-        mContentList.setAdapter(mProfileAdapter);
-        if (mProfileResource.isLoaded()) {
-            mProfileResource.notifyChangedIfLoaded();
-        } else {
-            mContentStateLayout.setLoading();
-        }
+//        if (mProfileResource.hasUserInfo()) {
+//            mHeaderLayout.bindUserInfo(mProfileResource.getUserInfo());
+//        } else if (mProfileResource.hasUser()) {
+//            mHeaderLayout.bindUser(mProfileResource.getUser());
+//        }
+//        mHeaderLayout.setListener(this);
+//
+//        if (ViewUtils.hasSw600Dp(activity)) {
+//            mContentList.setLayoutManager(new StaggeredGridLayoutManager(2,
+//                    StaggeredGridLayoutManager.VERTICAL));
+//        } else {
+//            mContentList.setLayoutManager(new LinearLayoutManager(activity));
+//        }
+//        mProfileAdapter = new ProfileAdapter(this);
+//        mContentList.setAdapter(mProfileAdapter);
+//        if (mProfileResource.isLoaded()) {
+//            mProfileResource.notifyChangedIfLoaded();
+//        } else {
+//            mContentStateLayout.setLoading();
+//        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        mProfileResource.detach();
+//        mProfileResource.detach();
     }
 
     public void onBackPressed() {
@@ -198,7 +191,7 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        inflater.inflate(mika.com.android.ac.R.menu.profile, menu);
+        inflater.inflate(R.menu.profile, menu);
     }
 
     @Override
@@ -211,15 +204,15 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case mika.com.android.ac.R.id.action_send_doumail:
+            case R.id.action_send_doumail:
                 // TODO
                 NotImplementedManager.showNotYetImplementedToast(getActivity());
                 return true;
-            case mika.com.android.ac.R.id.action_blacklist:
+            case R.id.action_blacklist:
                 // TODO
                 NotImplementedManager.showNotYetImplementedToast(getActivity());
                 return true;
-            case mika.com.android.ac.R.id.action_report_abuse:
+            case R.id.action_report_abuse:
                 // TODO
                 NotImplementedManager.showNotYetImplementedToast(getActivity());
                 return true;
@@ -238,17 +231,17 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
 
     @Override
     public void onUserInfoChanged(int requestCode, UserInfo newUserInfo) {
-        mHeaderLayout.bindUserInfo(newUserInfo);
+//        mHeaderLayout.bindUserInfo(newUserInfo);
     }
 
     @Override
     public void onUserInfoWriteStarted(int requestCode) {
-        mHeaderLayout.bindUserInfo(mProfileResource.getUserInfo());
+//        mHeaderLayout.bindUserInfo(mProfileResource.getUserInfo());
     }
 
     @Override
     public void onUserInfoWriteFinished(int requestCode) {
-        mHeaderLayout.bindUserInfo(mProfileResource.getUserInfo());
+//        mHeaderLayout.bindUserInfo(mProfileResource.getUserInfo());
     }
 
     @Override
@@ -276,7 +269,7 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
 
     @Override
     public void unfollowUser() {
-        FollowUserManager.getInstance().write(mProfileResource.getUserInfo(), false, getActivity());
+//        FollowUserManager.getInstance().write(mProfileResource.getUserInfo(), false, getActivity());
     }
 
     @Override

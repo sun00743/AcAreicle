@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Created by mika <sun00743@gmail.com>  on 16-11-14 下午3:21
   ~ Copyright (c) 2016. All rights reserved
-  -->
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="mika.com.android.ac">
@@ -104,19 +103,18 @@
             android:name=".settings.ui.AboutActivity"
             android:label="@string/about_title"
             android:theme="@style/Theme.AcWen.PrimaryColorBackground" />
-        <activity android:name=".main.ui.TestActivity" >
-        </activity>
-        <activity android:name=".article.ui.ArticleActivity2"
-            android:launchMode="singleTop">
-        </activity>
+        <activity android:name=".main.ui.TestActivity"></activity>
+        <activity
+            android:name=".article.ui.ArticleActivity2"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".article.ui.ArticleActivity"
             android:launchMode="singleTop" />
         <activity
             android:name=".account.ui.AcerLoginActivity"
-            android:label="@string/title_activity_acer_login"/>
-        <activity android:name=".account.ui.AcerSignInActivity">
-        </activity>
+            android:label="@string/title_activity_acer_login" />
+        <activity android:name=".account.ui.AcerSignInActivity"></activity>
 
         <service
             android:name=".account.app.AuthenticatorService"
@@ -139,12 +137,22 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".network.NetWorkStateReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
         <meta-data
             android:name="mika.com.android.ac.ui.GlideConfiguration"
             android:value="GlideModule" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="dc160e13d1b3c3e917e331e8b272c51a523d8599" />
+
     </application>
 
 </manifest>

@@ -41,6 +41,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.zhanghai.android.customtabshelper.CustomTabsHelperFragment;
+import mika.com.android.ac.R;
 import mika.com.android.ac.broadcast.content.BroadcastAndCommentListResource;
 import mika.com.android.ac.broadcast.content.BroadcastCommentCountFixer;
 import mika.com.android.ac.broadcast.content.DeleteBroadcastCommentManager;
@@ -152,7 +153,7 @@ public class BroadcastFragment extends Fragment implements BroadcastAndCommentLi
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(mika.com.android.ac.R.layout.broadcast_fragment, container, false);
+        return inflater.inflate(R.layout.broadcast_fragment, container, false);
     }
 
     @Override
