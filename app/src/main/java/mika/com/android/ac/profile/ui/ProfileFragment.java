@@ -29,7 +29,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.zhanghai.android.customtabshelper.CustomTabsHelperFragment;
 import mika.com.android.ac.R;
 import mika.com.android.ac.followship.content.FollowUserManager;
 import mika.com.android.ac.link.NotImplementedManager;
@@ -122,7 +121,7 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        CustomTabsHelperFragment.attachTo(this);
+//        CustomTabsHelperFragment.attachTo(this);
 //        mProfileResource = ProfileResource.attachTo(mUserIdOrUid, new User(), new UserInfo(), this);
 
         mScrollLayout.setListener(new ProfileLayout.Listener() {
@@ -149,6 +148,9 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbar);
         activity.getSupportActionBar().setTitle(null);
+
+        mHeaderLayout.bindAcerInfo(mAcerInfo);
+//        mHeaderLayout.bindUser();
 
 //        if (mProfileResource.hasUserInfo()) {
 //            mHeaderLayout.bindUserInfo(mProfileResource.getUserInfo());

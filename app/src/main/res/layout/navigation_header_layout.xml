@@ -10,7 +10,7 @@
     <View
         android:id="@+id/scrim"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/scrim_height"
+        android:layout_height="168dp"
         android:layout_gravity="bottom" />
 
     <FrameLayout
@@ -71,17 +71,17 @@
                 android:id="@+id/avatar"
                 android:layout_width="@dimen/navigation_header_avatar_size"
                 android:layout_height="@dimen/navigation_header_avatar_size"
-                android:layout_marginLeft="@dimen/screen_edge_horizontal_margin"
+                android:layout_marginLeft="@dimen/screen_edge_horizontal_16dp_margin"
                 android:layout_marginTop="@dimen/screen_edge_horizontal_margin" />
         </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/info"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/single_line_list_item_height"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginBottom="@dimen/list_padding_vertical"
-            android:paddingRight="@dimen/screen_edge_horizontal_margin"
+            android:paddingRight="4dp"
             android:background="?selectableItemBackground"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -90,7 +90,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingLeft="@dimen/screen_edge_horizontal_margin"
+                android:paddingLeft="@dimen/screen_edge_horizontal_16dp_margin"
+                android:layout_marginBottom="4dp"
                 android:orientation="vertical">
 
                 <!--
@@ -117,11 +118,24 @@
                     android:textColor="?android:textColorSecondary" />
             </LinearLayout>
 
+<!--
             <ImageView
                 android:id="@+id/dropDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/drop_down_icon_white_24dp" />
+-->
+            <mika.com.android.ac.ui.AnimateCompoundDrawableButton
+                android:id="@+id/signin"
+                android:text="签到"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-10dp"
+                android:layout_gravity="top"
+                android:paddingLeft="10dp"
+                android:drawablePadding="6dp"
+                android:visibility="visible"
+                style="?borderlessButtonStyle" />
         </LinearLayout>
     </FrameLayout>
 </merge>

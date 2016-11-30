@@ -20,32 +20,19 @@ import java.util.Map;
 import mika.com.android.ac.network.Request;
 import mika.com.android.ac.util.Connectivity;
 
-public class PostCommentRequest extends Request {
+public class SigninRequest extends Request {
 
-    private static final String POST_COMMENT_URL = "http://mobile.acfun.tv/comment.aspx";
+    private static final String POST_SIGNIN_URL = "http://webapi.acfun.tv/record/actions/signin?access_token=";
     private static final String APP_VERSION = "4.3.0";
     private static final String PRODUCT_ID = "2000";
 
+    public SigninRequest(String token){
+        super(Method.POST, POST_SIGNIN_URL + token);
+        addParam("channel", "1");
 
-    public PostCommentRequest() {
-        super(Method.POST, POST_COMMENT_URL);
-    }
-
-    public PostCommentRequest(String text, int quotedId, String token, int userId, int contentId){
-        this();
-        addParam("text", text);
-        addParam("quoteId", Integer.toString(quotedId));
-        addParam("contentId", Integer.toString(contentId));
-        addParam("source", "mobile");
-        addParam("access_token", token);
-        addParam("userId", Integer.toString(userId));
-        addParam("captcha", "");
-
-        addHeader("Cookie", "JSESSIONID=" + token);
-        addHeader("productId", PRODUCT_ID);
         addHeader("appVersion", APP_VERSION);
-        addHeader("token", token);
         addHeader("User-Agent", Connectivity.UA);
+        addHeader("productId", PRODUCT_ID);
         addHeader("deviceType", "1");
         addHeader("uid", "623674");
         addHeader("Content-Type",Connectivity.CONTENT_TYPE_FORM);
@@ -55,12 +42,8 @@ public class PostCommentRequest extends Request {
     protected Response parseNetworkResponse(NetworkResponse response) {
         try {
             Map<String, String> headers = response.headers;
-            String cookies = headers.get("Set-Cookie");
             String data = new String(response.data, "UTF-8");
-            // 解析服务器返回的cookie值
-//            String cookie = parseVolleyCookie(cookies);
-            // 存储cookie
-//            SharedPreferenceUtil.putString(LoginActivity.this,"cookie", cookie);
+
             return Response.success(data, HttpHeaderParser.parseCacheHeaders(response));
         }
         catch (UnsupportedEncodingException e) {

@@ -49,9 +49,12 @@ public class AcerInfo2 implements Parcelable{
     public String avatar;
     public int fans;
     /**
-     * 投稿收藏？
+     * 当前所有有效投稿的收藏数总和。
      */
     public int stows;
+    /**
+     * 当前所有有效投稿的评论数总和。
+     */
     public int comments;
     /**
      * 性别
@@ -59,6 +62,9 @@ public class AcerInfo2 implements Parcelable{
     public int gender;
     public int currExp;
     public int nextLevelNeed;
+    /**
+     * 当前所有有效投稿的浏览数总和。
+     */
     public int views;
     public int isFriend;
     /**

@@ -12,7 +12,6 @@ package mika.com.android.ac.main.ui;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +24,6 @@ import android.widget.FrameLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.AcWenApplication;
-import mika.com.android.ac.BuildConfig;
 import mika.com.android.ac.home.HomeFragment;
 import mika.com.android.ac.navigation.ui.NavigationFragment;
 import mika.com.android.ac.network.NetWorkStateReceiver;
@@ -57,6 +55,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+/*
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectAll()
@@ -67,6 +66,7 @@ public class MainActivity extends AppCompatActivity
                     .penaltyLog()
                     .build());
         }
+*/
         setTheme(mika.com.android.ac.R.style.Theme_AcWen_MainActivity);
 
         TransitionUtils.setupTransitionBeforeDecorate(this);

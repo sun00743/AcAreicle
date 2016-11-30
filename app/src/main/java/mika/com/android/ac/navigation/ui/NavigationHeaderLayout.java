@@ -16,12 +16,15 @@ import android.os.Build;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.transitionseverywhere.ChangeTransform;
 import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.Transition;
@@ -31,49 +34,58 @@ import com.transitionseverywhere.TransitionSet;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
+import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.R;
+import mika.com.android.ac.network.Volley;
+import mika.com.android.ac.network.api.GetBananaRequest;
+import mika.com.android.ac.network.api.SigninRequest;
 import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.network.api.info.acapi.AcerInfo2;
+import mika.com.android.ac.network.api.info.acapi.GetBananaResult;
 import mika.com.android.ac.network.api.info.apiv2.User;
 import mika.com.android.ac.network.api.info.apiv2.UserInfo;
+import mika.com.android.ac.ui.AnimateCompoundDrawableButton;
 import mika.com.android.ac.ui.CrossfadeText;
 import mika.com.android.ac.util.DrawableUtils;
 import mika.com.android.ac.util.ImageUtils;
+import mika.com.android.ac.util.SharedPrefsUtils;
 import mika.com.android.ac.util.ViewCompat;
 import mika.com.android.ac.util.ViewUtils;
 
 public class NavigationHeaderLayout extends FrameLayout {
 
-    @BindView(mika.com.android.ac.R.id.backdrop)
+    @BindView(R.id.backdrop)
     ImageView mBackdropImage;
-    @BindView(mika.com.android.ac.R.id.scrim)
+    @BindView(R.id.scrim)
     View mScrimView;
-    @BindViews({mika.com.android.ac.R.id.avatar, mika.com.android.ac.R.id.fade_out_avatar,
-            mika.com.android.ac.R.id.recent_one_avatar, mika.com.android.ac.R.id.fade_out_recent_one_avatar,
-            mika.com.android.ac.R.id.recent_two_avatar, mika.com.android.ac.R.id.fade_out_recent_two_avatar})
+    @BindViews({R.id.avatar, R.id.fade_out_avatar,
+            R.id.recent_one_avatar, R.id.fade_out_recent_one_avatar,
+            R.id.recent_two_avatar, R.id.fade_out_recent_two_avatar})
     ImageView[] mAvatarImages;
-    @BindView(mika.com.android.ac.R.id.avatar)
+    @BindView(R.id.avatar)
     ImageView mAvatarImage;
-    @BindView(mika.com.android.ac.R.id.fade_out_avatar)
+    @BindView(R.id.fade_out_avatar)
     ImageView mFadeOutAvatarImage;
-    @BindView(mika.com.android.ac.R.id.recent_one_avatar)
+    @BindView(R.id.recent_one_avatar)
     ImageView mRecentOneAvatarImage;
-    @BindView(mika.com.android.ac.R.id.fade_out_recent_one_avatar)
+    @BindView(R.id.fade_out_recent_one_avatar)
     ImageView mFadeOutRecentOneAvatarImage;
-    @BindView(mika.com.android.ac.R.id.recent_two_avatar)
+    @BindView(R.id.recent_two_avatar)
     ImageView mRecentTwoAvatarImage;
-    @BindView(mika.com.android.ac.R.id.fade_out_recent_two_avatar)
+    @BindView(R.id.fade_out_recent_two_avatar)
     ImageView mFadeOutRecentTwoAvatarImage;
-    @BindView(mika.com.android.ac.R.id.info)
+    @BindView(R.id.info)
     LinearLayout mInfoLayout;
-    @BindView(mika.com.android.ac.R.id.name)
+    @BindView(R.id.name)
     TextView mNameText;
-    @BindView(mika.com.android.ac.R.id.description)
+    @BindView(R.id.description)
     TextView mDescriptionText;
-    @BindView(mika.com.android.ac.R.id.dropDown)
-    ImageView mDropDownImage;
+    @BindView(R.id.signin)
+    AnimateCompoundDrawableButton mSignin;
 
     private Adapter mAdapter;
     private Listener mListener;
+    private NavigationFragment.IsSigninEntry isSigninEntry;
 
 //    private Account mActiveAccount;
 //    private Account mRecentOneAccount;
@@ -110,15 +122,21 @@ public class NavigationHeaderLayout extends FrameLayout {
 
     private void init() {
 
-        ViewUtils.inflateInto(mika.com.android.ac.R.layout.navigation_header_layout, this);
+        ViewUtils.inflateInto(R.layout.navigation_header_layout, this);
         ButterKnife.bind(this);
 
-        mBackdropImage.setImageResource(mika.com.android.ac.R.drawable.profile_header_backdrop);
+        mBackdropImage.setImageResource(R.drawable.profile_head_backimg);
         ViewCompat.setBackground(mScrimView, DrawableUtils.makeScrimDrawable());
         mInfoLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                showingAccountList(!mShowingAccountList);
+//                showingAccountList(!mShowingAccountList);
+                if (mAccountTransitionRunning) {
+                    return;
+                }
+                if (mListener != null) {
+                    mListener.openProfile(null);
+                }
             }
         });
     }
@@ -129,6 +147,10 @@ public class NavigationHeaderLayout extends FrameLayout {
 
     public void setListener(Listener listener) {
         mListener = listener;
+    }
+
+    public void setIsSigninEntry(NavigationFragment.IsSigninEntry entry) {
+        isSigninEntry = entry;
     }
 
     public void bindAcer(AcerInfo2 acerInfo) {
@@ -144,6 +166,7 @@ public class NavigationHeaderLayout extends FrameLayout {
 
         bindAvatarImage(mAvatarImage, acerInfo.avatar);
         mNameText.setText(acerInfo.name);
+        mDescriptionText.setVisibility(VISIBLE);
         mDescriptionText.setText(acerInfo.sign);
 
         mAvatarImage.setOnClickListener(new OnClickListener() {
@@ -157,6 +180,61 @@ public class NavigationHeaderLayout extends FrameLayout {
                 }
             }
         });
+
+        mSignin.setVisibility(VISIBLE);
+        mSignin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!AcWenApplication.LOGIN) {
+                    if (mAccountTransitionRunning) {
+                        return;
+                    }
+                    if (mListener != null) {
+                        mListener.openProfile(null);
+                    }
+                    return;
+                }
+                if (!SharedPrefsUtils.getBoolean(isSigninEntry, getContext())) {
+
+                    SigninRequest signinRequest = new SigninRequest(AcWenApplication.getInstance().getAcer().access_token);
+                    mika.com.android.ac.network.Volley.getInstance().getRequestQueue().add(signinRequest);
+                    signinRequest.setListener(new Response.Listener() {
+                        @Override
+                        public void onResponse(Object response) {
+                            mSignin.setText("已签到");
+                            mSignin.setClickable(false);
+                            SharedPrefsUtils.putBoolean(isSigninEntry, true, getContext());
+                            getBanana();
+                        }
+                    }).setErrorListener(new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("eeeeeeee", "onErrorResponse: " + error.getMessage());
+                        }
+                    });
+
+                }
+            }
+        });
+    }
+
+    public void getBanana() {
+        GetBananaRequest getBananaRequest = new GetBananaRequest(AcWenApplication.getInstance().getAcer().access_token);
+        Volley.getInstance().addToRequestQueue(getBananaRequest);
+        getBananaRequest.setListener(new Response.Listener<GetBananaResult>() {
+            @Override
+            public void onResponse(GetBananaResult response) {
+                if (response.success)
+                    mDescriptionText.setText(response.data.bananaCount + "个香蕉，" + response.data.bananaGold + "个金香蕉");
+                else
+                    mDescriptionText.setText(R.string.navigation_head_getbananafailed);
+            }
+        }).setErrorListener(new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
     }
 
     public void bind() {
@@ -164,50 +242,15 @@ public class NavigationHeaderLayout extends FrameLayout {
         if (mAdapter == null) {
             return;
         }
-
         bindActiveUser();
-//        bindRecentUsers();
     }
 
     private void bindActiveUser() {
 
-//        Context context = getContext();
-//        mActiveAccount = AccountUtils.getActiveAccount(context);
-
-//        UserInfo userInfo = mAdapter.getUserInfo(mActiveAccount);
-//        if (userInfo != null) {
-//            bindAvatarImage(mAvatarImage, userInfo.getLargeAvatarOrAvatar());
-//            mNameText.setText(userInfo.name);
-//            if (!TextUtils.isEmpty(userInfo.signature)) {
-//                mDescriptionText.setText(userInfo.signature);
-//            } else {
-//                //noinspection deprecation
-//                mDescriptionText.setText(userInfo.uid);
-//            }
-//        } else {
-//            User partialUser = mAdapter.getPartialUser(mActiveAccount);
-//            bindAvatarImage(mAvatarImage, null);
-//            mNameText.setText(partialUser.name);
-//            //noinspection deprecation
-//            mDescriptionText.setText(partialUser.uid);
-//        }
-//        mAvatarImage.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (mAccountTransitionRunning) {
-//                    return;
-//                }
-//                if (mListener != null) {
-//                    mListener.openProfile(mActiveAccount);
-//                }
-//            }
-//        });
-
-        //mBackdropImage.setImageResource();
-
-        bindAvatarImage(mAvatarImage, " ");
-        mNameText.setText("name");
-        mDescriptionText.setText("description");
+        bindAvatarImage(mAvatarImage, null);
+        mNameText.setText(R.string.navigation_head_unLogin);
+        mDescriptionText.setVisibility(INVISIBLE);
+        mSignin.setVisibility(INVISIBLE);
 
         mAvatarImage.setOnClickListener(new OnClickListener() {
             @Override
@@ -220,14 +263,6 @@ public class NavigationHeaderLayout extends FrameLayout {
                 }
             }
         });
-    }
-
-    private void bindRecentUsers() {
-        Context context = getContext();
-//        mRecentOneAccount = AccountUtils.getRecentOneAccount(context);
-//        bindRecentUser(mRecentOneAvatarImage, mRecentOneAccount);
-//        mRecentTwoAccount = AccountUtils.getRecentTwoAccount(context);
-//        bindRecentUser(mRecentTwoAvatarImage, mRecentTwoAccount);
     }
 
     private void bindRecentUser(ImageView avatarImage, final Account account) {
@@ -254,14 +289,14 @@ public class NavigationHeaderLayout extends FrameLayout {
     private void bindAvatarImage(ImageView avatarImage, String avatarUrl) {
 
         if (TextUtils.isEmpty(avatarUrl)) {
-            avatarImage.setImageResource(mika.com.android.ac.R.drawable.avatar_icon_white_inactive_64dp);
+            avatarImage.setImageResource(R.drawable.avatar_icon_white_inactive_64dp);
             avatarImage.setTag(null);
             return;
         }
 
         for (ImageView anotherAvatarImage : mAvatarImages) {
             String anotherAvatarUrl = (String) anotherAvatarImage.getTag();
-            if (TextUtils.equals(anotherAvatarUrl , avatarUrl)) {
+            if (TextUtils.equals(anotherAvatarUrl, avatarUrl)) {
                 setAvatarImageFrom(avatarImage, anotherAvatarImage);
                 return;
             }
@@ -297,7 +332,7 @@ public class NavigationHeaderLayout extends FrameLayout {
 //        } else if (account.equals(mRecentTwoAccount)) {
 //            beginAvatarTransitionFromRecent(mRecentTwoAvatarImage);
 //        } else {
-            beginAvatarTransitionFromNonRecent();
+        beginAvatarTransitionFromNonRecent();
 //        }
         bind();
 
@@ -427,23 +462,27 @@ public class NavigationHeaderLayout extends FrameLayout {
             return;
         }
 
-        mDropDownImage.animate()
-                .rotation(show ? 180 : 0)
-                .setDuration(ViewUtils.getShortAnimTime(getContext()))
-                .start();
-        mListener.showAccountList(show);
+//        mDropDownImage.animate()
+//                .rotation(show ? 180 : 0)
+//                .setDuration(ViewUtils.getShortAnimTime(getContext()))
+//                .start();
+//        mListener.showAccountList(show);
         mShowingAccountList = show;
     }
 
     public interface Adapter {
         User getPartialUser(Account account);
+
         UserInfo getUserInfo(Account account);
+
         Acer getAcer();
     }
 
     public interface Listener {
         void openProfile(Account account);
+
         void showAccountList(boolean show);
+
         void onActiveAccountChanged(Account newAccount);
     }
 }

@@ -61,7 +61,6 @@ import mika.com.android.ac.article.content.CommentListResource;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.PostCommentRequest;
 import mika.com.android.ac.network.api.info.acapi.Acer;
-import mika.com.android.ac.network.api.info.acapi.ArticleList;
 import mika.com.android.ac.network.api.info.acapi.Comment;
 import mika.com.android.ac.network.api.info.acapi.PostCommentResult;
 import mika.com.android.ac.ui.AppBarWrapperLayout;
@@ -133,26 +132,17 @@ public class ArticleActivity2 extends AppCompatActivity implements
     private PostCommentResult postCommentResult;
     private MenuItem menuStar;
     private MenuItem menuUnquote;
-    ArticleList articleDes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
 //        TransitionUtils.setupTransitionBeforeDecorate(this);
         super.onCreate(savedInstanceState);
-//        findViewById(android.R.id.content);
-//        TransitionUtils.postponeTransition(this);
 
         createUI();
         acer = AcWenApplication.getInstance().getAcer();
         contentId = getIntent().getExtras().getInt("aid", 0);
         mCommentListResource = CommentListResource.attachTo(null, contentId, this);
-
-//        if(savedInstanceState == null){
-//            Bundle bundle = getIntent().getExtras();
-//            articleDes = bundle.getParcelable("articleList");
-//            FragmentUtils.add(ArticleFragment.newInstance(bundle, articleDes), this, android.R.id.content);
-//        }
     }
 
     private void createUI() {
@@ -165,6 +155,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
         mainLayout = (DetectsSoftKeyBoardFrameLayout) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
         mainLayout.setSoftKeyBoardListener(this);
         setTitle(getIntent().getExtras().getString("title" , "ac/" + contentId));
+        mToolbar.setTitleTextAppearance(this,R.style.Base_TextAppearance_AppCompat_ActivityTitle);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

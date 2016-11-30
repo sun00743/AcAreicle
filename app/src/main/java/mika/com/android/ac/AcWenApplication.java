@@ -19,7 +19,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.bumptech.glide.request.target.ViewTarget;
-import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import mika.com.android.ac.fabric.FabricUtils;
 import mika.com.android.ac.network.NetState;
 import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.util.BitmapCache;
@@ -71,8 +69,8 @@ public class AcWenApplication extends Application {
     public void onCreate() {
         super.onCreate();
         init();
-        AndroidThreeTen.init(this);
-        FabricUtils.init(this);
+//        AndroidThreeTen.init(this);
+//        FabricUtils.init(this);
         ViewTarget.setTagId(R.id.glide_view_target_tag_id);
 
         if(isWifiConnected()){

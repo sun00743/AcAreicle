@@ -1,12 +1,3 @@
-/*
- * Created mika <sun00743@gmail.com>
- * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package mika.com.android.ac.profile.ui;
 
 import android.animation.Animator;
@@ -26,6 +17,7 @@ import android.view.WindowInsets;
 import butterknife.BindColor;
 import butterknife.BindInt;
 import butterknife.ButterKnife;
+import mika.com.android.ac.R;
 import mika.com.android.ac.profile.util.ProfileUtils;
 import mika.com.android.ac.ui.FlexibleSpaceLayout;
 import mika.com.android.ac.ui.IntProperty;
@@ -38,9 +30,9 @@ public class ProfileLayout extends FlexibleSpaceLayout {
 
     @BindInt(android.R.integer.config_shortAnimTime)
     int mShortAnimationTime;
-    @BindColor(mika.com.android.ac.R.color.system_window_scrim)
+    @BindColor(R.color.system_window_scrim)
     int mStatusBarColor;
-    @BindColor(mika.com.android.ac.R.color.dark_70_percent)
+    @BindColor(R.color.dark_70_percent)
     int mBackgroundColor;
 
     private ViewGroup mOffsetContainer;
@@ -81,7 +73,6 @@ public class ProfileLayout extends FlexibleSpaceLayout {
     private void init() {
 
         ButterKnife.bind(this);
-
         Context context = getContext();
         mUseWideLayout = ProfileUtils.shouldUseWideLayout(context);
 
@@ -90,8 +81,7 @@ public class ProfileLayout extends FlexibleSpaceLayout {
         }
 
         mWindowBackground = new ColorDrawable(mBackgroundColor);
-        AppUtils.getActivityFromContext(context).getWindow()
-                .setBackgroundDrawable(mWindowBackground);
+        AppUtils.getActivityFromContext(context).getWindow().setBackgroundDrawable(mWindowBackground);
     }
 
     @Override

@@ -78,7 +78,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".profile.ui.ProfileActivity"
-            android:theme="@style/Theme.Douya.TransparentBackground"
+            android:theme="@style/Theme.AcWen.TransparentBackground"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".followship.ui.FollowerListActivity"

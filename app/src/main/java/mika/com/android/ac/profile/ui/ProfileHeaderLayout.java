@@ -16,6 +16,7 @@ import android.graphics.Outline;
 import android.os.Build;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -31,6 +32,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import mika.com.android.ac.R;
 import mika.com.android.ac.followship.content.FollowUserManager;
+import mika.com.android.ac.network.api.info.acapi.AcerInfo2;
 import mika.com.android.ac.network.api.info.apiv2.User;
 import mika.com.android.ac.network.api.info.apiv2.UserInfo;
 import mika.com.android.ac.profile.util.ProfileUtils;
@@ -53,11 +55,11 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
     @BindColor(R.color.system_window_scrim)
     int mStatusBarColorScrim;
     private int mStatusBarColorFullscreen;
-    @BindDimen(mika.com.android.ac.R.dimen.profile_large_avatar_size)
+    @BindDimen(R.dimen.profile_large_avatar_size1)
     int mLargeAvatarSize;
     @BindDimen(mika.com.android.ac.R.dimen.profile_small_avatar_size)
     int mSmallAvatarSize;
-    @BindDimen(mika.com.android.ac.R.dimen.screen_edge_horizontal_margin)
+    @BindDimen(R.dimen.screen_edge_horizontal_margin)
     int mScreenEdgeHorizontalMargin;
     @BindDimen(mika.com.android.ac.R.dimen.toolbar_height)
     int mToolbarHeight;
@@ -226,7 +228,7 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
     }
 
     private int getAppBarMaxHeight() {
-        return mUseWideLayout ? mMaxHeight * 3 / 5 : mMaxHeight / 2;
+        return mUseWideLayout ? mMaxHeight * 3 / 5 : mMaxHeight * 1 / 2;
     }
 
     private int computeVisibleAppBarHeight() {
@@ -376,8 +378,29 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
         mFollowButton.setVisibility(VISIBLE);
     }
 
+    public void bindAcerInfo(final AcerInfo2 acerInfo) {
+        final Context context = getContext();
+        if (!ViewUtils.isVisible(mAvatarImage)) {
+            // HACK: Don't load avatar again if already loaded by bindUser().
+            final String largeAvatar = acerInfo.avatar;
+            ImageUtils.loadProfileAvatarAndFadeIn(mAvatarImage, largeAvatar);
+            mAvatarImage.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    context.startActivity(GalleryActivity.makeIntent(largeAvatar, context));
+                }
+            });
+        }
+        mToolbarUsernameText.setText(acerInfo.name);
+        mUsernameText.setText(acerInfo.name);
+        mSignatureText.setMovementMethod(ScrollingMovementMethod.getInstance());
+        mSignatureText.setText(acerInfo.sign);
+//        banana.setJoinedAtAndLocation(userInfo.createdAt, userInfo.locationName);
+    }
+
     public interface Listener {
         void onEditProfile(UserInfo userInfo);
+
         void onFollowUser(UserInfo userInfo, boolean follow);
     }
 }

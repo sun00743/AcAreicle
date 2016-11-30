@@ -12,7 +12,6 @@ package mika.com.android.ac.network.api.info.acapi;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -100,8 +99,7 @@ public class Comment implements Parcelable {
     }
 
     public String calculateTimeDiff(){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        long diff = 0;
+        long diff;
         diff = new Date(System.currentTimeMillis()).getTime()
                 - this.time;
         long days = (diff/(1000*60*60*24));

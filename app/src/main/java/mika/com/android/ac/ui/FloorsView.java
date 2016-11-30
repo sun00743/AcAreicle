@@ -18,11 +18,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * 盖楼部分评论视图
- * @author Yrom
- *
- */
 public class FloorsView extends LinearLayout {
 	private Drawable mBorder;
     private int mMaxNum;

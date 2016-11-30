@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--
-  ~ Copyright (c) 2016 Zhang Hai <Dreaming.in.Code.ZH@Gmail.com>
-  ~ All Rights Reserved.
-  -->
-
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -19,7 +14,6 @@
 
         <TextView
             android:id="@+id/toolbar_username"
-            android:text="name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/content_horizontal_margin"
@@ -37,7 +31,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-4dp"
+        android:layout_marginTop="-12dp"
         android:layout_marginBottom="-4dp"
         android:paddingLeft="@dimen/screen_edge_horizontal_margin"
         android:paddingRight="@dimen/screen_edge_horizontal_margin"
@@ -47,7 +41,6 @@
 
         <mika.com.android.ac.ui.AutoGoneTextView
             android:id="@+id/username"
-            android:text="月与萧"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="36dp"
@@ -55,17 +48,16 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:textSize="26sp" />
+            android:textSize="24sp" />
 
         <mika.com.android.ac.ui.AutoGoneTextView
             android:id="@+id/signature"
-            android:text="这个人很撒比，什么都瞎写..."
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="24dp"
+            android:minHeight="36dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <mika.com.android.ac.ui.JoinedAtLocationAutoGoneTextView
@@ -88,7 +80,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-16dp"
+        android:layout_marginTop="-8dp"
         android:layout_marginBottom="-16dp"
         android:paddingLeft="@dimen/screen_edge_horizontal_margin"
         android:paddingRight="@dimen/screen_edge_horizontal_margin"
@@ -96,7 +88,7 @@
 
         <mika.com.android.ac.ui.AnimateCompoundDrawableButton
             android:id="@+id/follow"
-            android:text="follow"
+            android:text="签到"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|top"

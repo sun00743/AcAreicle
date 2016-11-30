@@ -1,8 +1,3 @@
-<!--
-  ~ Created by mika <sun00743@gmail.com>  on 16-11-14 下午2:13
-  ~ Copyright (c) 2016. All rights reserved
-  -->
-
 <resources>
 
     <string name="ok">确定</string>
@@ -19,14 +14,17 @@
     <string name="string_comment">评论</string>
 
     <string name="navigation_star">收藏</string>
-    <string name="navigation_quote">回复</string>
+    <string name="navigation_quote">召唤</string>
     <string name="navigation_message">私信</string>
 
     <string name="articlelist_lookcount">围观</string>
 
     <string name="article_send_comment_hint">发评论…</string>
-
+L
     <string name="nothing">这里空无一物</string>
+    <string name="navigation_head_getbananafailed">你的香蕉情况ac娘现在不能告诉你</string>
+    <string name="navigation_head_has_signin">已签到</string>
+    <string name="navigation_head_unLogin">未登录</string>
 
     <string name="activity_not_found">未找到可处理此操作的应用</string>
     <string name="copied_to_clipboard_format">已复制到剪贴板：\n%1$s</string>

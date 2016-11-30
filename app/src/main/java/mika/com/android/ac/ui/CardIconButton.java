@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import mika.com.android.ac.R;
 import mika.com.android.ac.util.ViewUtils;
 
 public class CardIconButton extends LinearLayout {
@@ -63,16 +64,16 @@ public class CardIconButton extends LinearLayout {
         setGravity(Gravity.CENTER_VERTICAL);
         setOrientation(HORIZONTAL);
 
-        ViewUtils.inflateInto(mika.com.android.ac.R.layout.card_icon_button, this);
+        ViewUtils.inflateInto(R.layout.card_icon_button, this);
         ButterKnife.bind(this);
 
         TintTypedArray a = TintTypedArray.obtainStyledAttributes(getContext(), attrs,
-                mika.com.android.ac.R.styleable.CardIconButton, defStyleAttr, defStyleRes);
-        Drawable src = a.getDrawable(mika.com.android.ac.R.styleable.CardIconButton_android_src);
+                R.styleable.CardIconButton, defStyleAttr, defStyleRes);
+        Drawable src = a.getDrawable(R.styleable.CardIconButton_android_src);
         if (src != null) {
             mImage.setImageDrawable(src);
         }
-        CharSequence text = a.getText(mika.com.android.ac.R.styleable.CardIconButton_android_text);
+        CharSequence text = a.getText(R.styleable.CardIconButton_android_text);
         setText(text);
         a.recycle();
     }

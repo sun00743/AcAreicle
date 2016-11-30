@@ -18,7 +18,8 @@
 
     <!-- @deprecated: Not reliable, for example on MIUI. -->
     <dimen name="status_bar_height">25dp</dimen>
-    <dimen name="screen_edge_horizontal_margin">16dp</dimen>
+    <dimen name="screen_edge_horizontal_margin">24dp</dimen>
+    <dimen name="screen_edge_horizontal_16dp_margin">16dp</dimen>
     <dimen name="screen_edge_horizontal_margin_with_4dp_padding">12dp</dimen>
     <dimen name="screen_edge_horizontal_margin_with_8dp_padding">8dp</dimen>
     <dimen name="screen_edge_horizontal_margin_negative_half">-8dp</dimen>
@@ -39,7 +40,7 @@
     <dimen name="appbar_elevation">4dp</dimen>
     <dimen name="sendbar_elevation">6dp</dimen>
     <dimen name="drawer_max_width">@dimen/design_navigation_max_width</dimen>
-    <dimen name="navigation_header_height">172dp</dimen>
+    <dimen name="navigation_header_height">184dp</dimen>
     <dimen name="navigation_header_avatar_size">64dp</dimen>
     <dimen name="list_padding_vertical">8dp</dimen>
     <dimen name="single_line_list_item_height">48dp</dimen>
@@ -96,6 +97,7 @@
     <dimen name="dialog_padding_horizontal_with_4dp_padding">20dp</dimen>
 
     <dimen name="profile_large_avatar_size">128dp</dimen>
+    <dimen name="profile_large_avatar_size1">112dp</dimen>
     <dimen name="profile_large_avatar_bottom_from_toolbar_bottom">8dp</dimen>
     <dimen name="profile_small_avatar_size">32dp</dimen>
 

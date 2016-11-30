@@ -10,6 +10,7 @@
 package mika.com.android.ac.navigation.ui;
 
 import android.accounts.Account;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +24,9 @@ import android.view.ViewGroup;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +46,7 @@ import mika.com.android.ac.network.api.info.apiv2.UserInfo;
 import mika.com.android.ac.profile.ui.ProfileActivity;
 import mika.com.android.ac.settings.ui.SettingsActivity;
 import mika.com.android.ac.ui.DrawerManager;
+import mika.com.android.ac.util.SharedPrefsUtils;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -59,6 +64,7 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
 
     private Acer mAcer;
     private AcerInfo2 acerInfo;
+    private IsSigninEntry entry;
 
     public static NavigationFragment newInstance() {
         //noinspection deprecation
@@ -68,7 +74,8 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
     /**
      * @deprecated Use {@link #newInstance()} instead.
      */
-    public NavigationFragment() {}
+    public NavigationFragment() {
+    }
 
     @Nullable
     @Override
@@ -82,6 +89,7 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
         super.onViewCreated(view, savedInstanceState);
 
         ButterKnife.bind(this, view);
+        entry = new IsSigninEntry();
         mHeaderLayout = (NavigationHeaderLayout) mNavigationView.getHeaderView(0);
     }
 
@@ -96,36 +104,40 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
 //                    account.name, -1));
 //        }
 
+        mHeaderLayout.setIsSigninEntry(entry);
         mHeaderLayout.setAdapter(this);
         mHeaderLayout.setListener(this);
 
         mAcer = new AcerDB(getActivity().getApplicationContext()).getAcer();
-        if(mAcer != null){
+        if (mAcer != null) {
             AcWenApplication.getInstance().setAcer(mAcer);
             AcWenApplication.LOGIN = true;
-            //请求acerinfo
+            //get acerinfo
             AcerInfoRequest mAcerInfoRequest = new AcerInfoRequest(mAcer.userId);
             Volley.getInstance().addToRequestQueue(mAcerInfoRequest);
-
             mAcerInfoRequest.setListener(new Response.Listener() {
                 @Override
                 public void onResponse(Object response) {
-                    if(((AcerInfoResult2)response).success){
-                        acerInfo = ((AcerInfoResult2)response).userjson;
+                    if (((AcerInfoResult2) response).success) {
+
+                        acerInfo = ((AcerInfoResult2) response).userjson;
                         mHeaderLayout.bindAcer(acerInfo);
-                    }else{
+
+                        //get banana
+                        mHeaderLayout.getBanana();
+                    } else {
                         //todo 显示服务器错误信息
                     }
                 }
-            });
-            mAcerInfoRequest.setErrorListener(new Response.ErrorListener() {
+            }).setErrorListener(new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    //todo 显示请求错误
                 }
             });
+            // is signin ?
+            checkSignIn();
 
-        }else{
+        } else {
             AcWenApplication.LOGIN = false;
             mHeaderLayout.bind();
         }
@@ -161,14 +173,24 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
         mNavigationViewAdapter = NavigationViewAdapter.override(mNavigationView, this, this);
     }
 
-    @Override
-    public void onLoadUserInfoStarted(int requestCode) {}
+    private void checkSignIn() {
+        if (SharedPrefsUtils.getBoolean(entry, getContext())) {
+            mHeaderLayout.mSignin.setText(R.string.navigation_head_has_signin);
+            mHeaderLayout.mSignin.setClickable(false);
+        }
+    }
 
     @Override
-    public void onLoadUserInfoFinished(int requestCode) {}
+    public void onLoadUserInfoStarted(int requestCode) {
+    }
 
     @Override
-    public void onLoadUserInfoError(int requestCode, VolleyError error) {}
+    public void onLoadUserInfoFinished(int requestCode) {
+    }
+
+    @Override
+    public void onLoadUserInfoError(int requestCode, VolleyError error) {
+    }
 
     @Override
     public void onUserInfoChanged(int requestCode, UserInfo newUserInfo) {
@@ -176,10 +198,12 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
     }
 
     @Override
-    public void onUserInfoWriteStarted(int requestCode) {}
+    public void onUserInfoWriteStarted(int requestCode) {
+    }
 
     @Override
-    public void onUserInfoWriteFinished(int requestCode) {}
+    public void onUserInfoWriteFinished(int requestCode) {
+    }
 
     @Override
     public User getPartialUser(Account account) {
@@ -214,19 +238,21 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
 //        }
 //        startActivity(intent);
 
-        if(AcWenApplication.LOGIN){
+        if (AcWenApplication.LOGIN) {
             startActivity(ProfileActivity.makeIntent(mAcer, acerInfo, getActivity()));
-        }else{
+        } else {
             startActivityForResult(new Intent(getActivity(), AcerSignInActivity.class), AcWenApplication.REQUEST_CODE_SIGN_IN);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK){
-            if(requestCode == AcWenApplication.REQUEST_CODE_SIGN_IN){
+        if (resultCode == RESULT_OK) {
+            if (requestCode == AcWenApplication.REQUEST_CODE_SIGN_IN) {
                 acerInfo = data.getParcelableExtra("acer_info");
                 mHeaderLayout.bindAcer(acerInfo);
+                mHeaderLayout.getBanana();
+                checkSignIn();
             }
         }
     }
@@ -254,5 +280,23 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
 
     private void closeDrawer() {
         ((DrawerManager) getActivity()).closeDrawer(getView());
+    }
+
+    /**
+     * 当天是否签到prefsEntry
+     */
+    public class IsSigninEntry implements SharedPrefsUtils.Entry<Boolean> {
+
+        @Override
+        public String getKey(Context context) {
+            String date = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(System.currentTimeMillis());
+            return "is_signin_key" + date;
+        }
+
+        @Override
+        public Boolean getDefaultValue(Context context) {
+            return false;
+        }
+
     }
 }
