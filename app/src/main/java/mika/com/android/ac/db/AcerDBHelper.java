@@ -25,8 +25,8 @@ public class AcerDBHelper extends SQLiteOpenHelper {
 
     public static final String TABE_ACER = "acer";
 
-    public AcerDBHelper(Context context){
-        this(context,DB_NAME,null,VERSION);
+    public AcerDBHelper(Context context) {
+        this(context, DB_NAME, null, VERSION);
     }
 
     public AcerDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -39,19 +39,19 @@ public class AcerDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+TABE_ACER+" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+        db.execSQL("CREATE TABLE " + TABE_ACER + " (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "userId INTEGER," +
                 "username VARCHAR(25)," +
                 "userImg TEXT," +
                 "access_token TEXT," +
                 "userGroupLevel INTEGER," +
-                "mobileCheck INTEGER,"+
+                "mobileCheck INTEGER," +
                 "time INTEGER)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d("DB", "onUpgrade::oldVersion="+oldVersion+",newVersion="+newVersion);
-        db.execSQL("ALTER TABLE "+ TABE_ACER +" ADD time INTEGER");
+        Log.d("DB", "onUpgrade::oldVersion=" + oldVersion + ",newVersion=" + newVersion);
+        db.execSQL("ALTER TABLE " + TABE_ACER + " ADD time INTEGER");
     }
 }

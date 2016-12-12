@@ -251,6 +251,7 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
     @Override
     public void onLoadArticleListError(int requestCode, VolleyError error) {
         //加载失败，返回信息
+        // TODO: 2016/12/7 处理错误信息 
         LogUtils.e(error.toString());
         Activity activity = getActivity();
         ToastUtil.show(ApiError.getErrorString(error, activity), activity);

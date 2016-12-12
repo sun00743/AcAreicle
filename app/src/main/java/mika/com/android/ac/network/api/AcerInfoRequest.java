@@ -21,19 +21,14 @@ import mika.com.android.ac.network.api.info.acapi.AcerInfoResult2;
 import mika.com.android.ac.util.GsonHelper;
 
 /**
- * Created by Administrator on 2016/9/26.
+ * Created by mika on 2016/9/26.
  */
 
 public class AcerInfoRequest extends Request {
 
-    private static final String ACER_INFO_URL = "http://api.acfun.tv/apiserver/profile?userId=";
     private static final String ACER_INFO_URL2 = "http://www.acfun.tv/usercard.aspx?uid=";
 
-    public AcerInfoRequest(int userId){
-        this(0,null,userId);
-    }
-
-    public AcerInfoRequest(int method, String url, int userId) {
+    public AcerInfoRequest(int userId) {
         super(Method.GET, ACER_INFO_URL2 + userId);
     }
 

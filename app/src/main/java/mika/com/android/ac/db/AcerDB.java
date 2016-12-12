@@ -21,26 +21,28 @@ import mika.com.android.ac.network.api.info.acapi.Acer;
 
 public class AcerDB {
     private AcerDBHelper helper;
-    public AcerDB(Context context){
 
+    public AcerDB(Context context) {
         helper = new AcerDBHelper(context);
     }
+
     @Override
     protected void finalize() throws Throwable {
         helper.close();
         super.finalize();
 
     }
-    public void saveAcer(Acer acer){
+
+    public void saveAcer(Acer acer) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        db.execSQL("INSERT INTO "+AcerDBHelper.TABE_ACER + " (userId, username, userImg, access_token, userGroupLevel,mobileCheck, time) VALUES(?,?,?,?,?,?,?)",
-                new Object[] { acer.userId, acer.username, acer.userImg,acer.access_token, acer.userGroupLevel, acer.mobileCheck,acer.time});
+        db.execSQL("INSERT INTO " + AcerDBHelper.TABE_ACER + " (userId, username, userImg, access_token, userGroupLevel,mobileCheck, time) VALUES(?,?,?,?,?,?,?)",
+                new Object[]{acer.userId, acer.username, acer.userImg, acer.access_token, acer.userGroupLevel, acer.mobileCheck, acer.time});
         db.close();
     }
 
-    public Acer getAcer(){
+    public Acer getAcer() {
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor query = db.rawQuery("SELECT * FROM "+AcerDBHelper.TABE_ACER, null);
+        Cursor query = db.rawQuery("SELECT * FROM " + AcerDBHelper.TABE_ACER, null);
         Acer acer = null;
         if (query.moveToFirst()) {
             acer = new Acer();
@@ -55,6 +57,7 @@ public class AcerDB {
         db.close();
         return acer;
     }
+
     public void logout() {
         SQLiteDatabase db = helper.getWritableDatabase();
         db.execSQL("DELETE FROM " + AcerDBHelper.TABE_ACER);

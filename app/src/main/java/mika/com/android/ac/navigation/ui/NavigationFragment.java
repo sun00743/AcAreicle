@@ -97,13 +97,6 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-//        Activity activity = getActivity();
-//        mUserInfoResourceMap = new ArrayMap<>();
-//        for (Account account : AccountUtils.getAccounts(activity)) {
-//            mUserInfoResourceMap.put(account, AccountUserInfoResource.attachTo(account, this,
-//                    account.name, -1));
-//        }
-
         mHeaderLayout.setIsSigninEntry(entry);
         mHeaderLayout.setAdapter(this);
         mHeaderLayout.setListener(this);
@@ -113,30 +106,9 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
             AcWenApplication.getInstance().setAcer(mAcer);
             AcWenApplication.LOGIN = true;
             //get acerinfo
-            AcerInfoRequest mAcerInfoRequest = new AcerInfoRequest(mAcer.userId);
-            Volley.getInstance().addToRequestQueue(mAcerInfoRequest);
-            mAcerInfoRequest.setListener(new Response.Listener() {
-                @Override
-                public void onResponse(Object response) {
-                    if (((AcerInfoResult2) response).success) {
-
-                        acerInfo = ((AcerInfoResult2) response).userjson;
-                        mHeaderLayout.bindAcer(acerInfo);
-
-                        //get banana
-                        mHeaderLayout.getBanana();
-                    } else {
-                        //todo 显示服务器错误信息
-                    }
-                }
-            }).setErrorListener(new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                }
-            });
+            loadAcerInfo();
             // is signin ?
             checkSignIn();
-
         } else {
             AcWenApplication.LOGIN = false;
             mHeaderLayout.bind();
@@ -148,7 +120,6 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.navigation_home:
-
                                 break;
                             case R.id.navigation_settings:
                                 openSettings();
@@ -157,7 +128,6 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
                                 //todo 收藏界面
                                 break;
                             default:
-
                                 NotImplementedManager.showNotYetImplementedToast(getActivity());
                         }
 
@@ -171,6 +141,28 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
 
         mNavigationView.getMenu().getItem(0).setChecked(true);
         mNavigationViewAdapter = NavigationViewAdapter.override(mNavigationView, this, this);
+    }
+
+    private void loadAcerInfo() {
+        Volley.getInstance().addToRequestQueue(new AcerInfoRequest(mAcer.userId)
+                .setListener(new Response.Listener<AcerInfoResult2>() {
+                    @Override
+                    public void onResponse(AcerInfoResult2 response) {
+                        if (response.success) {
+                            acerInfo = ((AcerInfoResult2) response).userjson;
+                            mHeaderLayout.bindAcer(acerInfo);
+                            //get banana
+                            mHeaderLayout.getBanana();
+                        } else {
+                            //todo 显示服务器错误信息
+                        }
+                    }
+                }).setErrorListener(new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }));
     }
 
     private void checkSignIn() {
@@ -207,13 +199,11 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
 
     @Override
     public User getPartialUser(Account account) {
-//        return mUserInfoResourceMap.get(account).getPartialUser();
         return new User();
     }
 
     @Override
     public UserInfo getUserInfo(Account account) {
-//        return mUserInfoResourceMap.get(account).getUserInfo();
         return new UserInfo();
     }
 
@@ -227,17 +217,6 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
      */
     @Override
     public void openProfile(Account account) {
-//        UserInfoResource userInfoResource = mUserInfoResourceMap.get(account);
-//        Intent intent;
-//        if (userInfoResource.hasUserInfo()) {
-//            intent = ProfileActivity.makeIntent(userInfoResource.getUserInfo(), getActivity());
-//        } else {
-//            // If we don't have user info, then user must also be partial. In this case we
-//            // can only pass user id or uid.
-//            intent = ProfileActivity.makeIntent(userInfoResource.getUserIdOrUid(), getActivity());
-//        }
-//        startActivity(intent);
-
         if (AcWenApplication.LOGIN) {
             startActivity(ProfileActivity.makeIntent(mAcer, acerInfo, getActivity()));
         } else {
@@ -245,6 +224,9 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
         }
     }
 
+    /**
+     * 登录activity的result
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {

@@ -254,6 +254,7 @@ public class ArticleListResFragment extends ResourceFragment implements
                 setArticleDesList(result.paramsData.articleLists);
             }
         }else {
+            //返回错误信息
             getListStateListener().onLoadArticleListError(getRequestCode(), error);
         }
     }

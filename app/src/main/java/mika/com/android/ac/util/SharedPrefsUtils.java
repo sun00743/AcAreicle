@@ -15,10 +15,18 @@ import android.preference.PreferenceManager;
 
 import java.util.Set;
 
+/**
+ * SharedPreference 工具类
+ */
 public class SharedPrefsUtils {
 
     private SharedPrefsUtils() {}
 
+    /**
+     * 获取应用默认sp
+     * @param context context
+     * @return
+     */
     public static SharedPreferences getSharedPrefs(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -81,16 +89,40 @@ public class SharedPrefsUtils {
         getEditor(context).putBoolean(entry.getKey(context), value).apply();
     }
 
+    /**
+     * 清除保存的指定内容对象
+     * @param entry the entry
+     * @param context context
+     */
     public static void remove(Entry<?> entry, Context context) {
         getEditor(context).remove(entry.getKey(context)).apply();
     }
 
+    /**
+     * 清楚应用保存的所有内容
+     * @param context context
+     */
     public static void clear(Context context) {
         getEditor(context).clear().apply();
     }
 
+    /**
+     * 保存的数据对象，在相应的类或内部类中实现这个接口，然后操作数据
+     * @param <T> 对象类型
+     */
     public interface Entry<T> {
+        /**
+         * 设置key方法，组装key
+         * @param context context
+         * @return String-key
+         */
         String getKey(Context context);
+
+        /**
+         * 设置当前key默认值
+         * @param context context
+         * @return <T> defaultValue
+         */
         T getDefaultValue(Context context);
     }
 }

@@ -34,7 +34,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -47,7 +46,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindDimen;
@@ -278,6 +276,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     private void unQuote() {
         isEditing = false;
+        quote = null;
         mCommentEdit.setText("");
         mCommentEdit.setHint("发评论...");
         ToastUtil.show("( ´_ゝ`) 已取消引用",this);
@@ -326,7 +325,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
             @Override
             public void onScrolledToBottom() {
                 //显示progress
-                LoadComment();
+                mArtComplexAdapter.setAutoLoad(false);
+                loadComment();
             }
         });
     }
@@ -404,8 +404,9 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 inputMethodManager.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
             }
         }else{
-            if(postCommentResult != null && postCommentResult.success){
+            if(postCommentResult != null && postCommentResult.success){ // 发送成功
                 isEditing = false;
+                menuUnquote.setVisible(false);
                 mCommentEdit.setText("");
                 mCommentEdit.setHint("发评论...");
             }
@@ -415,7 +416,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     /**
      * 加载评论
      */
-    private void LoadComment() {
+    public void loadComment() {
         if (isFirstLoad) {
             isFirstLoad = false;
             mCommentListResource.load(false);
@@ -469,7 +470,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     }
 
     @Override
-    public void DataReplaceOk() {
+    public void dataReplaceOk() {
         mRecycleView.scrollToPosition(2);
     }
 
@@ -493,9 +494,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
         mAnimator = new AnimatorSet().setDuration(200);
         mAnimator.setInterpolator(new FastOutSlowInInterpolator());
 //        向上平移
-        AnimatorSet.Builder animBuilder = mAnimator.play(
-                new ObjectAnimator().ofFloat(sendBar, TRANSLATION_Y, DensityUtil.dip2px(this, sendBar.getHeight()),
-                        0));
+        mAnimator.play(new ObjectAnimator().ofFloat(sendBar, TRANSLATION_Y, DensityUtil.dip2px(this, sendBar.getHeight()), 0));
         mAnimator.start();
 
     }
@@ -510,8 +509,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
         mAnimator = new AnimatorSet().setDuration(200);
         mAnimator.setInterpolator(new FastOutSlowInInterpolator());
 //        向下平移
-        AnimatorSet.Builder animBuilder = mAnimator.play(
-                new ObjectAnimator().ofFloat(sendBar, TRANSLATION_Y, 0, DensityUtil.dip2px(this, sendBar.getHeight())));
+        mAnimator.play(new ObjectAnimator().ofFloat(sendBar, TRANSLATION_Y, 0, DensityUtil.dip2px(this, sendBar.getHeight())));
         mAnimator.start();
     }
 
@@ -552,6 +550,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     public void onLoadCommentListFinished(int requestCode) {
 //        updateRefreshing();
         mLoadMoreAdapter.setProgressVisible(false);
+        mArtComplexAdapter.setUpdataProgressGONE();
     }
 
     @Override
@@ -605,6 +604,9 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 mRecycleView.getPaddingRight(), mRecycleView.getPaddingBottom());
     }
 
+    /**
+     * 表情条目点击事件内部类
+     */
     private class AcEmoticonGridItemClickListener implements AdapterView.OnItemClickListener {
 
         @Override
@@ -620,11 +622,14 @@ public class ArticleActivity2 extends AppCompatActivity implements
         }
     }
 
+    /**
+     * 表情页面适配器内部类
+     */
     private class EmoticonPagerAdapter extends PagerAdapter {
 
         @Override
         public int getCount() {
-            return 2;
+            return tabs.length;
         }
 
         @Override
@@ -642,7 +647,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
             GridView gridView = (GridView) getLayoutInflater().inflate(R.layout.article_emoticon_grid, null);
             switch (position) {
                 case 0:
-                    gridView.setAdapter(new EmoticonGridAdapter());
+                    gridView.setAdapter(new EmoticonGridAdapter(ArticleActivity2.this));
                     gridView.setOnItemClickListener(new AcEmoticonGridItemClickListener());
                     break;
                 case 1:
@@ -656,42 +661,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
-        }
-    }
-
-    private class EmoticonGridAdapter extends BaseAdapter {
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = new EmotionView(getApplicationContext());
-            }
-            ((EmotionView) convertView).setEmotionId(position + 1);
-            return convertView;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public String getItem(int position) {
-            String cat;
-            int id;
-            if (position < 54) {
-                cat = "ac";
-                id = position + 1;
-            } else {
-                cat = position >= 94 ? "ac2" : "ac";
-                id = position >= 94 ? position - 93 : position - 53;
-            }
-            return String.format(Locale.US, "[emot=%s,%02d/]", cat, id);
-        }
-
-        @Override
-        public int getCount() {
-            return 149;
         }
     }
 }

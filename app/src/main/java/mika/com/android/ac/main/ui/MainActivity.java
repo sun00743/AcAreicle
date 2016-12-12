@@ -24,6 +24,7 @@ import android.widget.FrameLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.R;
 import mika.com.android.ac.home.HomeFragment;
 import mika.com.android.ac.navigation.ui.NavigationFragment;
 import mika.com.android.ac.network.NetWorkStateReceiver;
@@ -38,11 +39,11 @@ import mika.com.android.ac.util.TransitionUtils;
 public class MainActivity extends AppCompatActivity
         implements DrawerManager, NotificationListFragment.UnreadNotificationCountListener {
 
-    @BindView(mika.com.android.ac.R.id.drawer)
+    @BindView(R.id.drawer)
     DrawerLayout mDrawerLayout;
-    @BindView(mika.com.android.ac.R.id.notification_list_drawer)
+    @BindView(R.id.notification_list_drawer)
     View mNotificationDrawer;
-    @BindView(mika.com.android.ac.R.id.container)
+    @BindView(R.id.container)
     FrameLayout mContainerLayout;
 
     private MenuItem mNotificationMenu;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity
                     .build());
         }
 */
-        setTheme(mika.com.android.ac.R.style.Theme_AcWen_MainActivity);
+        setTheme(R.style.Theme_AcWen_MainActivity);
 
         TransitionUtils.setupTransitionBeforeDecorate(this);
 
@@ -77,19 +78,20 @@ public class MainActivity extends AppCompatActivity
 //            return;
 //        }
 
-        setContentView(mika.com.android.ac.R.layout.main_activity);
+        setContentView(R.layout.main_activity);
         doRegisterReceiver(); // 注册广播
         TransitionUtils.setupTransitionAfterSetContentView(this);
         ButterKnife.bind(this);
 
         ScalpelHelperFragment.attachTo(this);
 
-        mNavigationFragment = FragmentUtils.findById(this, mika.com.android.ac.R.id.navigation_fragment);
+        mNavigationFragment = FragmentUtils.findById(this, R.id.navigation_fragment);
 //        mNotificationListFragment = FragmentUtils.findById(this, R.id.notification_list_fragment);
 //        mNotificationListFragment.setUnreadNotificationCountListener(this);
         homeFragment = HomeFragment.newInstance();
         if (savedInstanceState == null) {
-            FragmentUtils.add(homeFragment, this, mika.com.android.ac.R.id.container);
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
+//            FragmentUtils.add(homeFragment, this, R.id.container);
         }
     }
 
@@ -101,10 +103,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(mika.com.android.ac.R.menu.main, menu);
-        mNotificationMenu = menu.findItem(mika.com.android.ac.R.id.action_notification);
+        getMenuInflater().inflate(R.menu.main, menu);
+        mNotificationMenu = menu.findItem(R.id.action_notification);
 
-        ActionItemBadge.setup(mNotificationMenu, mika.com.android.ac.R.drawable.notifications_icon_white_24dp,
+        ActionItemBadge.setup(mNotificationMenu, R.drawable.notifications_icon_white_24dp,
                 mUnreadNotificationCount, this);
         return true;
     }
@@ -115,11 +117,11 @@ public class MainActivity extends AppCompatActivity
             case android.R.id.home:
                 mDrawerLayout.openDrawer(mNavigationFragment.getView());
                 return true;
-            case mika.com.android.ac.R.id.action_notification:
+            case R.id.action_notification:
 //                mNotificationListFragment.refresh();
                 mDrawerLayout.openDrawer(mNotificationDrawer);
                 return true;
-            case mika.com.android.ac.R.id.action_top:
+            case R.id.action_top:
                 homeFragment.currentGoTop();
 //                NotImplementedManager.openDoumail(this);
                 return true;

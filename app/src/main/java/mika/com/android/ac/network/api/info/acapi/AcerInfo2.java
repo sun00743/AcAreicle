@@ -76,6 +76,8 @@ public class AcerInfo2 implements Parcelable{
      */
     public String regTime;
     public int uid;
+    public int expPercent;
+    public int level;
 
     public AcerInfo2(){}
 
@@ -94,6 +96,8 @@ public class AcerInfo2 implements Parcelable{
         posts = in.readInt();
         regTime = in.readString();
         uid = in.readInt();
+        expPercent = in.readInt();
+        level = in.readInt();
     }
 
     @Override
@@ -112,6 +116,8 @@ public class AcerInfo2 implements Parcelable{
         dest.writeInt(posts);
         dest.writeString(regTime);
         dest.writeInt(uid);
+        dest.writeInt(expPercent);
+        dest.writeInt(level);
     }
 
     @Override

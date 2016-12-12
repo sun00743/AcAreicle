@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Outline;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
@@ -378,7 +379,7 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
         mFollowButton.setVisibility(VISIBLE);
     }
 
-    public void bindAcerInfo(final AcerInfo2 acerInfo) {
+    public void bindAcerInfo(@NonNull final AcerInfo2 acerInfo) {
         final Context context = getContext();
         if (!ViewUtils.isVisible(mAvatarImage)) {
             // HACK: Don't load avatar again if already loaded by bindUser().

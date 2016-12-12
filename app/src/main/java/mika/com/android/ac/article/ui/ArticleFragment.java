@@ -222,7 +222,7 @@ public class ArticleFragment extends Fragment implements
         mRecycleView.setHasFixedSize(true);
         mRecycleView.setItemAnimator(new NoChangeAnimationItemAnimator());
         mRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mArtComplexAdapter = new ArtComplexAdapter(initList(), getActivity(), getArguments().getBundle("extras"));
+//        mArtComplexAdapter = new ArtComplexAdapter(initList(), getActivity(), getArguments().getBundle("extras"));
         mArtComplexAdapter.setEventListener(this);
         mLoadMoreAdapter = new LoadMoreAdapter(R.layout.load_more_card_item, mArtComplexAdapter);
         mRecycleView.setAdapter(mLoadMoreAdapter);
@@ -362,7 +362,7 @@ public class ArticleFragment extends Fragment implements
     }
 
     @Override
-    public void DataReplaceOk() {
+    public void dataReplaceOk() {
 
     }
 

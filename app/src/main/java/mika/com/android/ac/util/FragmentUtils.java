@@ -70,12 +70,10 @@ public class FragmentUtils {
     @Deprecated
     public static void add(Fragment fragment, FragmentManager fragmentManager,
                            int containerViewId) {
-        //noinspection deprecation
         add(fragment, fragmentManager, containerViewId, null);
     }
 
     public static void add(Fragment fragment, FragmentActivity activity, int containerViewId) {
-        //noinspection deprecation
         add(fragment, activity.getSupportFragmentManager(), containerViewId);
     }
 

@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -87,15 +85,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private static final int VIEW_TYPE_SUBTITLE = 0x03;
     private static final int VIEW_TYPE_HEAD = 0x01;
 
-    private FragmentActivity activity;
+    private ArticleActivity2 activity;
 
     public static final String TAG = "Article";
-//    private static final Pattern sAreg = Pattern.compile("/a/ac(\\d{5,})");
-//    private static final Pattern sVreg = Pattern.compile("/v/ac(\\d{5,})");
-//    private static final Pattern sLiteAreg = Pattern.compile("/v/#ac=(\\d{5,});type=article");
-//    private static final Pattern sLiteVreg = Pattern.compile("/v/#ac=(\\d{5,})$");
-//    private static final String sAppReg = "^http://www.acfun.(com|tv)/app/?$";
-//    public static final int MAX_AGE = 7 * 24 * 60 * 60 * 1000;
     private static String ARTICLE_PATH;
     private static final String NAME_ARTICLE_HTML = "a63-article.html";
     private Article mArticle;
@@ -108,10 +100,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     private int aid;
     private Bundle mBundle;
-    private boolean isFirstCreated = true;
-//    private static int quotesId = R.id.quote_item_floor;
-
-    //    private List<Comment> mDataList;
     private List<Integer> mCommentIdList;
     private SparseArray<Comment> mCommentList;
 
@@ -124,7 +112,13 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private boolean isContentFirstLoad = true;
     private boolean isHeadFirstLoad = true;
 
-    public ArtComplexAdapter(List<Integer> list, FragmentActivity activity, Bundle bundle) {
+    public void setAutoLoad(boolean autoLoad) {
+        isAutoLoad = autoLoad;
+    }
+
+    private boolean isAutoLoad = false;
+
+    public ArtComplexAdapter(List<Integer> list, ArticleActivity2 activity, Bundle bundle) {
         super(null);
         mCommentIdList = list;
         this.activity = activity;
@@ -227,6 +221,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     @Override
                     public void onClick(View v) {
                         mSubTitleHolder.subtitle_pro.setVisibility(View.VISIBLE);
+                        isAutoLoad = false;
                         mEventListener.updateComment();
                     }
                 });
@@ -280,8 +275,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     /**
      * 初次加载/刷新
+     *
      * @param commentIdList 评论id list
-     * @param commentMaps 评论bean map
+     * @param commentMaps   评论bean map
      */
     public void replace(Collection<? extends Integer> commentIdList,
                         SparseArray<Comment> commentMaps) {
@@ -299,16 +295,18 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             mCommentList = commentMaps;
 
             notifyItemRangeInserted(3, newSize);
-            mEventListener.DataReplaceOk();
-            notifyItemRangeRemoved(3 + newSize, oldSize);
+            if (!isAutoLoad) {
+                mEventListener.dataReplaceOk();
+                notifyItemRangeRemoved(3 + newSize, oldSize);
+            }
         }
-        mSubTitleHolder.subtitle_pro.setVisibility(View.GONE);
     }
 
     /**
      * 加载更多
+     *
      * @param commentIdList 评论id list
-     * @param commentMaps 评论bean map
+     * @param commentMaps   评论bean map
      */
     public void insert(Collection<? extends Integer> commentIdList,
                        Map<String, Comment> commentMaps) {
@@ -318,9 +316,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             mCommentList.append(com.id, com);
         }
         notifyItemRangeInserted(oldSize, commentIdList.size());
-    }
-
-    public void update() {
     }
 
     /**
@@ -360,7 +355,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     /**
      * 生成引用的评论的view
-     *
      */
     private View generateQuotesView(final Comment quote) {
         RelativeLayout quoteLayout = (RelativeLayout) LayoutInflater.from(activity).inflate(R.layout.articlecomplex_item_quote, null);
@@ -381,7 +375,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // TODO: 2016/12/5   评论右上更多按钮
             }
         });
         ImageUtils.loadAvatar(avatar, quote.avatar);
@@ -401,17 +395,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             if (aid == 0)
                 throw new IllegalArgumentException("没有 id");
         }
-
         mCurrentHolder.mWeb.getSettings().setAppCachePath(ARTICLE_PATH);
         mCurrentHolder.mWeb.addJavascriptInterface(new ACJSObject(), "AC");
-        // Set a chrome client to handle the MediaResource on web page
-        // like video,video loading progress, etc.
-        mCurrentHolder.mWeb.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-//                activity.setTitle(title);
-            }
-        });
         mCurrentHolder.mWeb.setWebViewClient(new WebViewClient() {
 
             /**
@@ -435,6 +420,12 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     String[] arr = new String[imgUrls.size()];
                     mDownloadTask = new DownloadImageTask();
                     mDownloadTask.execute(imgUrls.toArray(arr));
+                }
+
+                if (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI) {
+                    //同时加载评论
+                    isAutoLoad = true;
+                    activity.loadComment();
                 }
             }
 
@@ -461,12 +452,19 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                // TODO: 2016/12/5 文章加载失败
             }
         });
         request.setTag(TAG);
         request.setShouldCache(true);
         Volley.getInstance().addToRequestQueue(request);
+    }
+
+    /**
+     * subtitile刷新评论 progress Gone
+     */
+    public void setUpdataProgressGONE(){
+        mSubTitleHolder.subtitle_pro.setVisibility(View.GONE);
     }
 
     public void pause() {
@@ -479,11 +477,11 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         }
     }
 
-    public View getHeadView(){
+    public View getHeadView() {
         return mHeadHolder.headContent;
     }
 
-    public View getArticleView(){
+    public View getArticleView() {
         return mCurrentHolder.mContent;
     }
 
@@ -505,10 +503,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
          */
         void updateComment();
 
-        void DataReplaceOk();
+        void dataReplaceOk();
 
         /**
-         *
          * @param headview headview
          */
         void setHeadView(View headview);
@@ -768,7 +765,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     img.attr("src", "file:///android_asset/emotion/td/08.gif");
                     img.attr("loc", localUri);
                     img.removeAttr("style");
-                    showImgClick(img, src , imgIndex);
+                    showImgClick(img, src, imgIndex);
                     continue;
                 }
                 img.attr("loc", localUri);
@@ -826,10 +823,10 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             // 过滤掉图片的url跳转
             if (img.parent() != null && img.parent().tagName().equalsIgnoreCase("a")) {
 //                img.parent().attr("href", "javascript:window.AC.showImage('" + src + "');");
-                img.parent().attr("onclick", "javascript:window.AC.showImage('" + src + " ',' " + index +"');");
+                img.parent().attr("onclick", "javascript:window.AC.showImage('" + src + " ',' " + index + "');");
             } else {
 //                img.attr("onclick", "javascript:window.AC.showImage('" + src + "');");
-                img.attr("onclick", "javascript:window.AC.showImage('" + src + " ',' " + index +"');");
+                img.attr("onclick", "javascript:window.AC.showImage('" + src + " ',' " + index + "');");
             }
 
         }
@@ -1068,9 +1065,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             isDownloaded = true;
             String javaScript = "javascript:(function(){"
                     + "var images = document.getElementsByTagName(\"img\"); "
-                    + "var imgSrc = images["+index+"].getAttribute(\"loc\"); "
+                    + "var imgSrc = images[" + index + "].getAttribute(\"loc\"); "
                     + "if(imgSrc != null)"
-                    + "images["+index+"].setAttribute(\"src\",imgSrc);"
+                    + "images[" + index + "].setAttribute(\"src\",imgSrc);"
                     + "})()";
             mCurrentHolder.evaluateJavascript(javaScript, null);
         }
@@ -1087,7 +1084,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 //            ImagePagerActivity.startCacheImage(ArticleActivity.this,
 //                    (ArrayList<File>) imageCaches,
 //                    imgUrls.indexOf(url), aid, title);
-            Log.i("viewImage" , "  ViewImage");
+            Log.i("viewImage", "  ViewImage");
         }
 
         /**

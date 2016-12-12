@@ -219,7 +219,7 @@ public class CommentListResource extends ResourceFragment implements
         mLoading = false;
         mLoadingMore = false;
         //通知界面加载数据完成
-        getListStateListener().onLoadCommentListFinished(getRequestCode());
+        getListStateListener().onLoadCommentListFinished(requestCode);
 
         if (successful){
             CommentPage mPage = result.data.page;
@@ -240,25 +240,8 @@ public class CommentListResource extends ResourceFragment implements
                 getListStateListener().onCommentListChanged(requestCode,mCommentIdList,mCommentLists);
             }
         }else {
-            //失败返回error
+            // TODO: 2016/12/5 服务器返回信息失败
         }
-
-//        if(successful){
-//            mCanLoadMore = result.paramsData.articleLists.size() == count;
-//            if(loadMore){
-//                mArticleLists.addAll(result.paramsData.articleLists);
-//                //通知界面loadMore完成
-//                getListStateListener().onArticleListAppended(getRequestCode(),
-//                        Collections.unmodifiableList(result.paramsData.articleLists));
-//                for(ArticleList articlelist : result.paramsData.articleLists){
-//                    EventBusUtils.postAsync(new ArticleDesUpdatedEvent(articlelist, this));
-//                }
-//            }else {
-//                setArticleDesList(result.paramsData.articleLists);
-//            }
-//        }else {
-//            getListStateListener().onLoadArticleListError(getRequestCode(), error);
-//        }
     }
 
     private ListStateListener getListStateListener(){

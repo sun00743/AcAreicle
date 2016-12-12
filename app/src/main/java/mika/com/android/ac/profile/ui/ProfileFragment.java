@@ -1,12 +1,3 @@
-/*
- * Created mika <sun00743@gmail.com>
- * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package mika.com.android.ac.profile.ui;
 
 import android.app.Activity;
@@ -14,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 
@@ -45,6 +37,7 @@ import mika.com.android.ac.profile.content.ProfileResource;
 import mika.com.android.ac.profile.util.ProfileUtils;
 import mika.com.android.ac.ui.ContentStateLayout;
 import mika.com.android.ac.ui.CopyTextDialogFragment;
+import mika.com.android.ac.ui.FlexibleSpaceContentScrollView;
 import mika.com.android.ac.util.FragmentUtils;
 import mika.com.android.ac.util.LogUtils;
 import mika.com.android.ac.util.ToastUtil;
@@ -70,15 +63,18 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
     @BindView(R.id.contentState)
     ContentStateLayout mContentStateLayout;
     @BindView(R.id.content)
-    RecyclerView mContentList;
+    FlexibleSpaceContentScrollView mContentView;
+    @BindView(R.id.profile_uid)
+    TextView mUid;
+    @BindView(R.id.profile_regdate)
+    TextView mRegDate;
+    @BindView(R.id.profile_exp_progress)
+    ProgressBar mExpProgress;
+    @BindView(R.id.profile_exp_description)
+    TextView mExpDescription;
 
-    private String mUserIdOrUid;
     private Acer mAcer;
     private AcerInfo2 mAcerInfo;
-
-//    private ProfileResource mProfileResource;
-
-    private ProfileAdapter mProfileAdapter;
 
     public static ProfileFragment newInstance(Acer acer, AcerInfo2 acerInfo2) {
         //noinspection deprecation
@@ -89,7 +85,8 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
         return fragment;
     }
 
-    public ProfileFragment() {}
+    public ProfileFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,6 +126,7 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
             public void onEnterAnimationEnd() {
 
             }
+
             @Override
             public void onExitAnimationEnd() {
                 getActivity().finish();
@@ -150,34 +148,20 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
         activity.getSupportActionBar().setTitle(null);
 
         mHeaderLayout.bindAcerInfo(mAcerInfo);
-//        mHeaderLayout.bindUser();
+        initContent();
+    }
 
-//        if (mProfileResource.hasUserInfo()) {
-//            mHeaderLayout.bindUserInfo(mProfileResource.getUserInfo());
-//        } else if (mProfileResource.hasUser()) {
-//            mHeaderLayout.bindUser(mProfileResource.getUser());
-//        }
-//        mHeaderLayout.setListener(this);
-//
-//        if (ViewUtils.hasSw600Dp(activity)) {
-//            mContentList.setLayoutManager(new StaggeredGridLayoutManager(2,
-//                    StaggeredGridLayoutManager.VERTICAL));
-//        } else {
-//            mContentList.setLayoutManager(new LinearLayoutManager(activity));
-//        }
-//        mProfileAdapter = new ProfileAdapter(this);
-//        mContentList.setAdapter(mProfileAdapter);
-//        if (mProfileResource.isLoaded()) {
-//            mProfileResource.notifyChangedIfLoaded();
-//        } else {
-//            mContentStateLayout.setLoading();
-//        }
+    private void initContent() {
+        mUid.setText(String.valueOf(mAcerInfo.uid));
+        mRegDate.setText(mAcerInfo.regTime);
+        mExpDescription.setText("Lv:" + mAcerInfo.level + " - Exp:" + mAcerInfo.currExp + "/" + mAcerInfo.nextLevelNeed
+                + " - Per:" + mAcerInfo.expPercent);
+        mExpProgress.setProgress(mAcerInfo.expPercent);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
 //        mProfileResource.detach();
     }
 
@@ -192,14 +176,12 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
         inflater.inflate(R.menu.profile, menu);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-
         // TODO: Block or unblock.
     }
 
@@ -250,9 +232,6 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
     public void onChanged(int requestCode, UserInfo newUserInfo, List<Broadcast> newBroadcastList,
                           List<User> newFollowingList, List<Diary> newDiaryList,
                           List<UserItems> newUserItemList, List<Review> newReviewList) {
-        mProfileAdapter.setData(new ProfileAdapter.Data(newUserInfo, newBroadcastList,
-                newFollowingList, newDiaryList, newUserItemList, newReviewList));
-        mContentStateLayout.setLoaded(true);
     }
 
     @Override

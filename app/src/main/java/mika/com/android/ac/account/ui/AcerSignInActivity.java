@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.R;
 import mika.com.android.ac.db.AcerDB;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.AcerInfoRequest;
@@ -39,19 +40,19 @@ import mika.com.android.ac.util.ViewUtils;
 
 public class AcerSignInActivity extends AppCompatActivity {
 
-    @BindView(mika.com.android.ac.R.id.login_form)
+    @BindView(R.id.login_form)
     View mFormLayout;
-    @BindView(mika.com.android.ac.R.id.login_username_layout)
+    @BindView(R.id.login_username_layout)
     TextInputLayout mUsernameLayout;
-    @BindView(mika.com.android.ac.R.id.login_username)
+    @BindView(R.id.login_username)
     EditText mUsernameEdit;
-    @BindView(mika.com.android.ac.R.id.login_password_layout)
+    @BindView(R.id.login_password_layout)
     TextInputLayout mPasswordLayout;
-    @BindView(mika.com.android.ac.R.id.login_password)
+    @BindView(R.id.login_password)
     EditText mPasswordEdit;
-    @BindView(mika.com.android.ac.R.id.acer_login)
+    @BindView(R.id.acer_login)
     Button mLoginButton;
-    @BindView(mika.com.android.ac.R.id.login_progress)
+    @BindView(R.id.login_progress)
     ProgressBar mProgress;
 
     private String mUsername;
@@ -65,9 +66,10 @@ public class AcerSignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(mika.com.android.ac.R.layout.activity_acer_sign_in);
+        setContentView(R.layout.activity_acer_sign_in);
         ButterKnife.bind(this);
 
+        // TODO: 2016/12/6  delete this
         mLoginRequest = new LoginRequest("月与萧","136892");
         mLoginRequest.setShouldCache(true);
 
@@ -78,7 +80,8 @@ public class AcerSignInActivity extends AppCompatActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attemptStartAuth();
+//                attemptStartAuth();
+                onStartAuth();
             }
         });
 
@@ -106,6 +109,9 @@ public class AcerSignInActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 检查用户名密码是否和法
+     */
     private void attemptStartAuth() {
 
         // Store values at the time of login attempt.
@@ -116,12 +122,12 @@ public class AcerSignInActivity extends AppCompatActivity {
         View errorView = null;
 
         if (TextUtils.isEmpty(mUsername)) {
-            mUsernameLayout.setError(getString(mika.com.android.ac.R.string.auth_error_empty_username));
+            mUsernameLayout.setError(getString(R.string.auth_error_empty_username));
             errorView = mUsernameEdit;
             cancel = true;
         }
         if (TextUtils.isEmpty(mPassword)) {
-            mPasswordLayout.setError(getString(mika.com.android.ac.R.string.auth_error_empty_password));
+            mPasswordLayout.setError(getString(R.string.auth_error_empty_password));
             if (errorView == null) {
                 errorView = mPasswordEdit;
             }
@@ -135,10 +141,15 @@ public class AcerSignInActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 登录
+     */
     private void onStartAuth() {
         //view设置切换动画
         ViewUtils.crossfade(mFormLayout, mProgress, false);
 
+//        mLoginRequest = new LoginRequest(mUsername, mPassword);
+//        mLoginRequest.setShouldCache(true);
         Volley.getInstance().addToRequestQueue(mLoginRequest);
 
 //        new Handler().postDelayed(new Runnable() {

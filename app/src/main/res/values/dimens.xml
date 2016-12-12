@@ -106,6 +106,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-
     <dimen name="abc_text_size_body_3_material">12sp</dimen>
+
+    <dimen name="text_size_profile_info">16sp</dimen>
+    <dimen name="text_size_profile_info_title">14sp</dimen>
+    <dimen name="text_size_profile_info_content">18sp</dimen>
 </resources>

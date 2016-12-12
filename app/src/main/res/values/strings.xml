@@ -20,7 +20,14 @@
     <string name="articlelist_lookcount">围观</string>
 
     <string name="article_send_comment_hint">发评论…</string>
-L
+
+    <string name="profile_uid">uid</string>
+    <string name="profile_registration_time">注册时间</string>
+    <string name="profile_posts">用户发布成功的投稿总和。</string>
+    <string name="profile_views">当前所有有效投稿的浏览数总和。</string>
+    <string name="profile_stars">当前所有有效投稿的收藏数总和。</string>
+    <string name="profile_comments">当前所有有效投稿的评论数总和。</string>
+
     <string name="nothing">这里空无一物</string>
     <string name="navigation_head_getbananafailed">你的香蕉情况ac娘现在不能告诉你</string>
     <string name="navigation_head_has_signin">已签到</string>
