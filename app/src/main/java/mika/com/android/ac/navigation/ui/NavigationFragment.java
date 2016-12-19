@@ -61,6 +61,7 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
 //    private ArrayMap<Account, AccountUserInfoResource> mUserInfoResourceMap;
 
     private NavigationViewAdapter mNavigationViewAdapter;
+    private OnNavigationMenuClickListener mMenuClickListener;
 
     private Acer mAcer;
     private AcerInfo2 acerInfo;
@@ -75,6 +76,16 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
      * @deprecated Use {@link #newInstance()} instead.
      */
     public NavigationFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnNavigationMenuClickListener) {
+            mMenuClickListener = (OnNavigationMenuClickListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + "must implement onNavigationMenuClickListener");
+        }
     }
 
     @Nullable
@@ -120,20 +131,24 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.navigation_home:
+                                mMenuClickListener.onHomeClicked();
+                                break;
+                            case R.id.navigation_message:
+                                mMenuClickListener.onMessageClicked();
+                                break;
+                            case R.id.navigation_quote:
+                                mMenuClickListener.onQuoteClicked();
                                 break;
                             case R.id.navigation_settings:
                                 openSettings();
                                 break;
                             case R.id.navigation_star:
-                                //todo 收藏界面
+                                mMenuClickListener.onStarClicked();
                                 break;
                             default:
                                 NotImplementedManager.showNotYetImplementedToast(getActivity());
                         }
 
-                        if (menuItem.getGroupId() == R.id.navigation_group_primary) {
-                            menuItem.setChecked(true);
-                        }
                         closeDrawer();
                         return true;
                     }
@@ -170,6 +185,12 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
             mHeaderLayout.mSignin.setText(R.string.navigation_head_has_signin);
             mHeaderLayout.mSignin.setClickable(false);
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mMenuClickListener = null;
     }
 
     @Override
@@ -264,6 +285,16 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
         ((DrawerManager) getActivity()).closeDrawer(getView());
     }
 
+    public interface OnNavigationMenuClickListener {
+        void onHomeClicked();
+
+        void onStarClicked();
+
+        void onQuoteClicked();
+
+        void onMessageClicked();
+    }
+
     /**
      * 当天是否签到prefsEntry
      */
@@ -279,6 +310,5 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
         public Boolean getDefaultValue(Context context) {
             return false;
         }
-
     }
 }

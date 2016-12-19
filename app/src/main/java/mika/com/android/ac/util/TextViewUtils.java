@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -43,66 +44,24 @@ import mika.com.android.ac.network.api.info.acapi.Comment;
 public class TextViewUtils {
 
     public static void setCommentContent(final TextView textView, Comment comment) {
-        if(textView.getMovementMethod() != null) // reset focus
+        if (textView.getMovementMethod() != null) // reset focus
             textView.setMovementMethod(null);
         String text = comment.content;
-        if(TextUtils.isEmpty(text)){
+        if (TextUtils.isEmpty(text)) {
             textView.setText("");
             return;
         }
         text = replace(text);
-        try{
-            textView.setText(Html.fromHtml(text, new Html.ImageGetter() {
-
-                @Override
-                public Drawable getDrawable(String source) {
-                    try {
-                        Bitmap bm = AcWenApplication.getBitmapInCache(source);
-                        if (bm == null) {
-                            bm = BitmapFactory.decodeStream(textView.getContext().getAssets()
-                                    .open(source));
-                            AcWenApplication.putBitmapInCache(source, bm);
-                        }
-                        Drawable drawable = new BitmapDrawable(textView.getResources(), bm);
-                        if (drawable != null) {
-                            int w = textView.getResources().getDimensionPixelSize(
-                                    R.dimen.emotions_column_width);
-                            //指定drawable的绘制时边缘
-                            drawable.setBounds(0, 0, w, drawable.getIntrinsicHeight() * w
-                                    / drawable.getIntrinsicWidth());
-                        }
-
-                        return drawable;
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-
-                }
-            }, new Html.TagHandler() {
-
-                @Override
-                public void handleTag(boolean opening, String tag, Editable output,
-                                      XMLReader xmlReader) {
-                    int len = output.length();
-                    if (opening) {
-                        if (tag.equalsIgnoreCase("strike")) {
-                            output.setSpan(new StrikethroughSpan(), len, len,
-                                    Spannable.SPAN_MARK_MARK);
-                        }
-                    } else {
-                        if (tag.equalsIgnoreCase("strike")) {
-                            end((SpannableStringBuilder) output, StrikethroughSpan.class,
-                                    new StrikethroughSpan());
-                        }
-                    }
-                }
-            }));
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                textView.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY, new CommentImageGetter(textView), new CommentTagHandler()));
+            } else {
+                textView.setText(Html.fromHtml(text, new CommentImageGetter(textView), new CommentTagHandler()));
+            }
         } catch (ArrayIndexOutOfBoundsException e) {
             // FIXME: text 的格式可能有问题
             textView.setText(text);
-            Log.e("wtf", "set comment",e);
+            Log.e("wtf", "set comment", e);
         }
 //        comment.setTextColor(Color.BLACK);
 //        textView.setTextSize();
@@ -121,7 +80,7 @@ public class TextViewUtils {
         text.removeSpan(obj);
 
         if (where != len) {
-            text.setSpan(repl, where < 0?0:where, len, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            text.setSpan(repl, where < 0 ? 0 : where, len, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         return;
@@ -146,7 +105,7 @@ public class TextViewUtils {
         String reg = "\\[emot=(.*?),(.*?)\\/\\]";
         Pattern p = Pattern.compile(reg);
         Matcher m = p.matcher(text);
-        while(m.find()){
+        while (m.find()) {
             String id = m.group(2);
             String cat = m.group(1);
             int parsedId;
@@ -156,31 +115,31 @@ public class TextViewUtils {
                 // Invalid format text
                 continue;
             }
-            if (parsedId > 54)
-                id = "54";
+//            if (parsedId > 54)
+//                id = "54";
             String replace = cat.equals("brd") || cat.equals("td") || cat.equals("ac2") ?
-                    "<img src='emotion/"+cat+"/%02d.gif'/>" : "<img src='emotion/%02d.gif'/>";
+                    "<img src='emotion/" + cat + "/%02d.gif'/>" : "<img src='emotion/%02d.gif'/>";
             text = text.replace(m.group(), String.format(replace, parsedId));
         }
         reg = "\\[at\\](.*?)\\[\\/at\\]";
         m = Pattern.compile(reg).matcher(text);
-        while(m.find()){
-            text = text.replace(m.group(), "<font color=\"#FF9A03\" >@" + m.group(1)+"</font> ");
+        while (m.find()) {
+            text = text.replace(m.group(), "<font color=\"#FF9A03\" >@" + m.group(1) + "</font> ");
         }
         reg = "\\[color=(.*?)\\]";
         m = Pattern.compile(reg).matcher(text);
-        while (m.find()){
+        while (m.find()) {
             text = text.replace(m.group(), "<font color=\"" + m.group(1) + "\" >");
         }
         text = text.replace("[/color]", "</font>");
-        text = text.replaceAll("\\[size=(.*?)\\]","").replace("[/size]", "");
+        text = text.replaceAll("\\[size=(.*?)\\]", "").replace("[/size]", "");
 
         reg = "\\[img=(.*?)\\]";
         m = Pattern.compile(reg).matcher(text);
-        while (m.find()){
+        while (m.find()) {
             text = text.replace(m.group(), m.group(1));
         }
-        text = text.replace("[img]","").replace("[/img]", "");
+        text = text.replace("[img]", "").replace("[/img]", "");
         text = text.replaceAll("\\[ac=\\d{5,}\\]", "").replace("[/ac]", "");
         text = text.replaceAll("\\[font[^\\]]*?\\]", "").replace("[/font]", "");
         text = text.replaceAll("\\[align[^\\]]*?\\]", "").replace("[/align]", "");
@@ -194,14 +153,14 @@ public class TextViewUtils {
 
     /**
      * 字符 转义字符
-     *   “ &quot;
-     *   & &amp;
-     *   < &lt;
-     *   > &gt;
-     *     &nbsp;
+     * “ &quot;
+     * & &amp;
+     * < &lt;
+     * > &gt;
+     * &nbsp;
      */
     public static String getSource(String escapedHtml) {
-        if(escapedHtml == null) return "";
+        if (escapedHtml == null) return "";
         return escapedHtml.replaceAll("&quot;", "\"").replaceAll("&amp;", "&").replaceAll("&lt;", "<")
                 .replaceAll("&gt;", ">").replaceAll("&nbsp;", " ");
     }
@@ -232,6 +191,59 @@ public class TextViewUtils {
         Bitmap cacheBmp = view.getDrawingCache();
         Bitmap viewBmp = cacheBmp.copy(Bitmap.Config.ARGB_8888, true);
         view.destroyDrawingCache();
-        return new BitmapDrawable(view.getResources(),viewBmp);
+        return new BitmapDrawable(view.getResources(), viewBmp);
     }
+
+    static class CommentImageGetter implements Html.ImageGetter {
+        private TextView textView;
+
+        public CommentImageGetter(TextView textView) {
+            this.textView = textView;
+        }
+
+        @Override
+        public Drawable getDrawable(String source) {
+            try {
+                Bitmap bm = AcWenApplication.getBitmapInCache(source);
+                if (bm == null) {
+                    bm = BitmapFactory.decodeStream(textView.getContext().getAssets()
+                            .open(source));
+                    AcWenApplication.putBitmapInCache(source, bm);
+                }
+                Drawable drawable = new BitmapDrawable(textView.getResources(), bm);
+                if (drawable != null) {
+                    int w = textView.getResources().getDimensionPixelSize(
+                            R.dimen.emotions_column_width);
+                    //指定drawable的绘制时边缘
+                    drawable.setBounds(0, 0, w, drawable.getIntrinsicHeight() * w
+                            / drawable.getIntrinsicWidth());
+                }
+                return drawable;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }
+    }
+
+    static class CommentTagHandler implements Html.TagHandler {
+        @Override
+        public void handleTag(boolean opening, String tag, Editable output,
+                              XMLReader xmlReader) {
+            int len = output.length();
+            if (opening) {
+                if (tag.equalsIgnoreCase("strike")) {
+                    output.setSpan(new StrikethroughSpan(), len, len,
+                            Spannable.SPAN_MARK_MARK);
+                }
+            } else {
+                if (tag.equalsIgnoreCase("strike")) {
+                    end((SpannableStringBuilder) output, StrikethroughSpan.class,
+                            new StrikethroughSpan());
+                }
+            }
+        }
+    }
+
 }

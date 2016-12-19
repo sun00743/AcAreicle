@@ -24,12 +24,15 @@ import mika.com.android.ac.BuildConfig;
 
 public class DiskCacheHelper {
 
-    // 2M
+    // 2M 磁盘缓存
     private static final int MAX_DISK_CACHE_BYTES = 2 * 1024 * 1024;
 
     private static final Object DISK_CACHE_LOCK = new Object();
     private static volatile DiskCache sDiskCache;
 
+    /**
+     * 单线程线程池
+     */
     private static final ExecutorService sExecutorService = Executors.newSingleThreadExecutor();
 
     private DiskCacheHelper() {}

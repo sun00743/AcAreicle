@@ -1,0 +1,50 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mika.com.android.ac.quote.ui.QuoteFragment">
+
+    <mika.com.android.ac.ui.FriendlySwipeRefreshLayout
+        android:id="@+id/quote_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/quote_recycler"
+            android:paddingTop="56dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </mika.com.android.ac.ui.FriendlySwipeRefreshLayout>
+
+    <mika.com.android.ac.ui.AppBarWrapperLayout
+        android:id="@+id/frag_quote_appBarWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorPrimary"
+            android:elevation="@dimen/appbar_elevation"
+            android:orientation="vertical"
+            android:theme="?actionBarTheme">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/frag_quote_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:paddingLeft="@dimen/toolbar_navigation_button_left_margin"
+                android:paddingRight="@dimen/toolbar_button_right_margin"
+                app:title="召唤"
+                app:navigationIcon="@drawable/back_icon_white_24dp"
+                app:popupTheme="?actionBarPopupTheme"
+                app:titleMarginStart="8dp" />
+        </LinearLayout>
+    </mika.com.android.ac.ui.AppBarWrapperLayout>
+
+</FrameLayout>

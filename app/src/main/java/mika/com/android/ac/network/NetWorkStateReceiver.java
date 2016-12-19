@@ -18,6 +18,7 @@ import android.net.NetworkInfo;
 import mika.com.android.ac.AcWenApplication;
 
 public class NetWorkStateReceiver extends BroadcastReceiver {
+
     public NetWorkStateReceiver() {
     }
 

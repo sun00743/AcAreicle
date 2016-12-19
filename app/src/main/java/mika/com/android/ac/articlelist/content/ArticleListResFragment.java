@@ -52,8 +52,8 @@ public class ArticleListResFragment extends ResourceFragment implements
     private int mSort;
     private int mChannelId;
 
-//    private ArticleListResult mArticleListResult;
-    private List<ArticleList> mArticleLists ;
+    //    private ArticleListResult mArticleListResult;
+    private List<ArticleList> mArticleLists;
     private boolean mCanLoadMore = true;
     /**
      * 是否正在loading
@@ -64,43 +64,44 @@ public class ArticleListResFragment extends ResourceFragment implements
      */
     private boolean mLoadingMore;
 
-    private static ArticleListResFragment newInstance(String userIdOrUid, int channelid, int mSort){
+    private static ArticleListResFragment newInstance(String userIdOrUid, int channelid, int mSort) {
         ArticleListResFragment resource = new ArticleListResFragment();
-        resource.setArguments(null,channelid,mSort);
+        resource.setArguments(null, channelid, mSort);
         return resource;
     }
 
-    public ArticleListResFragment (){}
-
-    public static ArticleListResFragment attachTo(String userIdOrUid,int channelid, int mSort,
-                                                 FragmentActivity activity, String tag,
-                                                 int requestCode) {
-        return attachTo(userIdOrUid,channelid, mSort, activity, tag, true, null, requestCode);
+    public ArticleListResFragment() {
     }
 
-    public static ArticleListResFragment attachTo(String userIdOrUid,int channelid, int mSort,
-                                                 FragmentActivity activity) {
-        return attachTo(userIdOrUid,channelid, mSort, activity, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
+    public static ArticleListResFragment attachTo(String userIdOrUid, int channelid, int mSort,
+                                                  FragmentActivity activity, String tag,
+                                                  int requestCode) {
+        return attachTo(userIdOrUid, channelid, mSort, activity, tag, true, null, requestCode);
     }
 
-    public static ArticleListResFragment attachTo(String userIdOrUid,int channelid, int mSort,
-                                                 Fragment fragment, String tag, int requestCode) {
-        return attachTo(userIdOrUid,channelid, mSort, fragment.getActivity(), tag, false, fragment,
+    public static ArticleListResFragment attachTo(String userIdOrUid, int channelid, int mSort,
+                                                  FragmentActivity activity) {
+        return attachTo(userIdOrUid, channelid, mSort, activity, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
+    }
+
+    public static ArticleListResFragment attachTo(String userIdOrUid, int channelid, int mSort,
+                                                  Fragment fragment, String tag, int requestCode) {
+        return attachTo(userIdOrUid, channelid, mSort, fragment.getActivity(), tag, false, fragment,
                 requestCode);
     }
 
-    public static ArticleListResFragment attachTo(String userIdOrUid,int channelid, int mSort,
-                                                 Fragment fragment) {
-        return attachTo(userIdOrUid,channelid, mSort, fragment, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
+    public static ArticleListResFragment attachTo(String userIdOrUid, int channelid, int mSort,
+                                                  Fragment fragment) {
+        return attachTo(userIdOrUid, channelid, mSort, fragment, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
     }
 
-    private static ArticleListResFragment attachTo(String userIdOrUid,int channelid, int mSort,
-                                                  FragmentActivity activity, String tag,
-                                                  boolean targetAtActivity, Fragment targetFragment,
-                                                  int requestCode) {
+    private static ArticleListResFragment attachTo(String userIdOrUid, int channelid, int mSort,
+                                                   FragmentActivity activity, String tag,
+                                                   boolean targetAtActivity, Fragment targetFragment,
+                                                   int requestCode) {
         ArticleListResFragment resource = FragmentUtils.findByTag(activity, tag);
         if (resource == null) {
-            resource = newInstance(userIdOrUid,channelid, mSort);
+            resource = newInstance(userIdOrUid, channelid, mSort);
             if (targetAtActivity) {
                 resource.targetAtActivity(requestCode);
             } else {
@@ -125,6 +126,7 @@ public class ArticleListResFragment extends ResourceFragment implements
 
     /**
      * 判断articleList是否为null
+     *
      * @return
      */
     public boolean isEmpty() {
@@ -141,10 +143,10 @@ public class ArticleListResFragment extends ResourceFragment implements
     }
 
 
-    protected void setArguments(String userIdOrUid, int channelid , int sort) {
+    protected void setArguments(String userIdOrUid, int channelid, int sort) {
         Bundle arguments = FragmentUtils.ensureArguments(this);
 //        arguments.putString(EXTRA_USER_ID_OR_UID, userIdOrUid);
-        arguments.putInt(EXTRA_CHANNELID,channelid);
+        arguments.putInt(EXTRA_CHANNELID, channelid);
         arguments.putInt(EXTRA_SORT, sort);
     }
 
@@ -164,8 +166,8 @@ public class ArticleListResFragment extends ResourceFragment implements
 
         EventBusUtils.register(this);
 
-        if(mArticleLists == null ||
-                (mArticleLists.isEmpty() && mCanLoadMore)){
+        if (mArticleLists == null ||
+                (mArticleLists.isEmpty() && mCanLoadMore)) {
             loadOnStart();
         }
     }
@@ -176,18 +178,21 @@ public class ArticleListResFragment extends ResourceFragment implements
 
     /**
      * 加载数据
+     *
      * @param loadMore 是否加载更多
      */
     public void load(boolean loadMore) {
         load(loadMore, DEFAULT_COUNT_PER_LOAD, mChannelId, mSort);
     }
+
     /**
      * 在此方法创建request并加载数据
-     * @param loadMore 是否加载更多
+     *
+     * @param loadMore            是否加载更多
      * @param defaultCountPerLoad 加载count
      */
     public void load(boolean loadMore, int defaultCountPerLoad, int channelId, int sort) {
-        if(mLoading || (loadMore && !mCanLoadMore)){
+        if (mLoading || (loadMore && !mCanLoadMore)) {
             return;
         }
 
@@ -205,14 +210,15 @@ public class ArticleListResFragment extends ResourceFragment implements
 //            }
 //        }
 
-        if(!loadMore)pageNo = 1;
+        if (!loadMore) pageNo = 1;
         ApiRequest<ArticleListResult> request =
-                ApiRequests.newArticleListResultRequest(channelId,sort,pageNo);
-        State state = new State(loadMore,DEFAULT_COUNT_PER_LOAD);
-        RequestFragment.startRequest(request,state, this);
+                ApiRequests.newArticleListResultRequest(channelId, sort, pageNo);
+        State state = new State(loadMore, DEFAULT_COUNT_PER_LOAD);
+        RequestFragment.startRequest(request, state, this);
     }
 
-    protected void onStartLoad() {}
+    protected void onStartLoad() {
+    }
 
     @Override
     public void onStop() {
@@ -226,7 +232,7 @@ public class ArticleListResFragment extends ResourceFragment implements
         postOnResumed(new Runnable() {
             @Override
             public void run() {
-                OnLoadFinished(successful,result,error,requestState.loadMore,requestState.count);
+                OnLoadFinished(successful, result, error, requestState.loadMore, requestState.count);
             }
         });
     }
@@ -239,29 +245,29 @@ public class ArticleListResFragment extends ResourceFragment implements
         //通知界面加载数据完成
         getListStateListener().onLoadArticleListFinished(getRequestCode());
 
-        if(successful){
+        if (successful) {
             mCanLoadMore = result.paramsData.articleLists.size() == count;
             ++pageNo;
-            if(loadMore){
+            if (loadMore) {
                 mArticleLists.addAll(result.paramsData.articleLists);
                 //通知界面loadMore完成
                 getListStateListener().onArticleListAppended(getRequestCode(),
                         Collections.unmodifiableList(result.paramsData.articleLists));
-                for(ArticleList articlelist : result.paramsData.articleLists){
+                for (ArticleList articlelist : result.paramsData.articleLists) {
                     EventBusUtils.postAsync(new ArticleDesUpdatedEvent(articlelist, this));
                 }
-            }else {
+            } else {
                 setArticleDesList(result.paramsData.articleLists);
             }
-        }else {
+        } else {
             //返回错误信息
             getListStateListener().onLoadArticleListError(getRequestCode(), error);
         }
     }
 
     @Keep
-    public void onEventMainThread(ArticleDesUpdatedEvent event){
-        if(event.isFromMyself(this) || mArticleLists == null){
+    public void onEventMainThread(ArticleDesUpdatedEvent event) {
+        if (event.isFromMyself(this) || mArticleLists == null) {
             return;
         }
 
@@ -285,22 +291,22 @@ public class ArticleListResFragment extends ResourceFragment implements
     }
 
     @Keep
-    public void onEventMainThread(ArticleDesDeletedEvent event){
-        if(event.isFromMyself(this) || mArticleLists == null){
+    public void onEventMainThread(ArticleDesDeletedEvent event) {
+        if (event.isFromMyself(this) || mArticleLists == null) {
             return;
         }
     }
 
     @Keep
-    public void onEventMainThread(ArticleDesWriteStartedEvent event){
-        if(event.isFromMyself(this) || mArticleLists == null){
+    public void onEventMainThread(ArticleDesWriteStartedEvent event) {
+        if (event.isFromMyself(this) || mArticleLists == null) {
             return;
         }
     }
 
     @Keep
-    public void onEventMainThread(ArticleDesWriteFinishedEvent event){
-        if(event.isFromMyself(this) || mArticleLists == null){
+    public void onEventMainThread(ArticleDesWriteFinishedEvent event) {
+        if (event.isFromMyself(this) || mArticleLists == null) {
             return;
         }
     }
@@ -308,34 +314,34 @@ public class ArticleListResFragment extends ResourceFragment implements
     /**
      * 设置loading状态来通知视图更新加载数据状态
      */
-    protected void setLoading(boolean loading){
-        if(mLoading == loading){
+    protected void setLoading(boolean loading) {
+        if (mLoading == loading) {
             return;
         }
         mLoading = loading;
-        if(mLoading){
+        if (mLoading) {
             getListStateListener().onLoadArticleListStarted(getRequestCode());
-        }else{
+        } else {
             getListStateListener().onLoadArticleListFinished(getRequestCode());
         }
     }
 
-    protected void setArticleDesList(ArrayList<ArticleList> articleLists){
+    protected void setArticleDesList(ArrayList<ArticleList> articleLists) {
         this.mArticleLists = articleLists;
         //通知界面list数据修改
         getListStateListener().onArticleListChanged(getRequestCode(),
                 Collections.unmodifiableList(articleLists));
     }
 
-    protected void setChannelId(int channelId){
+    protected void setChannelId(int channelId) {
 
     }
 
-    protected void setSort(int sort){
+    protected void setSort(int sort) {
 
     }
 
-    private ListStateListener getListStateListener(){
+    private ListStateListener getListStateListener() {
         return (ListStateListener) getTarget();
     }
 
@@ -356,28 +362,36 @@ public class ArticleListResFragment extends ResourceFragment implements
     public interface ListStateListener {
         /**
          * 回调通知 开始请求数据显示等待状态
+         *
          * @param requestCode
          */
         void onLoadArticleListStarted(int requestCode);
 
         /**
          * 加载文章列表数据完成了，可以更新UI啦
+         *
          * @param requestCode
          */
         void onLoadArticleListFinished(int requestCode);
+
         void onLoadArticleListError(int requestCode, VolleyError error);
+
         /**
          * @param newArticleList Unmodifiable.
          */
         void onArticleListChanged(int requestCode, List<ArticleList> newArticleList);
+
         /**
          * @param appendedArticleList Unmodifiable.
          */
         void onArticleListAppended(int requestCode, List<ArticleList> appendedArticleList);
+
         void onArticleChanged(int requestCode, int position, ArticleList newArticleDes);
+
         void onArticleRemoved(int requestCode, int position);
 
         void onArticleWriteStarted(int requestCode, int position);
+
         void onArticleWriteFinished(int requestCode, int position);
     }
 

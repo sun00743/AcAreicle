@@ -8,6 +8,10 @@
     <string name="reload">重新加载</string>
     <string name="yes">是</string>
 
+    <string name="quote_acer_delete">用户不存在或已删除</string>
+    <string name="quote_comment_delete">该评论已被删除</string>
+    <string name="quote_title_delete">未知领域</string>
+
     <string name="articlelist_comment">查看评论</string>
     <string name="articlelist_like">收藏</string>
     <string name="articlelist_banana">食我大蕉</string>
@@ -29,7 +33,7 @@
     <string name="profile_comments">当前所有有效投稿的评论数总和。</string>
 
     <string name="nothing">这里空无一物</string>
-    <string name="navigation_head_getbananafailed">你的香蕉情况ac娘现在不能告诉你</string>
+    <string name="navigation_head_getbananafailed">服务器爆炸，我能有什么办法（摊手）</string>
     <string name="navigation_head_has_signin">已签到</string>
     <string name="navigation_head_unLogin">未登录</string>
 

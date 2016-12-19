@@ -15,6 +15,7 @@ import android.support.v7.preference.PreferenceCategory;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.R;
 import mika.com.android.ac.db.AcerDB;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -24,7 +25,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        addPreferencesFromResource(mika.com.android.ac.R.xml.settings);
+        addPreferencesFromResource(R.xml.settings);
         if(!AcWenApplication.LOGIN){
             PreferenceCategory logout = (PreferenceCategory) findPreference(LOGOUT);
             getPreferenceScreen().removePreference(logout);

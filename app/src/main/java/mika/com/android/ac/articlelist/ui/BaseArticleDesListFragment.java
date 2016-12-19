@@ -31,6 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.zhanghai.android.customtabshelper.CustomTabsHelperFragment;
 import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.R;
 import mika.com.android.ac.article.ui.ArticleActivity2;
 import mika.com.android.ac.articlelist.content.ArticleListResFragment;
 import mika.com.android.ac.main.ui.MainActivity;
@@ -56,15 +57,15 @@ import mika.com.android.ac.util.ViewUtils;
  */
 
 public abstract class BaseArticleDesListFragment extends Fragment implements
-        ArticleListResFragment.ListStateListener, ArticleDesAdapter.OnBtnClickedListener{
+        ArticleListResFragment.ListStateListener, ArticleDesAdapter.OnBtnClickedListener {
 
-    @BindView(mika.com.android.ac.R.id.swipe_refresh_artdes)
+    @BindView(R.id.swipe_refresh_artdes)
     FriendlySwipeRefreshLayout mSwipeRefreshLayout;
-    @BindView(mika.com.android.ac.R.id.article_list)
+    @BindView(R.id.article_list)
     RecyclerView mArticleDesList;
-    @BindView(mika.com.android.ac.R.id.progress)
+    @BindView(R.id.progress)
     ProgressBar mProgress;
-    @BindView(mika.com.android.ac.R.id.gotop)
+    @BindView(R.id.gotop)
     FriendlyFloatingActionButton mGoTopFab;
 
     private ArticleListResFragment mArticleListResource;
@@ -73,12 +74,13 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
     private LoadMoreAdapter mLoadMoreAdapter;
     private Acer mAcer;
 
-    protected BaseArticleDesListFragment () {}
+    protected BaseArticleDesListFragment() {
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return ViewUtils.inflate(mika.com.android.ac.R.layout.articledes_list_fragment, container);
+        return ViewUtils.inflate(R.layout.articledes_list_fragment, container);
     }
 
     @Override
@@ -98,7 +100,7 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
 
         mArticleListResource = onAttachArticleListResource();
 
-        mAcer = ((MainActivity)activity).getAcer();
+        mAcer = ((MainActivity) activity).getAcer();
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -113,42 +115,42 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
                 CardUtils.getColumnCount(activity), StaggeredGridLayoutManager.VERTICAL));
         //adapter
         mArticleDesAdapter = new ArticleDesAdapter(mArticleListResource.get(), this);
-        mLoadMoreAdapter = new LoadMoreAdapter(mika.com.android.ac.R.layout.load_more_card_item, mArticleDesAdapter);
+        mLoadMoreAdapter = new LoadMoreAdapter(R.layout.load_more_card_item, mArticleDesAdapter);
         mArticleDesList.setAdapter(mLoadMoreAdapter);
         //recycleView事件
         final AppBarManager appBarManager = (AppBarManager) getParentFragment();
         mArticleDesList.addOnScrollListener(
                 new OnVerticalScrollWithPagingTouchSlopListener(activity) {
-            @Override
-            public void onScrolled(int dy) {
-                if(!RecyclerViewUtils.hasFirstChildReachedTop(mArticleDesList)){
-                    onShow();
-                }
-            }
+                    @Override
+                    public void onScrolled(int dy) {
+                        if (!RecyclerViewUtils.hasFirstChildReachedTop(mArticleDesList)) {
+                            onShow();
+                        }
+                    }
 
-            @Override
-            public void onScrolledUp() {
-                onShow();
-            }
+                    @Override
+                    public void onScrolledUp() {
+                        onShow();
+                    }
 
-            private void onShow(){
-                appBarManager.showAppBar();
-                //gotop按钮show
-            }
+                    private void onShow() {
+                        appBarManager.showAppBar();
+                        //gotop按钮show
+                    }
 
-            @Override
-            public void onScrolledDown() {
-                if(RecyclerViewUtils.hasFirstChildReachedTop(mArticleDesList)){
-                    appBarManager.hideAppBar();
-                    //gotop按钮hide
-                }
-            }
+                    @Override
+                    public void onScrolledDown() {
+                        if (RecyclerViewUtils.hasFirstChildReachedTop(mArticleDesList)) {
+                            appBarManager.hideAppBar();
+                            //gotop按钮hide
+                        }
+                    }
 
-            @Override
-            public void onScrolledToBottom() {
-                mArticleListResource.load(true);
-            }
-        });
+                    @Override
+                    public void onScrolledToBottom() {
+                        mArticleListResource.load(true);
+                    }
+                });
         upDateRefreshing();
 
 //        CheatSheetUtils.setup(mGoTopFab);
@@ -161,23 +163,23 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
         mArticleListResource.detach();
     }
 
-    private void upDateRefreshing(){
+    private void upDateRefreshing() {
         boolean loading = mArticleListResource.isLoading();
         boolean loadingMore = mArticleListResource.isLoadingMore();
         boolean empty = mArticleListResource.isEmpty();
         mSwipeRefreshLayout.setRefreshing(loading && (!empty || mSwipeRefreshLayout.isRefreshing())
                 && !loadingMore);
         ViewUtils.setVisibleOrGone(mProgress, loading && empty);
-        mLoadMoreAdapter.setProgressVisible(loading && !empty &&loadingMore);
+        mLoadMoreAdapter.setProgressVisible(loading && !empty && loadingMore);
     }
 
-    protected void onSwipeRefresh(){
+    protected void onSwipeRefresh() {
         mArticleListResource.load(false);
     }
 
-    protected void setPaddingTop(int paddingTop){
+    protected void setPaddingTop(int paddingTop) {
         mSwipeRefreshLayout.setProgressViewOffset(paddingTop);
-        mArticleDesList.setPadding(mArticleDesList.getPaddingLeft(),paddingTop,
+        mArticleDesList.setPadding(mArticleDesList.getPaddingLeft(), paddingTop,
                 mArticleDesList.getPaddingRight(), mArticleDesList.getPaddingBottom());
     }
 
@@ -195,16 +197,16 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
         Intent intent = new Intent(activity, ArticleActivity2.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable("articleList", articleList);
-        bundle.putInt("aid",articleList.id);
-        bundle.putString("title",articleList.title);
-        bundle.putString("username",articleList.username);
-        bundle.putString("time",articleList.diffTime);
-        bundle.putLong("view_count",articleList.viewCount);
-        bundle.putString("avatar",articleList.userAvatar);
+        bundle.putInt("aid", articleList.id);
+        bundle.putString("title", articleList.title);
+        bundle.putString("username", articleList.username);
+        bundle.putString("time", articleList.diffTime);
+        bundle.putLong("view_count", articleList.viewCount);
+        bundle.putString("avatar", articleList.userAvatar);
         //如果是登陆状态，把这个也传过去
-        if(AcWenApplication.LOGIN){
-            bundle.putString("access_token",mAcer.access_token);
-            bundle.putInt("userId",mAcer.userId);
+        if (AcWenApplication.LOGIN) {
+            bundle.putString("access_token", mAcer.access_token);
+            bundle.putInt("userId", mAcer.userId);
         }
         intent.putExtras(bundle);
         Bundle options = TransitionUtils.makeActivityOptionsBundle(activity, sharedView);
@@ -212,12 +214,12 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
 //        startActivity(intent);
     }
 
-    public void scrollToTop(){
-        if(mArticleDesList != null && mArticleDesList.getAdapter() != null){
-            if(((StaggeredGridLayoutManager)mArticleDesList.getLayoutManager()).findFirstVisibleItemPositions(null)[0] > 5){
+    public void scrollToTop() {
+        if (mArticleDesList != null && mArticleDesList.getAdapter() != null) {
+            if (((StaggeredGridLayoutManager) mArticleDesList.getLayoutManager()).findFirstVisibleItemPositions(null)[0] > 5) {
                 mArticleDesList.scrollToPosition(5);
                 mArticleDesList.smoothScrollToPosition(0);
-            }else{
+            } else {
                 mArticleDesList.smoothScrollToPosition(0);
             }
         }
@@ -269,7 +271,7 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
 
     @Override
     public void onArticleChanged(int requestCode, int position, ArticleList newArticleDes) {
-        mArticleDesAdapter.set(position,newArticleDes);
+        mArticleDesAdapter.set(position, newArticleDes);
     }
 
     @Override

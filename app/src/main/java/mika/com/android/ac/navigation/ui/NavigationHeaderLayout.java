@@ -167,7 +167,6 @@ public class NavigationHeaderLayout extends FrameLayout {
         bindAvatarImage(mAvatarImage, acerInfo.avatar);
         mNameText.setText(acerInfo.name);
         mDescriptionText.setVisibility(VISIBLE);
-        mDescriptionText.setText(acerInfo.sign);
 
         mAvatarImage.setOnClickListener(new OnClickListener() {
             @Override
@@ -232,7 +231,8 @@ public class NavigationHeaderLayout extends FrameLayout {
         }).setErrorListener(new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e("GetBananaRequest ", "onErrorResponse: " + error.getMessage());
+                mDescriptionText.setText(R.string.navigation_head_getbananafailed);
             }
         });
     }

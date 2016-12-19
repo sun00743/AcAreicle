@@ -38,7 +38,8 @@ import mika.com.android.ac.util.StringUtils;
  */
 public class ApiRequests {
 
-    private ApiRequests() {}
+    private ApiRequests() {
+    }
 
     public static ApiRequest<UserInfo> newUserInfoRequest(String userIdOrUid) {
 
@@ -48,13 +49,15 @@ public class ApiRequests {
 
         return new LifeStreamRequest<>(ApiRequest.Method.GET,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.UserInfo.URL_FORMAT, userIdOrUid),
-                new TypeToken<UserInfo>() {});
+                new TypeToken<UserInfo>() {
+                });
     }
 
     public static ApiRequest<UserInfo> newFollowshipRequest(String userIdOrUid, boolean follow) {
         return new LifeStreamRequest<>(follow ? ApiRequest.Method.POST : ApiRequest.Method.DELETE,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.Followship.URL_FORMAT, userIdOrUid),
-                new TypeToken<UserInfo>() {});
+                new TypeToken<UserInfo>() {
+                });
     }
 
     public static ApiRequest<UserList> newFollowingListRequest(String userIdOrUid, Integer start,
@@ -62,7 +65,8 @@ public class ApiRequests {
 
         ApiRequest<UserList> request = new LifeStreamRequest<>(ApiRequest.Method.GET,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.FollowingList.URL_FORMAT,
-                        userIdOrUid), new TypeToken<UserList>() {});
+                        userIdOrUid), new TypeToken<UserList>() {
+        });
 
         if (start != null) {
             request.addParam(ApiContract.Request.ApiV2.FollowingList.START, String.valueOf(start));
@@ -87,7 +91,8 @@ public class ApiRequests {
 
         ApiRequest<UserList> request = new LifeStreamRequest<>(ApiRequest.Method.GET,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.FollowerList.URL_FORMAT,
-                        userIdOrUid), new TypeToken<UserList>() {});
+                        userIdOrUid), new TypeToken<UserList>() {
+        });
 
         if (start != null) {
             request.addParam(ApiContract.Request.ApiV2.FollowerList.START, String.valueOf(start));
@@ -104,7 +109,8 @@ public class ApiRequests {
 
         ApiRequest<NotificationList> request = new FrodoRequest<NotificationList>(
                 ApiRequest.Method.GET, ApiContract.Request.Frodo.NotificationList.URL,
-                new TypeToken<NotificationList>() {}) {
+                new TypeToken<NotificationList>() {
+                }) {
             @Override
             protected Response<NotificationList> parseNetworkResponse(NetworkResponse response) {
                 Response<NotificationList> superResponse = super.parseNetworkResponse(response);
@@ -145,7 +151,8 @@ public class ApiRequests {
         }
 
         ApiRequest<List<Broadcast>> request = new LifeStreamRequest<>(ApiRequest.Method.GET, url,
-                new TypeToken<List<Broadcast>>() {});
+                new TypeToken<List<Broadcast>>() {
+                });
 
         if (untilId != null) {
             request.addParam(ApiContract.Request.ApiV2.BroadcastList.UNTIL_ID,
@@ -163,32 +170,36 @@ public class ApiRequests {
 
     /**
      * 文章列表Request
+     *
      * @return
      */
-    public static ApiRequest<ArticleListResult> newArticleListResultRequest(int channelid,
-                                                                            int sort,int pageNo) {
-        String url = "http://www.acfun.tv/list/getlist?channelId="+ channelid +"&sort="+ sort +"&pageSize=20&pageNo=" + pageNo;
-        ApiRequest<ArticleListResult> request = new ApiRequest<>(ApiRequest.Method.GET,
-                url, new TypeToken<ArticleListResult>() {});
-        return request;
+    public static ApiRequest<ArticleListResult> newArticleListResultRequest(int channelid, int sort, int pageNo) {
+        String url = "http://www.acfun.tv/list/getlist?channelId=" +
+                channelid + "&sort=" +
+                sort + "&pageSize=20&pageNo=" +
+                pageNo;
+        return new ApiRequest<>(ApiRequest.Method.GET, url, new TypeToken<ArticleListResult>() {
+        });
     }
 
     /**
      * 评论列表Request
+     *
      * @return
      */
     public static ApiRequest<CommentResult> newCommentListResultRequest(int articleId, int pageNO) {
-        String url = "http://mobile.acfun.tv/comment/content/list?app_version=4.3.0&contentId="+
-                articleId +"&market=appstore&origin=ios&pageNo=" +
+        String url = "http://mobile.acfun.tv/comment/content/list?app_version=4.3.0&contentId=" +
+                articleId + "&market=appstore&origin=ios&pageNo=" +
                 pageNO + "&pageSize=40&resolution=640x1136&sys_name=ios&sys_version=9.3.5&version=4";
-        ApiRequest<CommentResult> request = new ApiRequest<>(ApiRequest.Method.GET, url, new TypeToken<CommentResult>() {});
-        return request;
+        return new ApiRequest<>(ApiRequest.Method.GET, url, new TypeToken<CommentResult>() {
+        });
     }
 
     public static ApiRequest<Broadcast> newBroadcastRequest(long broadcastId) {
         return new LifeStreamRequest<>(ApiRequest.Method.GET,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.Broadcast.URL_FORMAT, broadcastId),
-                new TypeToken<Broadcast>() {});
+                new TypeToken<Broadcast>() {
+                });
     }
 
     public static ApiRequest<CommentList> newBroadcastCommentListRequest(long broadcastId,
@@ -197,7 +208,8 @@ public class ApiRequests {
 
         ApiRequest<CommentList> request = new LifeStreamRequest<>(ApiRequest.Method.GET,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.BroadcastCommentList.URL_FORMAT,
-                        broadcastId), new TypeToken<CommentList>() {});
+                        broadcastId), new TypeToken<CommentList>() {
+        });
 
         if (start != null) {
             request.addParam(ApiContract.Request.ApiV2.BroadcastCommentList.START,
@@ -214,7 +226,8 @@ public class ApiRequests {
     public static ApiRequest<Broadcast> newLikeBroadcastRequest(long broadcastId, boolean like) {
         return new LifeStreamRequest<>(like ? ApiRequest.Method.POST : ApiRequest.Method.DELETE,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.LikeBroadcast.URL_FORMAT,
-                        broadcastId), new TypeToken<Broadcast>() {});
+                        broadcastId), new TypeToken<Broadcast>() {
+        });
     }
 
     public static ApiRequest<Broadcast> newRebroadcastBroadcastRequest(long broadcastId,
@@ -222,7 +235,8 @@ public class ApiRequests {
         return new LifeStreamRequest<>(rebroadcast ? ApiRequest.Method.POST
                 : ApiRequest.Method.DELETE,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.RebroadcastBroadcast.URL_FORMAT,
-                        broadcastId), new TypeToken<Broadcast>() {});
+                        broadcastId), new TypeToken<Broadcast>() {
+        });
     }
 
     public static ApiRequest<List<User>> newBroadcastLikerListRequest(long broadcastId,
@@ -231,7 +245,8 @@ public class ApiRequests {
 
         ApiRequest<List<User>> request = new LifeStreamRequest<>(ApiRequest.Method.GET,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.BroadcastLikerList.URL_FORMAT,
-                        broadcastId), new TypeToken<List<User>>() {});
+                        broadcastId), new TypeToken<List<User>>() {
+        });
 
         if (start != null) {
             request.addParam(ApiContract.Request.ApiV2.BroadcastLikerList.START,
@@ -252,7 +267,8 @@ public class ApiRequests {
         ApiRequest<List<User>> request = new LifeStreamRequest<>(ApiRequest.Method.GET,
                 StringUtils.formatUs(
                         ApiContract.Request.ApiV2.BroadcastRebroadcasterList.URL_FORMAT,
-                        broadcastId), new TypeToken<List<User>>() {});
+                        broadcastId), new TypeToken<List<User>>() {
+        });
 
         if (start != null) {
             request.addParam(ApiContract.Request.ApiV2.BroadcastRebroadcasterList.START,
@@ -270,14 +286,16 @@ public class ApiRequests {
                                                                        long commentId) {
         return new LifeStreamRequest<>(ApiRequest.Method.DELETE, StringUtils.formatUs(
                 ApiContract.Request.ApiV2.DeleteBroadcastComment.URL_FORMAT, broadcastId,
-                commentId), new TypeToken<Boolean>() {});
+                commentId), new TypeToken<Boolean>() {
+        });
     }
 
     public static ApiRequest<Comment> newSendBroadcastCommentRequest(long broadcastId,
                                                                      String comment) {
         ApiRequest<Comment> request = new LifeStreamRequest<>(ApiRequest.Method.POST,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.SendBroadcastComment.URL_FORMAT,
-                        broadcastId), new TypeToken<Comment>() {});
+                        broadcastId), new TypeToken<Comment>() {
+        });
 
         request.addParam(ApiContract.Request.ApiV2.SendBroadcastComment.TEXT, comment);
 
@@ -287,7 +305,8 @@ public class ApiRequests {
     public static ApiRequest<Broadcast> newDeleteBroadcastRequest(long broadcastId) {
         return new LifeStreamRequest<>(ApiRequest.Method.DELETE,
                 StringUtils.formatUs(ApiContract.Request.ApiV2.DeleteBroadcast.URL_FORMAT,
-                        broadcastId), new TypeToken<Broadcast>() {});
+                        broadcastId), new TypeToken<Broadcast>() {
+        });
     }
 
     public static ApiRequest<DiaryList> newDiaryListRequest(String userIdOrUid, Integer start,
@@ -295,7 +314,8 @@ public class ApiRequests {
 
         ApiRequest<DiaryList> request = new UserIdOrUidFrodoRequest<>(ApiRequest.Method.GET,
                 StringUtils.formatUs(ApiContract.Request.Frodo.UserDiaryList.URL_FORMAT,
-                        userIdOrUid), new TypeToken<DiaryList>() {})
+                        userIdOrUid), new TypeToken<DiaryList>() {
+        })
                 .withUserIdOrUid(userIdOrUid);
 
         if (start != null) {
@@ -311,7 +331,8 @@ public class ApiRequests {
     public static ApiRequest<UserItemList> newUserItemListRequest(String userIdOrUid) {
         return new UserIdOrUidFrodoRequest<>(ApiRequest.Method.GET, StringUtils.formatUs(
                 ApiContract.Request.Frodo.UserItemList.URL_FORMAT, userIdOrUid),
-                new TypeToken<UserItemList>() {})
+                new TypeToken<UserItemList>() {
+                })
                 .withUserIdOrUid(userIdOrUid);
     }
 
@@ -320,7 +341,8 @@ public class ApiRequests {
 
         ApiRequest<ReviewList> request = new UserIdOrUidFrodoRequest<>(ApiRequest.Method.GET,
                 StringUtils.formatUs(ApiContract.Request.Frodo.UserReviewList.URL_FORMAT,
-                        userIdOrUid), new TypeToken<ReviewList>() {})
+                        userIdOrUid), new TypeToken<ReviewList>() {
+        })
                 .withUserIdOrUid(userIdOrUid);
 
         if (start != null) {
@@ -338,7 +360,8 @@ public class ApiRequests {
 
         ApiRequest<ReviewList> request = new FrodoRequest<>(ApiRequest.Method.GET,
                 StringUtils.formatUs(ApiContract.Request.Frodo.ItemReviewList.URL_FORMAT, itemId),
-                new TypeToken<ReviewList>() {});
+                new TypeToken<ReviewList>() {
+                });
 
         if (start != null) {
             request.addParam(ApiContract.Request.Frodo.ItemReviewList.START, String.valueOf(start));

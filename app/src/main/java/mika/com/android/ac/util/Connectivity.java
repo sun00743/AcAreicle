@@ -38,11 +38,6 @@ import java.util.Map;
 
 import mika.com.android.ac.AcWenApplication;
 
-/**
- * 
- * @author Yrom
- * 
- */
 public class Connectivity {
     private static final String DEFAULT_CACHE_DIR = "acfunArt";
     public static final String UA = "acfun/1.0 (Linux; U; Android "+ Build.VERSION.RELEASE+"; "+ Build.MODEL+"; "+ Locale.getDefault().getLanguage()+"-"+ Locale.getDefault().getCountry().toLowerCase()+") AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 ";
@@ -52,6 +47,11 @@ public class Connectivity {
         UA_MAP.put("User-Agent", UA);
         UA_MAP.put("deviceType", "1");
     }
+    public static final String PAGE_NO = "pageNo";
+    public static final String PAGE_SIZE = "pageSize";
+    public static final String USER_ID = "userId";
+    public static final String ACCESS_TOKEN = "access_token";;
+    public static final String VERSION = "appVersion";
     /**
      * Creates a default instance of the worker pool and calls
      * {@link RequestQueue#start()} on it.

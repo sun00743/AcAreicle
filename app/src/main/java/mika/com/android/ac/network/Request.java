@@ -265,7 +265,8 @@ public abstract class Request<T> extends com.android.volley.Request<T> {
         mPriority = priority;
     }
 
-    public void onPreparePerformRequest() throws AuthFailureError {}
+    public void onPreparePerformRequest() throws AuthFailureError {
+    }
 
     public T getResponse() throws InterruptedException, TimeoutException, ExecutionException {
         RequestFuture<T> future = RequestFuture.newFuture();

@@ -9,10 +9,12 @@
 
 package mika.com.android.ac.main.ui;
 
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,14 +32,19 @@ import mika.com.android.ac.navigation.ui.NavigationFragment;
 import mika.com.android.ac.network.NetWorkStateReceiver;
 import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.notification.ui.NotificationListFragment;
+import mika.com.android.ac.quote.ui.QuoteActivity;
+import mika.com.android.ac.quote.ui.QuoteFragment;
 import mika.com.android.ac.scalpel.ScalpelHelperFragment;
 import mika.com.android.ac.ui.ActionItemBadge;
 import mika.com.android.ac.ui.DrawerManager;
 import mika.com.android.ac.util.FragmentUtils;
 import mika.com.android.ac.util.TransitionUtils;
 
-public class MainActivity extends AppCompatActivity
-        implements DrawerManager, NotificationListFragment.UnreadNotificationCountListener {
+public class MainActivity extends AppCompatActivity implements
+        DrawerManager,
+        NotificationListFragment.UnreadNotificationCountListener,
+        NavigationFragment.OnNavigationMenuClickListener,
+        QuoteFragment.OnQuoteInteractionListener{
 
     @BindView(R.id.drawer)
     DrawerLayout mDrawerLayout;
@@ -52,6 +59,7 @@ public class MainActivity extends AppCompatActivity
 //    private NotificationListFragment mNotificationListFragment;
     private boolean isRemoveAcerinfo;
     private HomeFragment homeFragment;
+    private QuoteFragment quoteFragment;
     private NetWorkStateReceiver netWorkStateReceiver;
 
     @Override
@@ -68,8 +76,6 @@ public class MainActivity extends AppCompatActivity
                     .build());
         }
 */
-        setTheme(R.style.Theme_AcWen_MainActivity);
-
         TransitionUtils.setupTransitionBeforeDecorate(this);
 
         super.onCreate(savedInstanceState);
@@ -89,9 +95,9 @@ public class MainActivity extends AppCompatActivity
 //        mNotificationListFragment = FragmentUtils.findById(this, R.id.notification_list_fragment);
 //        mNotificationListFragment.setUnreadNotificationCountListener(this);
         homeFragment = HomeFragment.newInstance();
+        quoteFragment = new QuoteFragment();
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
-//            FragmentUtils.add(homeFragment, this, R.id.container);
+            FragmentUtils.add(homeFragment, this, R.id.container);
         }
     }
 
@@ -200,5 +206,26 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         unregisterReceiver(netWorkStateReceiver);
         super.onDestroy();
+    }
+
+    @Override
+    public void onHomeClicked() {
+
+    }
+
+    @Override
+    public void onStarClicked() {
+//        getSupportFragmentManager().beginTransaction().replace(R.id.container, ).commit();
+    }
+
+    @Override
+    public void onQuoteClicked() {
+        Intent intent = new Intent(this, QuoteActivity.class);
+        ActivityCompat.startActivity(this,intent,null);
+    }
+
+    @Override
+    public void onMessageClicked() {
+//        getSupportFragmentManager().beginTransaction().replace(R.id.container, ).commit();
     }
 }

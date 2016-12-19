@@ -169,22 +169,16 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder;
         switch (viewType) {
             case VIEW_TYPE_HEAD:
-                holder = new HeadHolder(ViewUtils.inflate(R.layout.articlecomplex_item_head, parent));
-                break;
+                return new HeadHolder(ViewUtils.inflate(R.layout.articlecomplex_item_head, parent));
             case VIEW_TYPE_ARTICLE:
-                holder = new ArticleHolder(ViewUtils.inflate(R.layout.articlecomplex_item_article, parent));
-                break;
+                return new ArticleHolder(ViewUtils.inflate(R.layout.articlecomplex_item_article, parent));
             case VIEW_TYPE_SUBTITLE:
-                holder = new SubTitleHolder(ViewUtils.inflate(R.layout.articlecomplex_item_subtitle, parent));
-                break;
+                return new SubTitleHolder(ViewUtils.inflate(R.layout.articlecomplex_item_subtitle, parent));
             default:
-                holder = new CommentHolder(ViewUtils.inflate(R.layout.articlecomplex_item_comment, parent));
-                break;
+                return new CommentHolder(ViewUtils.inflate(R.layout.articlecomplex_item_comment, parent));
         }
-        return holder;
     }
 
     @Override
@@ -231,7 +225,11 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 CommentHolder cHolder = (CommentHolder) holder;
                 releaseComment((CommentHolder) holder);
 
-                cHolder.userName.setText("#" + comment.floor + " " + comment.username);
+                if (mArticle.poster.id == comment.userId) {
+                    cHolder.userName.setText("#" + comment.floor + " #up " + comment.username);
+                } else {
+                    cHolder.userName.setText("#" + comment.floor + " " + comment.username);
+                }
                 cHolder.tiem.setText(comment.calculateTimeDiff());
                 TextViewUtils.setCommentContent(cHolder.content, comment);
                 ImageUtils.loadAvatar(cHolder.avatar, comment.avatar);
@@ -364,7 +362,11 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         ImageView quoted = (ImageView) quoteLayout.findViewById(R.id.comment_quoteimg);
         ImageView more = (ImageView) quoteLayout.findViewById(R.id.comment_more);
 
-        username.setText("#" + quote.floor + " " + quote.username);
+        if (mArticle.poster.id == quote.userId) {
+            username.setText("#" + quote.floor + " #up " + quote.username);
+        } else {
+            username.setText("#" + quote.floor + " " + quote.username);
+        }
         TextViewUtils.setCommentContent(content, quote);
         quoted.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -409,6 +411,13 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 //如果不出错
                 mSubTitleHolder.subtitle.setVisibility(View.VISIBLE);
 
+
+                if (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI) {
+                    //同时加载评论
+                    isAutoLoad = true;
+                    activity.loadComment();
+                }
+
                 if (isWebMode
                         || imgUrls == null || imgUrls.isEmpty()
                         || url.startsWith("file:///android_asset")
@@ -416,17 +425,14 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     return;
 
                 if ((url.equals(Constants.HOME) || url.contains(NAME_ARTICLE_HTML))
-                        && imgUrls.size() > 0 && !isDownloaded && AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI) {
+                        && imgUrls.size() > 0
+                        && !isDownloaded
+                        && AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI) {
                     String[] arr = new String[imgUrls.size()];
                     mDownloadTask = new DownloadImageTask();
                     mDownloadTask.execute(imgUrls.toArray(arr));
                 }
 
-                if (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI) {
-                    //同时加载评论
-                    isAutoLoad = true;
-                    activity.loadComment();
-                }
             }
 
         });
@@ -439,7 +445,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     }
 
     /**
-     * 加载网络数据
+     * load article data
      */
     private void requestData() {
         Request<?> request = new ArticleRequest(activity.getApplicationContext(), aid, new Response.Listener<Article>() {
@@ -463,7 +469,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     /**
      * subtitile刷新评论 progress Gone
      */
-    public void setUpdataProgressGONE(){
+    public void setUpdataProgressGONE() {
         mSubTitleHolder.subtitle_pro.setVisibility(View.GONE);
     }
 
@@ -1081,7 +1087,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
          */
         @android.webkit.JavascriptInterface
         public void viewImage(String url) {
-//            ImagePagerActivity.startCacheImage(ArticleActivity.this,
+//            ImagePagerActivity.startCacheImage(ArticleActivity2.this,
 //                    (ArrayList<File>) imageCaches,
 //                    imgUrls.indexOf(url), aid, title);
             Log.i("viewImage", "  ViewImage");

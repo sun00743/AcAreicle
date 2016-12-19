@@ -97,7 +97,7 @@ public class AcerSignInActivity extends AppCompatActivity {
                     //请求acer详细信息
                     requestAcerInfo(acer.userId);
                 }else{
-                    //showError;
+                    // TODO: 2016/12/13 登录失败 
                 }
             }
         });
@@ -171,7 +171,7 @@ public class AcerSignInActivity extends AppCompatActivity {
                     acerInfo = ((AcerInfoResult2)response).userjson;
                     doResult();
                 }else{
-                    //显示服务器错误信息
+                    // TODO: 2016/12/13 获取个人资料失败
                 }
             }
         });

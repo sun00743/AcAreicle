@@ -17,6 +17,7 @@ import android.view.View;
 
 import butterknife.BindDimen;
 import butterknife.ButterKnife;
+import mika.com.android.ac.R;
 import mika.com.android.ac.articlelist.content.ArticleListResFragment;
 import mika.com.android.ac.articlelist.content.HomeArticleListResFragment;
 import mika.com.android.ac.main.ui.MainActivity;
@@ -31,7 +32,7 @@ public class HomeArticleListFragment extends BaseArticleDesListFragment {
     private static final String EXTRA_CHANNEL_ID = HomeArticleListFragment.class.getName() + "channelId";
     private static final String EXTRA_SORT = HomeArticleListFragment.class.getName() + "sort";
 
-    @BindDimen(mika.com.android.ac.R.dimen.toolbar_and_tab_height)
+    @BindDimen(R.dimen.toolbar_and_tab_height)
     int mToolbarAndTabHeight;
 
     private int channelId = 110;

@@ -103,18 +103,15 @@
             android:name=".settings.ui.AboutActivity"
             android:label="@string/about_title"
             android:theme="@style/Theme.AcWen.PrimaryColorBackground" />
-        <activity android:name=".main.ui.TestActivity"></activity>
+        <activity android:name=".main.ui.TestActivity" />
         <activity
             android:name=".article.ui.ArticleActivity2"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity
-            android:name=".article.ui.ArticleActivity"
-            android:launchMode="singleTop" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".account.ui.AcerLoginActivity"
             android:label="@string/title_activity_acer_login" />
-        <activity android:name=".account.ui.AcerSignInActivity"></activity>
+        <activity android:name=".account.ui.AcerSignInActivity" />
 
         <service
             android:name=".account.app.AuthenticatorService"
@@ -136,13 +133,12 @@
                 <action android:name="me.zhanghai.android.douya.intent.action.SET_API_CREDENTIAL" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".network.NetWorkStateReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
@@ -153,6 +149,7 @@
             android:name="io.fabric.ApiKey"
             android:value="dc160e13d1b3c3e917e331e8b272c51a523d8599" />
 
+        <activity android:name=".quote.ui.QuoteActivity"></activity>
     </application>
 
 </manifest>

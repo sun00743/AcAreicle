@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import mika.com.android.ac.R;
 import mika.com.android.ac.articlelist.ui.HomeArticleListFragment;
 import mika.com.android.ac.ui.AppBarManager;
 import mika.com.android.ac.ui.AppBarWrapperLayout;
@@ -31,13 +32,13 @@ import mika.com.android.ac.util.FileUtil;
 
 public class HomeFragment extends Fragment implements AppBarManager {
 
-    @BindView(mika.com.android.ac.R.id.appBarWrapper)
+    @BindView(R.id.appBarWrapper)
     AppBarWrapperLayout mAppBarWrapperLayout;
-    @BindView(mika.com.android.ac.R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(mika.com.android.ac.R.id.tab)
+    @BindView(R.id.tab)
     TabLayout mTabLayout;
-    @BindView(mika.com.android.ac.R.id.viewPager)
+    @BindView(R.id.viewPager)
     ViewPager mViewPager;
 
     private TabFragmentPagerAdapter mTabAdapter;
@@ -56,7 +57,7 @@ public class HomeFragment extends Fragment implements AppBarManager {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(mika.com.android.ac.R.layout.home_fragment, container, false);
+        return inflater.inflate(R.layout.home_fragment, container, false);
     }
 
     @Override
@@ -70,6 +71,7 @@ public class HomeFragment extends Fragment implements AppBarManager {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //clear cache
         FileUtil.deleteFiles(getActivity().getExternalCacheDir());
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -77,11 +79,11 @@ public class HomeFragment extends Fragment implements AppBarManager {
 
         mTabAdapter = new TabFragmentPagerAdapter(this);
 
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(110,0), getString(mika.com.android.ac.R.string.home_mixmain));
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(73,0), getString(mika.com.android.ac.R.string.home_bicanlvhua));
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(74,0), getString(mika.com.android.ac.R.string.home_animation));
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(75,0), getString(mika.com.android.ac.R.string.home_cartoon));
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(63,0), getString(mika.com.android.ac.R.string.home_game));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(110,0), getString(R.string.home_mixmain));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(73,0), getString(R.string.home_bicanlvhua));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(74,0), getString(R.string.home_animation));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(75,0), getString(R.string.home_cartoon));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(63,0), getString(R.string.home_game));
 
 //        mTabAdapter.addTab(new TabFragmentPagerAdapter.FragmentCreator() {
 //            @Override

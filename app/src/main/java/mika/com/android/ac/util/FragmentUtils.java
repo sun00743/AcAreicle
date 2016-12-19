@@ -16,7 +16,8 @@ import android.support.v4.app.FragmentManager;
 
 public class FragmentUtils {
 
-    private FragmentUtils() {}
+    private FragmentUtils() {
+    }
 
     public static Bundle ensureArguments(Fragment fragment) {
         Bundle arguments = fragment.getArguments();
@@ -105,6 +106,13 @@ public class FragmentUtils {
 
     public static void add(Fragment fragment, Fragment parentFragment) {
         add(fragment, parentFragment.getChildFragmentManager(), null);
+    }
+
+    public static void replace(Fragment fragment, FragmentActivity activity, int containerViewId) {
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(containerViewId, fragment)
+                .commit();
     }
 
     public static void remove(Fragment fragment) {

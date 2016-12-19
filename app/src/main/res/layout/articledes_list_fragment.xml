@@ -45,7 +45,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:layout_gravity="right|bottom"
         android:contentDescription="@string/articlelist_gotop"
-        android:src="@drawable/create_icon_white_24dp"
+        android:src="@drawable/upward_icon_white_24dp"
         android:theme="?actionBarTheme"
         android:visibility="gone"
         app:backgroundTint="?colorPrimary" />

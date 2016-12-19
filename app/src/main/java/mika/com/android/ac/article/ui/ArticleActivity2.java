@@ -457,7 +457,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
         Object[] spans = text.getSpans(0, text.length(), ImageSpan.class);
         int le = text.toString().length() - spans.length * 14;
         if (le < 5) {
-            Toast.makeText(this, "小兄弟，评论不能少于5个字还不能纯表情 (｀･ω･)", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "评论不能少于5个字还不能纯表情 (｀･ω･)", Toast.LENGTH_LONG).show();
             return false;
         } else {
             return true;

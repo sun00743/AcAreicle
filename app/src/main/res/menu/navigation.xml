@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--
-  ~ Copyright (c) 2015 Zhang Hai <Dreaming.in.Code.ZH@Gmail.com>
-  ~ All Rights Reserved.
-  -->
-
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group
@@ -14,22 +8,26 @@
         <item
             android:id="@+id/navigation_home"
             android:icon="@drawable/home_icon_black_24dp"
-            android:title="@string/navigation_home" />
+            android:title="@string/navigation_home"
+            />
 
         <item
             android:id="@+id/navigation_message"
             android:icon="@drawable/book_icon_black_24dp"
-            android:title="@string/navigation_message" />
+            android:title="@string/navigation_message"
+            android:checkable="false"/>
 
         <item
             android:id="@+id/navigation_quote"
             android:icon="@drawable/movie_icon_black_24dp"
-            android:title="@string/navigation_quote" />
+            android:title="@string/navigation_quote"
+            android:checkable="false" />
 
         <item
             android:id="@+id/navigation_star"
             android:icon="@drawable/music_icon_black_24dp"
-            android:title="@string/navigation_star" />
+            android:title="@string/navigation_star"
+            android:checkable="false" />
     </group>
 
     <!-- Set an id on this group to show a divider. -->

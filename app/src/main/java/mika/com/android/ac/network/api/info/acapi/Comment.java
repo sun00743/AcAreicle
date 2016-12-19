@@ -16,6 +16,27 @@ import java.util.Date;
 
 /**
  * Created by Administrator on 2016/9/12.
+ *
+ * 				"id":69861505,
+ "quoteId":69856538,
+ "refCount":0,
+ "content":"李福成， 男，汉族， 1946年9月出生，中学学历。",
+ "time":1481687980000,
+ "userId":284051,
+ "username":"蔷花雨古",
+ "avatar":"http://cdn.aixifan.com/dotnet/20120923/style/image/avatar.jpg",
+ "floor":383,
+ "deep":12,
+ "type":1,
+ "contentId":3326818,
+ "title":"燕郊首富之孙撞车身亡 事发路以其爷爷命名",
+ "isArticle":1,
+ "channelId":110,
+ "isAt":0,
+ "nameRed":0,
+ "avatarFrame":0,
+ "isDelete":false,
+ "isUpDelete":false
  */
 public class Comment implements Parcelable {
 //    private static final long serialVersionUID = 1L;
@@ -29,6 +50,11 @@ public class Comment implements Parcelable {
     public String avatar;
     public int floor;
     public int deep;
+    public int type;
+    public int contentId;
+    public String title;
+    public int isArticle;
+    public int channelId;
     public int isAt;
     public int nameRed;
     public int avatarFrame;
@@ -49,6 +75,11 @@ public class Comment implements Parcelable {
         avatar = in.readString();
         floor = in.readInt();
         deep = in.readInt();
+        type = in.readInt();
+        contentId = in.readInt();
+        title = in.readString();
+        isArticle = in.readInt();
+        channelId = in.readInt();
         isAt = in.readInt();
         nameRed = in.readInt();
         avatarFrame = in.readInt();
@@ -69,6 +100,11 @@ public class Comment implements Parcelable {
         dest.writeString(avatar);
         dest.writeInt(floor);
         dest.writeInt(deep);
+        dest.writeInt(type);
+        dest.writeInt(contentId);
+        dest.writeString(title);
+        dest.writeInt(isArticle);
+        dest.writeInt(channelId);
         dest.writeInt(isAt);
         dest.writeInt(nameRed);
         dest.writeInt(avatarFrame);
