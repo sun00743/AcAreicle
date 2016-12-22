@@ -1,6 +1,7 @@
 package mika.com.android.ac.quote.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
@@ -16,6 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.R;
+import mika.com.android.ac.article.ui.ArticleActivity2;
 import mika.com.android.ac.network.api.info.acapi.Comment;
 import mika.com.android.ac.util.ImageUtils;
 import mika.com.android.ac.util.TextViewUtils;
@@ -43,7 +45,7 @@ public class QuoteRecyclerViewAdapter extends RecyclerView.Adapter<QuoteRecycler
         if (isEmpty())
             return;
 
-        Comment qComment = mQuoteList.get(position);
+        final Comment qComment = mQuoteList.get(position);
 
         if (qComment == null)
             return;
@@ -80,7 +82,11 @@ public class QuoteRecyclerViewAdapter extends RecyclerView.Adapter<QuoteRecycler
         holder.title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+//                ActivityCompat.startActivity();
+                Intent intent = new Intent(context, ArticleActivity2.class);
+                intent.putExtra("aid", qComment.contentId);
+                intent.putExtra("title", qComment.title);
+                context.startActivity(intent);
             }
         });
     }

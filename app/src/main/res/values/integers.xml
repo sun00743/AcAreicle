@@ -3,4 +3,5 @@
     <integer name="max_floors_w">5</integer>
 
     <integer name="request_code_login">7</integer>
+    <integer name="intent_poll_code">0x00701</integer>
 </resources>

@@ -48,12 +48,7 @@ class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdapter.Vie
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-//        Log.i("ssssssss: ", getItem(position).title + "" + holder.itemView.isShown());
-//        while (holder.itemView.isShown() == false){
-//            //加载头像
-//        }
 
-//        ArticleList originalArticleList = getItem(position);
         final ArticleList articleList = getItem(position);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,9 +57,6 @@ class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdapter.Vie
             }
         });
 
-//        if(!holder.itemView.isShown()){
-//            holder.articleDesLayout.loadAvatarImage(articleList);
-//        }
         holder.articleDesLayout.isInList(true);
         holder.articleDesLayout.bindArticleList(articleList);
         holder.articleDesLayout.setOnBtnClickedListener(new ArticleListLayout.OnBtnClickedListener()  {

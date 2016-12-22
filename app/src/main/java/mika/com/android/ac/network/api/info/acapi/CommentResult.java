@@ -26,6 +26,7 @@ public class CommentResult implements Parcelable{
         success = in.readByte() != 0;
         msg = in.readString();
         status = in.readInt();
+        data = in.readParcelable(CommentData.class.getClassLoader());
     }
 
     @Override
@@ -33,6 +34,7 @@ public class CommentResult implements Parcelable{
         dest.writeByte((byte) (success ? 1 : 0));
         dest.writeString(msg);
         dest.writeInt(status);
+        dest.writeParcelable(data, flags);
     }
 
     @Override

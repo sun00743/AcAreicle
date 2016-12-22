@@ -71,6 +71,7 @@ import mika.com.android.ac.ui.SimpleAdapter;
 import mika.com.android.ac.ui.SimpleCircleImageView;
 import mika.com.android.ac.ui.TimeActionTextView;
 import mika.com.android.ac.util.Connectivity;
+import mika.com.android.ac.util.DateUtils;
 import mika.com.android.ac.util.DensityUtil;
 import mika.com.android.ac.util.FileUtil;
 import mika.com.android.ac.util.ImageUtils;
@@ -111,6 +112,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private int mWebViewHeight;
     private boolean isContentFirstLoad = true;
     private boolean isHeadFirstLoad = true;
+    private boolean hasBundle = true;
 
     public void setAutoLoad(boolean autoLoad) {
         isAutoLoad = autoLoad;
@@ -188,11 +190,16 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 if (isHeadFirstLoad) {
                     isHeadFirstLoad = false;
 //                    mEventListener.setHeadView(mHeadHolder.headContent);
-                    ImageUtils.loadAvatar(((HeadHolder) holder).avatar, mBundle.getString("avatar"));
-                    ((HeadHolder) holder).username.setText(mBundle.getString("username"));
-                    ((HeadHolder) holder).time.setText(mBundle.getString("time"));
-                    ((HeadHolder) holder).viewCount.setText(mBundle.getLong("view_count") + " " + "围观");
-                    ((HeadHolder) holder).articleTitle.setText(mBundle.getString("title"));
+                    if (mBundle != null) {
+                        ImageUtils.loadAvatar(((HeadHolder) holder).avatar, mBundle.getString("avatar"));
+                        ((HeadHolder) holder).username.setText(mBundle.getString("username"));
+                        ((HeadHolder) holder).time.setText(mBundle.getString("time"));
+                        ((HeadHolder) holder).viewCount.setText(mBundle.getLong("view_count") + " " + "围观");
+                        ((HeadHolder) holder).articleTitle.setText(mBundle.getString("title"));
+                    } else {
+                        mHeadHolder = (HeadHolder) holder;
+                        hasBundle = false;
+                    }
                 }
                 break;
             case VIEW_TYPE_ARTICLE:
@@ -302,18 +309,31 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     /**
      * 加载更多
+     * Using
      *
      * @param commentIdList 评论id list
      * @param commentMaps   评论bean map
      */
-    public void insert(Collection<? extends Integer> commentIdList,
+    public void insert(List<? extends Integer> commentIdList,
                        Map<String, Comment> commentMaps) {
         int oldSize = mCommentIdList.size();
         mCommentIdList.addAll(commentIdList);
-        for (Comment com : commentMaps.values()) {
-            mCommentList.append(com.id, com);
+        for (Comment c : commentMaps.values()) {
+            mCommentList.append(c.id, c);
         }
         notifyItemRangeInserted(oldSize, commentIdList.size());
+    }
+
+    /**
+     * 加载更多
+     */
+    public void insert(List<Comment> commentList) {
+        int oldSize = mCommentIdList.size();
+        for (int i = 0; i < commentList.size(); i++) {
+            mCommentIdList.add(commentList.get(i).id);
+            mCommentList.append(commentList.get(i).id, commentList.get(i));
+        }
+        notifyItemRangeInserted(oldSize, commentList.size());
     }
 
     /**
@@ -326,16 +346,30 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             cHolder.quoteItemsView = floors;
         }
 
-        //引用评论数number
+        //引用评论数number , 50层封顶
         int n = 0;
-        for (Comment quote = mCommentList.get(quoteId);
-             quote != null && n < 50;
+        for (Comment quote = mCommentList.get(quoteId); quote != null && n < 50;
              quoteId = quote.quoteId, quote = mCommentList.get(quoteId), n++) {
 
             //是否被引用过了
             if (quote.isQuoted) {
-                //是否在同一个位置被引用，不同位置自然隐藏重复引用（已经被引用过了）
-                if (quote.deep == position) {
+                // position < floor position在上
+
+                // 引用floor比position小, 说明引用floor在当前floor之上
+//                if(quote.quotedFloor < position){
+//                    //显示已被引用
+//                    cHolder.reQuote.setVisibility(View.VISIBLE);
+//                }else {
+//                    quote.quotedFloor = position;
+//                    quoteViewList.add(generateQuotesView(quote));
+//                }
+
+                //是否在同一层楼
+                if (quote.quotedFloor == position) {
+                    quoteViewList.add(generateQuotesView(quote));
+                //引用的楼层比当前的楼城高
+                }else if (quote.quotedFloor > position){
+                    quote.quotedFloor = position;
                     quoteViewList.add(generateQuotesView(quote));
                 } else {
                     //显示引用提示
@@ -343,8 +377,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 }
             } else {
                 quote.isQuoted = true;
-                //用deep来记住被引用的位置
-                quote.deep = position;
+                //用quotedFloor来记住被引用的楼层
+                quote.quotedFloor = position;
                 quoteViewList.add(generateQuotesView(quote));
             }
 
@@ -454,6 +488,14 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 mArticle = response;
                 imgUrls = response.imgUrls;
                 new BuildDocTask().execute(mArticle);
+                // bundle中无数据，说明是从quote点击进入，需要填充head数据
+                if (!hasBundle) {
+                    ImageUtils.loadAvatar(mHeadHolder.avatar, mArticle.poster.avatar);
+                    mHeadHolder.username.setText(mArticle.poster.name);
+                    mHeadHolder.time.setText(DateUtils.formatAgoTimes(System.currentTimeMillis() - mArticle.postTime));
+                    mHeadHolder.viewCount.setText(mArticle.views + " 围观");
+                    mHeadHolder.articleTitle.setText(mArticle.title);
+                }
             }
         }, new Response.ErrorListener() {
             @Override

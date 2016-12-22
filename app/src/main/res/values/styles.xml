@@ -129,7 +129,7 @@
     </style>
 
     <style name="Base.TextAppearance.AppCompat.ActivityTitle">
-        <item name="android:textSize">@dimen/abc_text_size_body_3_material</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:paddingLeft">-8dp</item>
         <item name="android:maxLines">2</item>

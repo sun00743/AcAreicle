@@ -9,12 +9,14 @@
 
 package mika.com.android.ac.main.ui;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +33,8 @@ import mika.com.android.ac.home.HomeFragment;
 import mika.com.android.ac.navigation.ui.NavigationFragment;
 import mika.com.android.ac.network.NetWorkStateReceiver;
 import mika.com.android.ac.network.api.info.acapi.Acer;
+import mika.com.android.ac.notification.service.AlarmPoll;
+import mika.com.android.ac.notification.service.PollingService;
 import mika.com.android.ac.notification.ui.NotificationListFragment;
 import mika.com.android.ac.quote.ui.QuoteActivity;
 import mika.com.android.ac.quote.ui.QuoteFragment;
@@ -44,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements
         DrawerManager,
         NotificationListFragment.UnreadNotificationCountListener,
         NavigationFragment.OnNavigationMenuClickListener,
-        QuoteFragment.OnQuoteInteractionListener{
+        QuoteFragment.OnQuoteInteractionListener,
+        PollingService.OnNewMentionListener {
 
     @BindView(R.id.drawer)
     DrawerLayout mDrawerLayout;
@@ -56,11 +61,14 @@ public class MainActivity extends AppCompatActivity implements
     private MenuItem mNotificationMenu;
     private int mUnreadNotificationCount;
     private NavigationFragment mNavigationFragment;
-//    private NotificationListFragment mNotificationListFragment;
+    //    private NotificationListFragment mNotificationListFragment;
     private boolean isRemoveAcerinfo;
     private HomeFragment homeFragment;
     private QuoteFragment quoteFragment;
     private NetWorkStateReceiver netWorkStateReceiver;
+
+    public ServiceConnection pushServiceConn;
+    public PollingService.PushBinder pushBinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements
         TransitionUtils.setupTransitionAfterSetContentView(this);
         ButterKnife.bind(this);
 
+        bindPush();
         ScalpelHelperFragment.attachTo(this);
 
         mNavigationFragment = FragmentUtils.findById(this, R.id.navigation_fragment);
@@ -104,7 +113,23 @@ public class MainActivity extends AppCompatActivity implements
     private void doRegisterReceiver() {
         netWorkStateReceiver = new NetWorkStateReceiver();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(netWorkStateReceiver,filter);
+        registerReceiver(netWorkStateReceiver, filter);
+    }
+
+    private void bindPush() {
+        pushServiceConn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                pushBinder = (PollingService.PushBinder) service;
+                pushBinder.getPollingService().setNewMentionListener(MainActivity.this);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+            }
+        };
+
+        AlarmPoll.startPolling(this, pushServiceConn, 60);
     }
 
     @Override
@@ -126,15 +151,11 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_notification:
 //                mNotificationListFragment.refresh();
                 mDrawerLayout.openDrawer(mNotificationDrawer);
+//                startActivity();
                 return true;
             case R.id.action_top:
                 homeFragment.currentGoTop();
-//                NotImplementedManager.openDoumail(this);
                 return true;
-//            case R.id.action_search:
-//                NotImplementedManager.openSearch(this);
-
-//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -143,26 +164,25 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if(!AcWenApplication.LOGIN){
-            if(!isRemoveAcerinfo) {
+        if (!AcWenApplication.LOGIN) {
+            if (!isRemoveAcerinfo) {
                 mNavigationFragment.onUserInfoChanged(0, null);
                 isRemoveAcerinfo = true;
             }
-        }else{
+        } else {
             isRemoveAcerinfo = false;
         }
     }
 
-    public Acer getAcer(){
+    public Acer getAcer() {
         return mNavigationFragment.getAcer();
     }
 
     @Override
     public void onBackPressed() {
-        if(mDrawerLayout.isDrawerOpen(mNavigationFragment.getView())) {
-                mDrawerLayout.closeDrawer(mNavigationFragment.getView());
-        }
-        else if (mDrawerLayout.isDrawerOpen(mNotificationDrawer)) {
+        if (mDrawerLayout.isDrawerOpen(mNavigationFragment.getView())) {
+            mDrawerLayout.closeDrawer(mNavigationFragment.getView());
+        } else if (mDrawerLayout.isDrawerOpen(mNotificationDrawer)) {
             mDrawerLayout.closeDrawer(mNotificationDrawer);
         } else {
             super.onBackPressed();
@@ -205,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         unregisterReceiver(netWorkStateReceiver);
+        AlarmPoll.cancelPolling(this, pushServiceConn);
         super.onDestroy();
     }
 
@@ -221,11 +242,20 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onQuoteClicked() {
         Intent intent = new Intent(this, QuoteActivity.class);
-        ActivityCompat.startActivity(this,intent,null);
+//        ActivityCompat.startActivity(this, intent, null);
+        startActivity(intent);
     }
 
     @Override
     public void onMessageClicked() {
 //        getSupportFragmentManager().beginTransaction().replace(R.id.container, ).commit();
+    }
+
+    @Override
+    public void onNewMention(int count) {
+        mUnreadNotificationCount = count;
+        if (mNotificationMenu != null) {
+            ActionItemBadge.update(mNotificationMenu, mUnreadNotificationCount);
+        }
     }
 }

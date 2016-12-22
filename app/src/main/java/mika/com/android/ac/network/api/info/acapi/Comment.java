@@ -61,6 +61,7 @@ public class Comment implements Parcelable {
     public boolean isQuoted;
     public boolean isDelete;
     public boolean isUpDelete;
+    public int quotedFloor;
 
     public Comment(){}
 
@@ -83,6 +84,7 @@ public class Comment implements Parcelable {
         isAt = in.readInt();
         nameRed = in.readInt();
         avatarFrame = in.readInt();
+        quotedFloor = in.readInt();
         isQuoted = in.readByte() != 0;
         isDelete = in.readByte() != 0;
         isUpDelete = in.readByte() != 0;
@@ -108,6 +110,7 @@ public class Comment implements Parcelable {
         dest.writeInt(isAt);
         dest.writeInt(nameRed);
         dest.writeInt(avatarFrame);
+        dest.writeInt(quotedFloor);
         dest.writeByte((byte) (isQuoted ? 1 : 0));
         dest.writeByte((byte) (isDelete ? 1 : 0));
         dest.writeByte((byte) (isUpDelete ? 1 : 0));

@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
+import mika.com.android.ac.R;
 import mika.com.android.ac.util.CheatSheetUtils;
 import mika.com.android.ac.util.ViewCompat;
 import mika.com.android.ac.util.ViewUtils;
@@ -42,12 +43,14 @@ public class ActionItemBadge {
             CheatSheetUtils.setup(actionView, title);
         }
 
-        ImageView iconImage = ButterKnife.findById(actionView, mika.com.android.ac.R.id.icon);
+        ImageView iconImage = ButterKnife.findById(actionView, R.id.icon);
         iconImage.setImageDrawable(icon);
 
-        TextView badgeText = ButterKnife.findById(actionView, mika.com.android.ac.R.id.badge);
-        badgeText.setTextColor(ViewUtils.getColorFromAttrRes(mika.com.android.ac.R.attr.colorPrimary, 0, activity));
-        ViewCompat.setBackground(badgeText, new BadgeDrawable());
+        TextView badgeText = ButterKnife.findById(actionView, R.id.badge);
+//        badgeText.setTextColor(ViewUtils.getColorFromAttrRes(R.attr.colorPrimary, 0, activity));
+        BadgeDrawable bgDrawable = new BadgeDrawable();
+        bgDrawable.setColor(activity.getResources().getColor(R.color.red_500));
+        ViewCompat.setBackground(badgeText, bgDrawable);
 
         update(badgeText, count);
     }
@@ -62,7 +65,7 @@ public class ActionItemBadge {
     }
 
     public static void update(MenuItem menuItem, int count) {
-        update(ButterKnife.<TextView>findById(menuItem.getActionView(), mika.com.android.ac.R.id.badge), count);
+        update(ButterKnife.<TextView>findById(menuItem.getActionView(), R.id.badge), count);
     }
 
     public static class BadgeDrawable extends GradientDrawable {
@@ -70,8 +73,8 @@ public class ActionItemBadge {
         @Override
         public void setBounds(int left, int top, int right, int bottom) {
             super.setBounds(left, top, right, bottom);
-
             setCornerRadius(Math.min(right - left, bottom - top));
         }
+
     }
 }

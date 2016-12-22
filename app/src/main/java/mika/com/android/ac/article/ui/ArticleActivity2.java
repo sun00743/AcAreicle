@@ -152,8 +152,9 @@ public class ArticleActivity2 extends AppCompatActivity implements
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mainLayout = (DetectsSoftKeyBoardFrameLayout) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
         mainLayout.setSoftKeyBoardListener(this);
-        setTitle(getIntent().getExtras().getString("title" , "ac/" + contentId));
-        mToolbar.setTitleTextAppearance(this,R.style.Base_TextAppearance_AppCompat_ActivityTitle);
+        setTitle(getIntent().getExtras().getString("title", "ac/" + contentId));
+        //title style
+        mToolbar.setTitleTextAppearance(this, R.style.Base_TextAppearance_AppCompat_ActivityTitle);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -231,7 +232,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     /**
      * 先给文章head 内容 和评论标题 加到list中
-     *\
+     * \
      */
     private List<Integer> initList() {
         List<Integer> list = new ArrayList<>();
@@ -243,7 +244,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.article,menu);
+        getMenuInflater().inflate(R.menu.article, menu);
         menuStar = menu.findItem(R.id.action_star);
         setStarImage(menuStar);
         menuUnquote = menu.findItem(R.id.action_unquote);
@@ -253,14 +254,14 @@ public class ArticleActivity2 extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_star:
                 // TODO 收藏
                 return true;
             case R.id.action_top:
-                if(((LinearLayoutManager)mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= 2 && ((LinearLayoutManager)mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() < 12){
+                if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= 2 && ((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() < 12) {
                     mRecycleView.smoothScrollToPosition(2);
-                }else if(((LinearLayoutManager)mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= 12){
+                } else if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= 12) {
                     mRecycleView.scrollToPosition(4);
                     mRecycleView.smoothScrollToPosition(2);
                 }
@@ -279,7 +280,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
         quote = null;
         mCommentEdit.setText("");
         mCommentEdit.setHint("发评论...");
-        ToastUtil.show("( ´_ゝ`) 已取消引用",this);
+        ToastUtil.show("( ´_ゝ`) 已取消引用", this);
     }
 
     /**
@@ -345,7 +346,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
             return;
         }
 
-        if(quote == null)
+        if (quote == null)
             quote = new Comment();
         changeSendState(true);
         postCommentRequest = new PostCommentRequest(getCommentText(), quote.id, acer.access_token, acer.userId, contentId);
@@ -358,12 +359,12 @@ public class ArticleActivity2 extends AppCompatActivity implements
             @Override
             public void onResponse(Object response) {
                 quote = null;
-                postCommentResult = new Gson().fromJson((String)response, PostCommentResult.class);
-                if(postCommentResult.success){
+                postCommentResult = new Gson().fromJson((String) response, PostCommentResult.class);
+                if (postCommentResult.success) {
                     Toast.makeText(ArticleActivity2.this, "评论成功! (＾o＾)ﾉ", Toast.LENGTH_SHORT).show();
                     changeSendState(false);
                     updateComment();
-                }else{
+                } else {
                     Toast.makeText(ArticleActivity2.this, "(|||ﾟдﾟ) 服务器抽风，刷新看看吧", Toast.LENGTH_SHORT).show();
                     changeSendState(false);
                 }
@@ -395,16 +396,16 @@ public class ArticleActivity2 extends AppCompatActivity implements
         isSending = sending;
         send.setVisibility(sending ? View.GONE : View.VISIBLE);
         sendProgress.setVisibility(sending ? View.VISIBLE : View.GONE);
-        if(sending){
-            if(isEmoticonLayoutShow){
+        if (sending) {
+            if (isEmoticonLayoutShow) {
                 isEmoticonLayoutShow = false;
                 mEmoticonLayout.setVisibility(View.GONE);
             }
-            if(isKeyBoardShow){
+            if (isKeyBoardShow) {
                 inputMethodManager.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
             }
-        }else{
-            if(postCommentResult != null && postCommentResult.success){ // 发送成功
+        } else {
+            if (postCommentResult != null && postCommentResult.success) { // 发送成功
                 isEditing = false;
                 menuUnquote.setVisible(false);
                 mCommentEdit.setText("");
@@ -427,7 +428,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     /**
      * 输入评论/引用评论
-     *
      */
     @Override
     public void insertComment(Comment quote) {
@@ -441,7 +441,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     /**
      * 评论post请求 的text参数
-     *
      */
     private String getCommentText() {
         Editable text = SpannableStringBuilder.valueOf(mCommentEdit.getText());
@@ -450,7 +449,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     /**
      * 检查评论是否合法
-     *
      */
     private boolean isCTextOk() {
         Editable text = SpannableStringBuilder.valueOf(mCommentEdit.getText());
@@ -564,8 +562,16 @@ public class ArticleActivity2 extends AppCompatActivity implements
     }
 
     @Override
-    public void onCommentListAppended(int requestCode, ArrayList<Integer> newIdList, Map<String,Comment> newCommentMaps) {
+    public void onCommentListAppended(int requestCode, ArrayList<Integer> newIdList, Map<String, Comment> newCommentMaps) {
         mArtComplexAdapter.insert(newIdList, newCommentMaps);
+    }
+
+    /**
+     * using
+     */
+    @Override
+    public void onCommentListAppended(int requestCode, List<Comment> commentList) {
+        mArtComplexAdapter.insert(commentList);
     }
 
     @Override

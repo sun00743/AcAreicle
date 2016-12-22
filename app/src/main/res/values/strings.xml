@@ -8,6 +8,7 @@
     <string name="reload">重新加载</string>
     <string name="yes">是</string>
 
+    <string name="request_acer_error">用户信息异常</string>
     <string name="quote_acer_delete">用户不存在或已删除</string>
     <string name="quote_comment_delete">该评论已被删除</string>
     <string name="quote_title_delete">未知领域</string>
@@ -31,6 +32,14 @@
     <string name="profile_views">当前所有有效投稿的浏览数总和。</string>
     <string name="profile_stars">当前所有有效投稿的收藏数总和。</string>
     <string name="profile_comments">当前所有有效投稿的评论数总和。</string>
+
+
+    <string name="minute_ago">分钟前</string>
+    <string name="hour_ago">小时前</string>
+    <string name="day_ago">天前</string>
+    <string name="seconds_ago">秒前</string>
+
+    <string name="article_views"> 围观</string>
 
     <string name="nothing">这里空无一物</string>
     <string name="navigation_head_getbananafailed">服务器爆炸，我能有什么办法（摊手）</string>

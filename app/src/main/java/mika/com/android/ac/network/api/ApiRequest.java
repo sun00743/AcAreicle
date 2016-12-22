@@ -82,7 +82,7 @@ public class ApiRequest<T> extends Request<T> {
     private void setAuthorization() throws AuthFailureError {
 //        mAuthToken = mAuthenticator.getAuthToken();
 //        mAuthToken = "yue";
-        addHeaderAuthorizationBearer(mAuthToken);
+//        addHeaderAuthorizationBearer(mAuthToken);
     }
 
     private class RetryPolicy extends DefaultRetryPolicy {

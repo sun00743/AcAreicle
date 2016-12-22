@@ -21,8 +21,10 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import mika.com.android.ac.app.TargetedRetainedFragment;
 import mika.com.android.ac.content.ResourceFragment;
 import mika.com.android.ac.eventbus.CommentUpdatedEvent;
 import mika.com.android.ac.eventbus.EventBusUtils;
@@ -34,7 +36,6 @@ import mika.com.android.ac.network.api.info.acapi.CommentPage;
 import mika.com.android.ac.network.api.info.acapi.CommentResult;
 import mika.com.android.ac.util.ArrayUtils;
 import mika.com.android.ac.util.FragmentUtils;
-import mika.com.android.ac.app.TargetedRetainedFragment;
 
 /**
  * Created by mika <sun00743@gmail.com> on 2016/9/18.
@@ -44,14 +45,14 @@ public class CommentListResource extends ResourceFragment implements
         RequestFragment.Listener<CommentResult, CommentListResource.State> {
 
     private static final String FRAGMENT_TAG_DEFAULT = CommentListResource.class.getName();
-    private static final int DEFAULT_COUNT_PER_LOAD = 40;
+    private static final int DEFAULT_COUNT_PER_LOAD = 50;
     private static final String EXTRA_ARTICLE = FRAGMENT_TAG_DEFAULT + "articleId";
 
     //    private ArticleListResult mArticleListResult;
     private int pageNO;
-    private ArrayList<Integer> mCommentIdList;
-    private Map<String,Comment> mCommentMaps;
-    private SparseArray<Comment> mCommentLists ;
+    private ArrayList<Integer> mCommentIdList = new ArrayList<>();
+    private Map<String, Comment> mCommentMaps;
+    private SparseArray<Comment> mCommentLists = new SparseArray<>();
     private boolean mCanLoadMore = true;
     private int mArticleId;
     /**
@@ -63,43 +64,44 @@ public class CommentListResource extends ResourceFragment implements
      */
     private boolean mLoadingMore;
 
-    private static CommentListResource newInstance(String userIdOrUid,int article){
+    private static CommentListResource newInstance(String userIdOrUid, int article) {
         CommentListResource resource = new CommentListResource();
         resource.setArgumentS(article);
         return resource;
     }
 
-    public CommentListResource (){}
-
-    public static CommentListResource attachTo(String userIdOrUid,int articleId,
-                                                  FragmentActivity activity, String tag,
-                                                  int requestCode) {
-        return attachTo(userIdOrUid,articleId, activity, tag, true, null, requestCode);
+    public CommentListResource() {
     }
 
-    public static CommentListResource attachTo(String userIdOrUid,int articleId,
-                                                  FragmentActivity activity) {
-        return attachTo(userIdOrUid,articleId, activity, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
+    public static CommentListResource attachTo(String userIdOrUid, int articleId,
+                                               FragmentActivity activity, String tag,
+                                               int requestCode) {
+        return attachTo(userIdOrUid, articleId, activity, tag, true, null, requestCode);
     }
 
-    public static CommentListResource attachTo(String userIdOrUid,int articleId,
-                                                  Fragment fragment, String tag, int requestCode) {
-        return attachTo(userIdOrUid,articleId, fragment.getActivity(), tag, false, fragment,
+    public static CommentListResource attachTo(String userIdOrUid, int articleId,
+                                               FragmentActivity activity) {
+        return attachTo(userIdOrUid, articleId, activity, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
+    }
+
+    public static CommentListResource attachTo(String userIdOrUid, int articleId,
+                                               Fragment fragment, String tag, int requestCode) {
+        return attachTo(userIdOrUid, articleId, fragment.getActivity(), tag, false, fragment,
                 requestCode);
     }
 
-    public static CommentListResource attachTo(String userIdOrUid,int articleId,
-                                                  Fragment fragment) {
-        return attachTo(userIdOrUid,articleId, fragment, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
+    public static CommentListResource attachTo(String userIdOrUid, int articleId,
+                                               Fragment fragment) {
+        return attachTo(userIdOrUid, articleId, fragment, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
     }
 
-    private static CommentListResource attachTo(String userIdOrUid,int articleId,
-                                                   FragmentActivity activity, String tag,
-                                                   boolean targetAtActivity, Fragment targetFragment,
-                                                   int requestCode) {
+    private static CommentListResource attachTo(String userIdOrUid, int articleId,
+                                                FragmentActivity activity, String tag,
+                                                boolean targetAtActivity, Fragment targetFragment,
+                                                int requestCode) {
         CommentListResource resource = FragmentUtils.findByTag(activity, tag);
         if (resource == null) {
-            resource = newInstance(userIdOrUid,articleId);
+            resource = newInstance(userIdOrUid, articleId);
             if (targetAtActivity) {
                 resource.targetAtActivity(requestCode);
             } else {
@@ -113,20 +115,18 @@ public class CommentListResource extends ResourceFragment implements
     /**
      * @return the fucking Unmodifiable list or null
      */
-    public Map<String,Comment> get() {
+    public Map<String, Comment> get() {
         return mCommentMaps != null ?
                 Collections.unmodifiableMap(mCommentMaps) : null;
     }
 
     /**
      * the fucking Unmodifiable SparseArray or null
-     * @return
      */
-    public SparseArray<Comment> getSparseArray(){
-        if(mCommentLists!= null){
-            final SparseArray<Comment> sa = mCommentLists;
-            return sa;
-        }else {
+    public SparseArray<Comment> getSparseArray() {
+        if (mCommentLists != null) {
+            return mCommentLists;
+        } else {
             return null;
         }
     }
@@ -137,7 +137,6 @@ public class CommentListResource extends ResourceFragment implements
 
     /**
      * 判断articleList是否为null
-     * @return
      */
     public boolean isEmpty() {
 //        return mCommentMaps == null ||
@@ -154,9 +153,9 @@ public class CommentListResource extends ResourceFragment implements
     }
 
 
-    private void setArgumentS(int articleId){
+    private void setArgumentS(int articleId) {
         Bundle argumentsBundle = FragmentUtils.ensureArguments(this);
-        argumentsBundle.putInt(EXTRA_ARTICLE,articleId);
+        argumentsBundle.putInt(EXTRA_ARTICLE, articleId);
     }
 
     @Override
@@ -171,25 +170,28 @@ public class CommentListResource extends ResourceFragment implements
 
         EventBusUtils.register(this);
 
-        if(mCommentLists == null || (mCommentLists.size() == 0 && mCanLoadMore)){
+        if (mCommentLists == null || (mCommentLists.size() == 0 && mCanLoadMore)) {
 //            loadOnStart();
         }
     }
+
     /**
      * 加载数据
+     *
      * @param loadMore 是否加载更多
      */
     public void load(boolean loadMore) {
 //        loadmore == ture ? pageNO++ : pageNO
         load(loadMore, mArticleId);
     }
+
     /**
      * 在此方法创建request并加载数据
-     * @param loadMore 是否加载更多
      *
+     * @param loadMore 是否加载更多
      */
-    public void load(boolean loadMore,int mArticleId) {
-        if(mLoading || (loadMore && !mCanLoadMore)){
+    public void load(boolean loadMore, int mArticleId) {
+        if (mLoading || (loadMore && !mCanLoadMore)) {
             return;
         }
 
@@ -205,11 +207,11 @@ public class CommentListResource extends ResourceFragment implements
 //                untilId = mArticleListResult.paramsData.articleLists.get(size-1).id;
 //            }
 //        }
-        if(!loadMore){
+        if (!loadMore) {
             pageNO = 1;
         }
-        ApiRequest<CommentResult> request = ApiRequests.newCommentListResultRequest(mArticleId,pageNO);
-        RequestFragment.startRequest(request,new State(loadMore,DEFAULT_COUNT_PER_LOAD),this);
+        ApiRequest<CommentResult> request = ApiRequests.newCommentListResultRequest(mArticleId, pageNO);
+        RequestFragment.startRequest(request, new State(loadMore, DEFAULT_COUNT_PER_LOAD), this);
     }
 
     @Override
@@ -221,36 +223,56 @@ public class CommentListResource extends ResourceFragment implements
         //通知界面加载数据完成
         getListStateListener().onLoadCommentListFinished(requestCode);
 
-        if (successful){
+        if (successful) {
             CommentPage mPage = result.data.page;
             mCanLoadMore = mPage.pageNo * requestState.count < mPage.totalCount;
             ++pageNO;
-            if(requestState.loadMore){
+            if (requestState.loadMore) {
                 //加载更多
+//                getListStateListener().onCommentListAppended(requestCode, mPage.list);
+
+//                for (int i = 0; i < mPage.list.size(); i++) {
+//                    mCommentIdList.add(mPage.list.get(i).id);
+//                    mCommentLists.put(mPage.list.get(i).id, mPage.list.get(i));
+//                }
+//
                 mCommentIdList = ArrayUtils.toList(mPage.list);
-                Map<String,Comment> maps = new Gson().fromJson(mPage.map, new TypeToken<Map<String, Comment>>(){}.getType());
-                getListStateListener().onCommentListAppended(requestCode,mCommentIdList,maps);
-            }else{
+                Map<String, Comment> maps = new Gson().fromJson(mPage.map, new TypeToken<Map<String, Comment>>() {
+                }.getType());
+                getListStateListener().onCommentListAppended(requestCode, mCommentIdList, maps);
+
+
+            } else {
+//                mCommentIdList.clear();
+//                mCommentLists.clear();
+//                for (int i = 0; i < mPage.list.size(); i++) {
+//                    mCommentIdList.add(i, mPage.list.get(i).id);
+//                    mCommentLists.put(mPage.list.get(i).id, mPage.list.get(i));
+//                }
+//
+//                getListStateListener().onCommentListChanged(requestCode, mCommentIdList, mCommentLists);
+
                 mCommentIdList = ArrayUtils.toList(mPage.list);
-                Map<String,Comment> maps = new Gson().fromJson(mPage.map, new TypeToken<Map<String, Comment>>(){}.getType());
+                Map<String, Comment> maps = new Gson().fromJson(mPage.map, new TypeToken<Map<String, Comment>>() {
+                }.getType());
                 mCommentLists = new SparseArray<>();
                 for (Comment com : maps.values()) {
                     mCommentLists.put(com.id, com);
                 }
-                getListStateListener().onCommentListChanged(requestCode,mCommentIdList,mCommentLists);
+                getListStateListener().onCommentListChanged(requestCode, mCommentIdList, mCommentLists);
             }
-        }else {
+        } else {
             // TODO: 2016/12/5 服务器返回信息失败
         }
     }
 
-    private ListStateListener getListStateListener(){
+    private ListStateListener getListStateListener() {
         return (ListStateListener) getTarget();
     }
 
     @Keep
-    public void onEventMainThread(CommentUpdatedEvent event){
-        if(event.isFromMyself(this) || mCommentLists == null){
+    public void onEventMainThread(CommentUpdatedEvent event) {
+        if (event.isFromMyself(this) || mCommentLists == null) {
             return;
         }
 
@@ -267,7 +289,7 @@ public class CommentListResource extends ResourceFragment implements
 //                changed = true;
 //            }
             if (changed) {
-                getListStateListener().onCommentChanged(getRequestCode(), i ,mCommentLists.get(i));
+                getListStateListener().onCommentChanged(getRequestCode(), i, mCommentLists.get(i));
             }
         }
     }
@@ -277,6 +299,7 @@ public class CommentListResource extends ResourceFragment implements
         super.onStop();
         EventBusUtils.unregister(this);
     }
+
     /**
      * 标识状态类
      */
@@ -289,41 +312,43 @@ public class CommentListResource extends ResourceFragment implements
             this.count = count;
         }
     }
+
     /**
      * 加载数据状态和评论状态接口
      */
     public interface ListStateListener {
+
         /**
          * 回调通知 开始请求数据显示等待状态
-         * @param requestCode
          */
         void onLoadCommentListStarted(int requestCode);
 
         /**
          * 加载评论列表数据完成了，可以更新UI啦
-         * @param requestCode
          */
         void onLoadCommentListFinished(int requestCode);
+
         void onLoadCommentListError(int requestCode, VolleyError error);
 
         /**
          * 初次加载or刷新
-         * @param requestCode
-         * @param newIdList
-         * @param newCommentMaps
          */
         void onCommentListChanged(int requestCode, ArrayList<Integer> newIdList, SparseArray<Comment> newCommentMaps);
 
         /**
          * 加载更多
-         * @param requestCode
-         * @param newIdList
-         * @param newCommentMaps
          */
-        void onCommentListAppended(int requestCode, ArrayList<Integer> newIdList, Map<String,Comment> newCommentMaps);
+        void onCommentListAppended(int requestCode, ArrayList<Integer> newIdList, Map<String, Comment> newCommentMaps);
+
+        /**
+         * 加载更多
+         */
+        void onCommentListAppended(int requestCode, List<Comment> commentList);
 
         void onCommentChanged(int requestCode, int position, Comment newComment);
+
         void onCommentWriteStarted(int requestCode, int position);
+
         void onCommentWriteFinished(int requestCode, int position);
     }
 }

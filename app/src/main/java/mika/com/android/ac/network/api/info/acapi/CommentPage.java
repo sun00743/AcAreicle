@@ -25,13 +25,13 @@ public class CommentPage implements Parcelable{
 //    public TypeToken<Map<String, Comment>> map;
 //    public String map;
     public JsonElement map;
+//    public List<Comment> list;
 
     protected CommentPage(Parcel in) {
         totalCount = in.readInt();
         pageSize = in.readInt();
         pageNo = in.readInt();
         list = in.createIntArray();
-//        map = in.readString();
     }
 
     @Override
@@ -40,7 +40,6 @@ public class CommentPage implements Parcelable{
         dest.writeInt(pageSize);
         dest.writeInt(pageNo);
         dest.writeIntArray(list);
-//        dest.writeString(map);
     }
 
     @Override

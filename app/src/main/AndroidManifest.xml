@@ -103,7 +103,6 @@
             android:name=".settings.ui.AboutActivity"
             android:label="@string/about_title"
             android:theme="@style/Theme.AcWen.PrimaryColorBackground" />
-        <activity android:name=".main.ui.TestActivity" />
         <activity
             android:name=".article.ui.ArticleActivity2"
             android:launchMode="singleTop"
@@ -112,7 +111,8 @@
             android:name=".account.ui.AcerLoginActivity"
             android:label="@string/title_activity_acer_login" />
         <activity android:name=".account.ui.AcerSignInActivity" />
-
+        <activity android:name=".quote.ui.QuoteActivity" />
+        <!-- ————————————————————————————service—————————————————————————————— -->
         <service
             android:name=".account.app.AuthenticatorService"
             tools:ignore="ExportedService">
@@ -126,6 +126,15 @@
         </service>
         <service android:name=".content.ResourceWriterService" />
 
+        <service
+            android:name=".notification.service.PollingService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ac.mika.message.poll"/>
+            </intent-filter>
+        </service>
+        <!-- —————————————————————————————receiver —————————————————————————————————————— -->
         <receiver
             android:name=".network.api.credential.SetApiCredentialReceiver"
             tools:ignore="ExportedReceiver">
@@ -149,7 +158,6 @@
             android:name="io.fabric.ApiKey"
             android:value="dc160e13d1b3c3e917e331e8b272c51a523d8599" />
 
-        <activity android:name=".quote.ui.QuoteActivity"></activity>
     </application>
 
 </manifest>

@@ -9,13 +9,15 @@
     <TextView
         android:id="@+id/quote_article_name"
         android:textSize="16sp"
-        android:layout_width="match_parent"
+        android:layout_width="411dp"
         android:layout_height="wrap_content"
         android:paddingTop="24dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:text="综合/ 《守望先锋》角色乱入《魔兽世界》同人图 小美当上巫妖王"
-        android:textColor="@android:color/holo_blue_dark" />
+        android:textColor="@android:color/holo_blue_dark"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/quote_name_my"
@@ -29,13 +31,13 @@
 
     <TextView
         android:id="@+id/quote_content_my"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
         android:textColor="@color/black_87"
-        app:layout_constraintLeft_toLeftOf="@id/quote_name_my"
-        app:layout_constraintTop_toBottomOf="@id/quote_name_my"
+        app:layout_constraintLeft_toLeftOf="@+id/quote_name_my"
+        app:layout_constraintTop_toBottomOf="@+id/quote_name_my"
         android:layout_marginEnd="16dp"
         android:gravity="start"
         app:layout_constraintRight_toRightOf="parent"
@@ -50,35 +52,35 @@
         android:layout_marginTop="16dp"
         android:src="@drawable/avatar_icon_grey600_40dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/quote_content_my" />
+        app:layout_constraintTop_toBottomOf="@+id/quote_content_my" />
 
     <mika.com.android.ac.ui.SimpleCircleImageView
         android:id="@+id/quote_avatar_my"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/avatar_icon_grey600_40dp"
-        app:layout_constraintRight_toRightOf="@id/quote_avatar_q"
+        app:layout_constraintRight_toRightOf="@+id/quote_avatar_q"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/quote_article_name" />
+        app:layout_constraintTop_toBottomOf="@+id/quote_article_name" />
 
     <TextView
         android:id="@+id/quote_name_q"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        app:layout_constraintLeft_toLeftOf="@id/quote_name_my"
-        app:layout_constraintTop_toTopOf="@id/quote_avatar_q" />
+        app:layout_constraintLeft_toLeftOf="@+id/quote_name_my"
+        app:layout_constraintTop_toTopOf="@+id/quote_avatar_q" />
 
     <TextView
         android:id="@+id/quote_content_q"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
         android:textColor="@color/black_87"
         android:gravity="start"
-        app:layout_constraintLeft_toLeftOf="@id/quote_name_q"
-        app:layout_constraintTop_toBottomOf="@id/quote_name_q"
+        app:layout_constraintLeft_toLeftOf="@+id/quote_name_q"
+        app:layout_constraintTop_toBottomOf="@+id/quote_name_q"
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp" />
@@ -87,9 +89,10 @@
         android:background="@color/black_54"
         android:layout_width="match_parent"
         android:layout_height="1px"
-        app:layout_constraintTop_toBottomOf="@id/quote_content_q"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="24dp" />
+        app:layout_constraintLeft_toLeftOf="@+id/quote_avatar_q"
+        app:layout_constraintRight_toRightOf="@+id/quote_content_q"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/quote_content_q" />
 
 
 </android.support.constraint.ConstraintLayout>

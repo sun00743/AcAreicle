@@ -26,6 +26,7 @@ import android.widget.TextView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +36,7 @@ import mika.com.android.ac.ui.CardIconButton;
 import mika.com.android.ac.ui.ImageLayout;
 import mika.com.android.ac.ui.TimeActionTextView;
 import mika.com.android.ac.util.CheatSheetUtils;
+import mika.com.android.ac.util.DateUtils;
 import mika.com.android.ac.util.ImageUtils;
 import mika.com.android.ac.util.ViewUtils;
 
@@ -94,7 +96,7 @@ public class ArticleListLayout extends LinearLayout {
     TextView mArticleDescriptionText;
     @BindView(mika.com.android.ac.R.id.single_image)
     ImageLayout mSingleImageLayout;
-//    @BindView(mika.com.android.ac.R.id.image_list_layout)
+    //    @BindView(mika.com.android.ac.R.id.image_list_layout)
 //    FrameLayout mImageListLayout;
 //    @BindView(mika.com.android.ac.R.id.image_list_description_layout)
 //    FrameLayout mImageListDescriptionLayout;
@@ -337,18 +339,18 @@ public class ArticleListLayout extends LinearLayout {
         mBoundArticleId = articleList.id;
     }
 
-    public View getItemHeadLayout(){
+    public View getItemHeadLayout() {
         return mItemHeadLayou;
     }
 
     /**
      * 计算时间差
      *
-     * @param articleList
-     * @return
+     * @param articleList 文章列表
+     * @return 时间差 like "xx分钟前"
      */
     private String calculateTimeDiff(ArticleList articleList) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         long diff = 0;
         try {
             diff = new Date(System.currentTimeMillis()).getTime()
@@ -356,23 +358,8 @@ public class ArticleListLayout extends LinearLayout {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        long days = (diff / (1000 * 60 * 60 * 24));
-        long hours = (diff - days * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
-        long minutes = (diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60)) / (1000 * 60);
-        String agoTime;
-        if (days <= 0) {
-            if (hours <= 0) {
-                if (minutes == 0) {
-                    agoTime = "刚刚";
-                } else {
-                    agoTime = minutes + " 分钟前";
-                }
-            } else {
-                agoTime = hours + " 小时前";
-            }
-        } else {
-            agoTime = days + " 天前";
-        }
+
+        String agoTime = DateUtils.formatAgoTimes(diff);
         articleList.diffTime = agoTime;
         return agoTime;
     }

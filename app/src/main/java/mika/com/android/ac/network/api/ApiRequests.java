@@ -15,10 +15,14 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.google.gson.reflect.TypeToken;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
+import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.network.api.info.acapi.ArticleListResult;
 import mika.com.android.ac.network.api.info.acapi.CommentResult;
+import mika.com.android.ac.network.api.info.acapi.Mention;
 import mika.com.android.ac.network.api.info.apiv2.Broadcast;
 import mika.com.android.ac.network.api.info.apiv2.Comment;
 import mika.com.android.ac.network.api.info.apiv2.CommentList;
@@ -30,6 +34,7 @@ import mika.com.android.ac.network.api.info.frodo.Notification;
 import mika.com.android.ac.network.api.info.frodo.NotificationList;
 import mika.com.android.ac.network.api.info.frodo.ReviewList;
 import mika.com.android.ac.network.api.info.frodo.UserItemList;
+import mika.com.android.ac.util.Connectivity;
 import mika.com.android.ac.util.StringUtils;
 
 /**
@@ -39,6 +44,23 @@ import mika.com.android.ac.util.StringUtils;
 public class ApiRequests {
 
     private ApiRequests() {
+    }
+
+
+    public static String getAcerUid() {
+        if (AcWenApplication.getInstance().getAcer() == null) {
+            return null;
+        } else {
+            return String.valueOf(AcWenApplication.getInstance().getAcer().userId);
+        }
+    }
+
+    public static String getAcerAccessToken() {
+        if (AcWenApplication.getInstance().getAcer() == null) {
+            return null;
+        } else {
+            return AcWenApplication.getInstance().getAcer().access_token;
+        }
     }
 
     public static ApiRequest<UserInfo> newUserInfoRequest(String userIdOrUid) {
@@ -169,30 +191,58 @@ public class ApiRequests {
     }
 
     /**
+     * 召唤或者私信 Count push Request
+     *
+     */
+    public static ApiRequest<Mention> newPushRequest() {
+        ApiRequest request = new ApiRequest<>(ApiRequest.Method.GET, ApiContract.Request.AcApi.PUSH_REQUEST_URL, new TypeToken<Mention>() {
+        });
+        if (getAcerUid() == null || getAcerAccessToken() == null) {
+            return null;
+        } else {
+            request.addParam(Connectivity.UID, getAcerUid());
+            request.addParam(Connectivity.ACCESS_TOKEN, getAcerAccessToken());
+            return request;
+        }
+    }
+
+    /**
      * 文章列表Request
      *
-     * @return
      */
     public static ApiRequest<ArticleListResult> newArticleListResultRequest(int channelid, int sort, int pageNo) {
-        String url = "http://www.acfun.tv/list/getlist?channelId=" +
-                channelid + "&sort=" +
-                sort + "&pageSize=20&pageNo=" +
-                pageNo;
-        return new ApiRequest<>(ApiRequest.Method.GET, url, new TypeToken<ArticleListResult>() {
+
+        ApiRequest request = new ApiRequest(ApiRequest.Method.GET, ApiContract.Request.AcApi.ARTICLE_LIST, new TypeToken<ArticleListResult>() {
         });
+        request.addParam(Connectivity.SORT, String.valueOf(sort));
+        request.addParam(Connectivity.CHANNEL_ID, String.valueOf(channelid));
+        request.addParam(Connectivity.PAGE_SIZE, ApiContract.Request.Params.ARTICLE_LIST_PAGE_SIZE);
+        request.addParam(Connectivity.PAGE_NO, String.valueOf(pageNo));
+
+        return request;
     }
 
     /**
      * 评论列表Request
      *
-     * @return
      */
     public static ApiRequest<CommentResult> newCommentListResultRequest(int articleId, int pageNO) {
-        String url = "http://mobile.acfun.tv/comment/content/list?app_version=4.3.0&contentId=" +
-                articleId + "&market=appstore&origin=ios&pageNo=" +
-                pageNO + "&pageSize=40&resolution=640x1136&sys_name=ios&sys_version=9.3.5&version=4";
-        return new ApiRequest<>(ApiRequest.Method.GET, url, new TypeToken<CommentResult>() {
+        ApiRequest request = new ApiRequest(ApiRequest.Method.GET, ApiContract.Request.AcApi.COMMENT_LIST, new TypeToken<CommentResult>() {
         });
+        request.addParam(Connectivity.VERSION_COMMENT_LIST, ApiContract.Request.Params.VERSION_COMMENT_LIST);
+        request.addParam(Connectivity.CONTENT_ID, String.valueOf(articleId));
+        request.addParam(Connectivity.PAGE_SIZE, ApiContract.Request.Params.COMMENT_LIST_PAGE_SIZE);
+        request.addParam(Connectivity.PAGE_NO, String.valueOf(pageNO));
+
+        request.addHeaders(Connectivity.UA_MAP);
+        request.addHeader(Connectivity.UID, getAcerUid());
+        request.addHeader(Connectivity.MARKET, ApiContract.Request.Headers.MARKET);
+        request.addHeader(Connectivity.HOST, ApiContract.Request.Headers.HOST);
+        request.addHeader(Connectivity.REQUEST_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.CHINA).format(System.currentTimeMillis()));
+
+//        request.addHeader("uuid", "ca83390e-927e-4fa4-85b8-328fff5fba2b");
+//        request.addHeader("udid", "61558168-3cab-37db-8b37-fd03279ebceb");
+        return request;
     }
 
     public static ApiRequest<Broadcast> newBroadcastRequest(long broadcastId) {
@@ -372,4 +422,5 @@ public class ApiRequests {
 
         return request;
     }
+
 }

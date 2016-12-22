@@ -33,32 +33,53 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.network.api.ApiContract;
 
 public class Connectivity {
     private static final String DEFAULT_CACHE_DIR = "acfunArt";
-    public static final String UA = "acfun/1.0 (Linux; U; Android "+ Build.VERSION.RELEASE+"; "+ Build.MODEL+"; "+ Locale.getDefault().getLanguage()+"-"+ Locale.getDefault().getCountry().toLowerCase()+") AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 ";
-    public static final Map<String,String> UA_MAP = new HashMap<>();
+    //    public static final String UA = "acfun/1.0 (Linux; U; Android " + Build.VERSION.RELEASE + "; " + Build.MODEL + "; " + Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry().toLowerCase() + ") AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 ";
+    public static final String UA = "acvideo core";
+    public static final Map<String, String> UA_MAP = new HashMap<>();
     private static final String TAG = Connectivity.class.getSimpleName();
-    static{
-        UA_MAP.put("User-Agent", UA);
-        UA_MAP.put("deviceType", "1");
-    }
+
     public static final String PAGE_NO = "pageNo";
     public static final String PAGE_SIZE = "pageSize";
     public static final String USER_ID = "userId";
-    public static final String ACCESS_TOKEN = "access_token";;
+    public static final String UID = "uid";
+    public static final String ACCESS_TOKEN = "access_token";
     public static final String VERSION = "appVersion";
+    public static final String VERSION_COMMENT_LIST = "version";
+    public static final String CONTENT_ID = "contentId";
+    public static String MARKET = "market";
+    public static String PRODUCT_ID = "productId";
+    public static String HOST = "Host";
+    public static String CHANNEL_ID = "channelId";
+    public static String SORT = "sort";
+    public static String REQUEST_TIME = "requestTime";
+
+    /**
+     * headers map
+     */
+    static {
+        UA_MAP.put("User-agent", UA);
+        UA_MAP.put("deviceType", "1");
+        UA_MAP.put("Connection", "Keep-Alive");
+        UA_MAP.put("resolution", "720x1208");
+        UA_MAP.put(PRODUCT_ID, ApiContract.Request.Headers.PRODUCT_ID);
+        UA_MAP.put(VERSION, ApiContract.Request.Headers.VERSION);
+    }
+
+
+
     /**
      * Creates a default instance of the worker pool and calls
      * {@link RequestQueue#start()} on it.
-     * 
-     * @param stack
-     *            An {@link HttpStack} to use for the network, or null for
-     *            default.
+     *
+     * @param stack An {@link HttpStack} to use for the network, or null for
+     *              default.
      * @return A started {@link RequestQueue} instance.
      */
     public static RequestQueue newRequestQueue(HttpStack stack) {
@@ -91,13 +112,13 @@ public class Connectivity {
     /**
      * Creates a default instance of the worker pool and calls
      * {@link RequestQueue#start()} on it.
-     * 
+     *
      * @return A started {@link RequestQueue} instance.
      */
     public static RequestQueue newRequestQueue() {
         return newRequestQueue(null);
     }
-    
+
 //    public static int request(HttpMethodBase httpMethod, String host, int port, String protocal, Cookie[] cookies)
 //            throws HttpException, IOException {
 //        HttpClient client = new HttpClient();
@@ -173,15 +194,16 @@ public class Connectivity {
 //        return null;
 //    }
     private static final int BUFF_SIZE = 1 << 13;
+
     private static String readData(InputStream in, String encoding) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buffer= new byte[BUFF_SIZE];
+        byte[] buffer = new byte[BUFF_SIZE];
         int len = -1;
-        while((len = in.read(buffer))!=-1){
+        while ((len = in.read(buffer)) != -1) {
             baos.write(buffer, 0, len);
         }
         in.close();
-        return new String(baos.toByteArray(),encoding);
+        return new String(baos.toByteArray(), encoding);
     }
 
 //    public static JSONObject getResultJson(String url, String queryString, Cookie[] cookies) {
@@ -193,22 +215,22 @@ public class Connectivity {
 //            return null;
 //        }
 //    }
-    
-    public static boolean isWifiConnected(Context context){
+
+    public static boolean isWifiConnected(Context context) {
         NetworkInfo info = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE))
                 .getActiveNetworkInfo();
         return info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI;
     }
-    
+
     public static boolean isNetworkAvailable(Context context) {
         NetworkInfo info = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE))
                 .getActiveNetworkInfo();
         return (info != null) && (info.isConnected());
     }
-    
-    public static Cache.Entry newCache(NetworkResponse response, long maxAge){
+
+    public static Cache.Entry newCache(NetworkResponse response, long maxAge) {
         long now = System.currentTimeMillis();
-        if(maxAge == 0) maxAge = 60;
+        if (maxAge == 0) maxAge = 60;
         Map<String, String> headers = response.headers;
 
         long serverDate = 0;
@@ -230,7 +252,7 @@ public class Connectivity {
         entry.responseHeaders = headers;
         return entry;
     }
-    
+
     public static HttpURLConnection openDefaultConnection(URL url, int connectTimeOut, int readTimeOut) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setConnectTimeout(connectTimeOut);

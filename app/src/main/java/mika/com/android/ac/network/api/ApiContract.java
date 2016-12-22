@@ -16,6 +16,37 @@ import com.android.volley.DefaultRetryPolicy;
 public interface ApiContract {
 
     interface Request {
+        String HOST_A = "http://mobile.app.acfun.cn";
+        String HOST_B = "http://mobile.acfun.tv";
+        String HOST_C = "http://www.acfun.tv";
+
+        /**
+         * api url
+         */
+        interface AcApi {
+            String PUSH_REQUEST_URL = HOST_A + "/member/unRead.aspx";
+            String COMMENT_LIST = HOST_A + "/comment/content/list";
+            String ARTICLE_LIST = HOST_C + "/list/getlist";
+        }
+
+        /**
+         * request params
+         */
+        interface Params{
+            String ARTICLE_LIST_PAGE_SIZE = "50";
+            String COMMENT_LIST_PAGE_SIZE = "50";
+            String VERSION_COMMENT_LIST = "4";
+        }
+
+        /**
+         * request headers
+         */
+        interface Headers{
+            String VERSION = "4.3.3";
+            String MARKET = "huawei";
+            String PRODUCT_ID = "2000";
+            String HOST = "mobile.app.acfun.cn";
+        }
 
         interface Token {
 
@@ -24,14 +55,18 @@ public interface ApiContract {
             String CLIENT_ID = "client_id";
             String CLIENT_SECRET = "client_secret";
             String REDIRECT_URI = "redirect_uri";
+
             interface RedirectUris {
                 String FRODO = "frodo://app/oauth/callback/";
             }
+
             String GRANT_TYPE = "grant_type";
+
             interface GrantTypes {
                 String PASSWORD = "password";
                 String REFRESH_TOKEN = "refresh_token";
             }
+
             String USERNAME = "username";
             String PASSWORD = "password";
             String REFRESH_TOKEN = "refresh_token";
@@ -47,7 +82,7 @@ public interface ApiContract {
 
             // API protocol version is derived from user agent string.
             String USER_AGENT = "api-client/Volley/1 com.douban.frodo/4.0.0(66) Android/"
-                    + Build.VERSION.SDK_INT+ " " + Build.PRODUCT + " " + Build.MANUFACTURER + " "
+                    + Build.VERSION.SDK_INT + " " + Build.PRODUCT + " " + Build.MANUFACTURER + " "
                     + Build.MODEL + "  rom:android";
 
             String API_HOST = "https://frodo.douban.com/api/v2/";
@@ -57,9 +92,11 @@ public interface ApiContract {
                 String UDID = "udid";
                 String DEVICE_ID = "device_id";
                 String CHANNEL = "channel";
+
                 interface Channels {
                     String DOUBAN = "Douban";
                 }
+
                 String OS_ROM = "os_rom";
             }
 
@@ -111,6 +148,7 @@ public interface ApiContract {
 
             interface LifeStream {
                 String VERSION = "version";
+
                 interface Versions {
                     int TWO = 2;
                 }
@@ -216,10 +254,12 @@ public interface ApiContract {
 
         interface Error {
             String CODE = "code";
+
             interface Codes {
                 interface Custom {
                     int INVALID_ERROR_RESPONSE = -1;
                 }
+
                 interface Base {
                     int UNKNOWN_V2_ERROR = 999;
                     int NEED_PERMISSION = 1000;
@@ -237,6 +277,7 @@ public interface ApiContract {
                     int TITLE_MISSING = 1012;
                     int DESC_MISSING = 1013;
                 }
+
                 interface Token {
                     int INVALID_REQUEST_SCHEME = 100;
                     int INVALID_REQUEST_METHOD = 101;
@@ -268,23 +309,28 @@ public interface ApiContract {
                     int THIRDPARTY_LOGIN_AUTH_FAILED = 127;
                     int USER_LOCKED = 128;
                 }
+
                 interface Followship {
                     int ALREADY_FOLLOWED = 10003;
                     int NOT_FOLLOWED_YET = 10005;
                 }
+
                 interface Broadcast {
                     int NOT_FOUND = 11110;
                     int AUTHOR_BANNED = 11111;
                 }
+
                 interface LikeBroadcast {
                     int ALREADY_LIKED = 11107;
                     int NOT_LIKED_YET = 11108;
                 }
+
                 interface RebroadcastBroadcast {
                     int ALREADY_REBROADCASTED = 11104;
                     int NOT_REBROADCASTED_YET = 11105;
                 }
             }
+
             String MSG = "msg";
             String REQUEST = "request";
             String LOCALIZED_MESSAGE = "localized_message";

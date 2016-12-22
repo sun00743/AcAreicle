@@ -25,6 +25,8 @@ import mika.com.android.ac.ui.TimeTextView;
 
 public class TimeUtils {
 
+    private static final int TEMP = 1000;
+    private static final int HOUR_PER_DAY = 24;
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int MINUTES_PER_HOUR = 60;
     private static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
@@ -42,6 +44,8 @@ public class TimeUtils {
     private static final Duration JUST_NOW_DURATION = Duration.ofMinutes(1);
     private static final Duration MINUTE_PATTERN_DURATION = Duration.ofHours(1);
     private static final Duration HOUR_PATTERN_DURATION = Duration.ofHours(2);
+
+    public TimeUtils(){}
 
     /**
      * @throws DateTimeParseException
@@ -123,4 +127,5 @@ public class TimeUtils {
     public static String formatDate(ZonedDateTime dateTime, Context context) {
         return formatDate(dateTime.toLocalDate(), dateTime.getZone(), context);
     }
+
 }
