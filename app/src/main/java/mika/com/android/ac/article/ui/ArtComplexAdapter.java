@@ -190,7 +190,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 if (isHeadFirstLoad) {
                     isHeadFirstLoad = false;
 //                    mEventListener.setHeadView(mHeadHolder.headContent);
-                    if (mBundle != null) {
+                    if (mBundle != null && mBundle.getString("username") != null) {
                         ImageUtils.loadAvatar(((HeadHolder) holder).avatar, mBundle.getString("avatar"));
                         ((HeadHolder) holder).username.setText(mBundle.getString("username"));
                         ((HeadHolder) holder).time.setText(mBundle.getString("time"));
@@ -367,8 +367,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 //是否在同一层楼
                 if (quote.quotedFloor == position) {
                     quoteViewList.add(generateQuotesView(quote));
-                //引用的楼层比当前的楼城高
-                }else if (quote.quotedFloor > position){
+                    //引用的楼层比当前的楼城高
+                } else if (quote.quotedFloor > position) {
                     quote.quotedFloor = position;
                     quoteViewList.add(generateQuotesView(quote));
                 } else {
@@ -445,7 +445,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 //如果不出错
                 mSubTitleHolder.subtitle.setVisibility(View.VISIBLE);
 
-
                 if (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI) {
                     //同时加载评论
                     isAutoLoad = true;
@@ -488,7 +487,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 mArticle = response;
                 imgUrls = response.imgUrls;
                 new BuildDocTask().execute(mArticle);
-                // bundle中无数据，说明是从quote点击进入，需要填充head数据
+                // bundle中无 关键 数据，说明是从quote点击进入，需要填充head数据
                 if (!hasBundle) {
                     ImageUtils.loadAvatar(mHeadHolder.avatar, mArticle.poster.avatar);
                     mHeadHolder.username.setText(mArticle.poster.name);
@@ -683,7 +682,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     private List<File> imageCaches;
     //是否收藏
-//    private boolean isFaved;
+    //    private boolean isFaved;
     private AtomicBoolean isDocBuilding = new AtomicBoolean(false);
 
     /**

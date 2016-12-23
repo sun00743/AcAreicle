@@ -61,7 +61,7 @@ public class ActionItemBadge {
 
     private static void update(TextView badgeText, int count) {
         ViewUtils.setVisibleOrInvisible(badgeText, count != 0);
-        badgeText.setText(String.valueOf(count));
+//        badgeText.setText(String.valueOf(count));
     }
 
     public static void update(MenuItem menuItem, int count) {

@@ -106,6 +106,7 @@ public class TextViewUtils {
         Pattern p = Pattern.compile(reg);
         Matcher m = p.matcher(text);
         while (m.find()) {
+            // group方法获取 emot块中数据
             String id = m.group(2);
             String cat = m.group(1);
             int parsedId;
@@ -117,7 +118,9 @@ public class TextViewUtils {
             }
 //            if (parsedId > 54)
 //                id = "54";
-            String replace = cat.equals("brd") || cat.equals("td") || cat.equals("ac2") ?
+
+            // 匹配表情 tag 转换string
+            String replace = cat.equals("ais") || cat.equals("ac3") || cat.equals("brd") || cat.equals("td") || cat.equals("ac2") ?
                     "<img src='emotion/" + cat + "/%02d.gif'/>" : "<img src='emotion/%02d.gif'/>";
             text = text.replace(m.group(), String.format(replace, parsedId));
         }

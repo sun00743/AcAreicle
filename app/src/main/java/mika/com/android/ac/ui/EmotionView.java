@@ -20,13 +20,22 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import mika.com.android.ac.AcWenApplication;
 
 
 public class EmotionView extends View {
-//    private static final String TAG = "EmotionView";
+    //    private static final String TAG = "EmotionView";
+    private static final String[] emoticonNames = {
+            "emotion/%02d.gif",
+            "emotion/ais/%02d.gif",
+            "emotion/ac2/%02d.gif",
+            "emotion/ac3/%02d.gif",
+            "emotion/td/%02d.gif",
+            "emotion/brd/%02d.gif"};
     private int mId;
+    private int mType = 99;
     private int mWidth;
     private int mHeight;
     private Drawable mDrawable;
@@ -38,57 +47,61 @@ public class EmotionView extends View {
         mPadding = (int) (4 * AcWenApplication.density + 0.5f);
     }
 
-    public void setEmotionId(int id) {
-        if (mId != id) {
-            String name = getEmotionName(id);
-            try {
-                Bitmap bm = AcWenApplication.getBitmapInCache(name);
-                if (bm == null) {
-                    Options opts = new Options();
-                    opts.inJustDecodeBounds = true;
-                    BitmapFactory.decodeStream(getContext().getAssets().open(name), null, opts);
-                    if (opts.outWidth > mWidth || opts.outHeight > mHeight) {
-                        int sample = Math.max(opts.outWidth / mWidth, opts.outHeight / mHeight);
-                        
-                        opts.inSampleSize = sample;
+    public void setEmotionId(int id, int type) {
+        String name = getEmotionName(id, type);
+        try {
+            Bitmap bm = AcWenApplication.getBitmapInCache(name);
+            if (bm == null) {
+                Options opts = new Options();
+                opts.inJustDecodeBounds = true;
+                BitmapFactory.decodeStream(getContext().getAssets().open(name), null, opts);
+                if (opts.outWidth > mWidth || opts.outHeight > mHeight) {
+                    int sample = Math.max(opts.outWidth / mWidth, opts.outHeight / mHeight);
+
+                    opts.inSampleSize = sample;
 //                        Log.d(TAG, String.format("ow=%d,oh=%d, mw=%d,mh=%d, scale to sample=%d",opts.outWidth,opts.outHeight,mWidth,mHeight,sample));
-                    }
-                    opts.inJustDecodeBounds = false;
-
-                    bm = BitmapFactory
-                            .decodeStream(getContext().getAssets().open(name), null, opts);
-                    AcWenApplication.putBitmapInCache(name, bm);
-//                    Log.d(TAG, "put emotion in cache : " + name);
                 }
-                mDrawable = new BitmapDrawable(getResources(), bm);
+                opts.inJustDecodeBounds = false;
 
-                mDrawable.setBounds(0, 0, mWidth, mDrawable.getIntrinsicHeight()*mHeight/mDrawable.getIntrinsicWidth());
-            } catch (IOException e) {
-                e.printStackTrace();
+                bm = BitmapFactory
+                        .decodeStream(getContext().getAssets().open(name), null, opts);
+                AcWenApplication.putBitmapInCache(name, bm);
+//                    Log.d(TAG, "put emotion in cache : " + name);
             }
+            mDrawable = new BitmapDrawable(getResources(), bm);
 
+            mDrawable.setBounds(0, 0, mWidth, mDrawable.getIntrinsicHeight() * mHeight / mDrawable.getIntrinsicWidth());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
-    public Drawable getmDrawable(){
+
+    public Drawable getmDrawable() {
         return mDrawable;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        int width = getDefaultSize(mWidth+mPadding, widthMeasureSpec);
+        int width = getDefaultSize(mWidth + mPadding, widthMeasureSpec);
         setMeasuredDimension(width, width);
     }
 
-    public String getEmotionName(int id) {
-        if (id > 54 && id < 95) {
-            return String.format("emotion/ais/%02d.gif", id - 54);
-        }
-        if(id > 94){
-            return String.format("emotion/ac2/%02d.gif",id - 94);
-        }
-        return String.format("emotion/%02d.gif", id);
+    public String getEmotionName(int id, int type) {
+        return String.format(Locale.US, emoticonNames[type], id);
+
+//        if (id > 54 && id < 95) {
+//            return String.format(Locale.US, "emotion/ais/%02d.gif", id - 54);
+//        }
+//        if (id > 94 && id < 150) {
+//            return String.format(Locale.US, "emotion/ac2/%02d.gif", id - 94);
+//        }
+//        if (id > 149) {
+//            return String.format(Locale.US, "emotion/ac3/%02d.gif", id - 149);
+//        }
+//        return String.format(Locale.US, "emotion/%02d.gif", id);
     }
 
     @Override

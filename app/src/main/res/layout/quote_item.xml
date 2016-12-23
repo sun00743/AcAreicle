@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/quote_article_name"
         android:textSize="16sp"
-        android:layout_width="411dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="24dp"
         android:paddingLeft="16dp"
@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/quote_content_my"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
@@ -73,7 +73,7 @@
 
     <TextView
         android:id="@+id/quote_content_q"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"

@@ -21,7 +21,8 @@ import mika.com.android.ac.network.api.info.acapi.AcerInfoResult2;
 import mika.com.android.ac.util.GsonHelper;
 
 /**
- * Created by mika on 2016/9/26.
+ * Created by mika on 2016/9/26
+ *
  */
 
 public class AcerInfoRequest extends Request {

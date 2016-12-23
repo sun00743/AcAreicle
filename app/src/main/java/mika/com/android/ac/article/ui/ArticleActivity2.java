@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -70,7 +71,6 @@ import mika.com.android.ac.ui.OnVerticalScrollWithPagingTouchSlopListener;
 import mika.com.android.ac.ui.PagerSlidingTabStrip;
 import mika.com.android.ac.util.DensityUtil;
 import mika.com.android.ac.util.RecyclerViewUtils;
-import mika.com.android.ac.util.ToastUtil;
 
 import static android.view.View.TRANSLATION_Y;
 
@@ -79,7 +79,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
         CommentListResource.ListStateListener,
         DetectsSoftKeyBoardFrameLayout.SoftKeyBoardListener {
 
-    private static final String[] tabs = {"AC娘", "(=ﾟωﾟ)="};
+    private static final String[] tabs = {"AC娘", "匿名版", "新娘", "彩娘", "TD猫", "皮尔德"};
 
     @BindView(R.id.toolbar_art)
     Toolbar mToolbar;
@@ -280,7 +280,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
         quote = null;
         mCommentEdit.setText("");
         mCommentEdit.setHint("发评论...");
-        ToastUtil.show("( ´_ゝ`) 已取消引用", this);
+        Snackbar.make(getWindow().getDecorView(), "( ´_ゝ`) 已取消引用", Snackbar.LENGTH_SHORT).show();
+//        ToastUtil.show("( ´_ゝ`) 已取消引用", this);
     }
 
     /**
@@ -365,7 +366,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
                     changeSendState(false);
                     updateComment();
                 } else {
-                    Toast.makeText(ArticleActivity2.this, "(|||ﾟдﾟ) 服务器抽风，刷新看看吧", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ArticleActivity2.this, "(|||ﾟдﾟ)刷新看看吧", Toast.LENGTH_SHORT).show();
                     changeSendState(false);
                 }
             }
@@ -374,7 +375,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
             @Override
             public void onErrorResponse(VolleyError error) {
                 quote = null;
-                Toast.makeText(ArticleActivity2.this, "服务器抽风，评论失败! (|||ﾟдﾟ)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ArticleActivity2.this, "(|||ﾟдﾟ)刷新看看吧", Toast.LENGTH_SHORT).show();
                 changeSendState(false);
             }
         });
@@ -651,17 +652,12 @@ public class ArticleActivity2 extends AppCompatActivity implements
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             GridView gridView = (GridView) getLayoutInflater().inflate(R.layout.article_emoticon_grid, null);
-            switch (position) {
-                case 0:
-                    gridView.setAdapter(new EmoticonGridAdapter(ArticleActivity2.this));
-                    gridView.setOnItemClickListener(new AcEmoticonGridItemClickListener());
-                    break;
-                case 1:
-                    gridView.setAdapter(null);
-                    break;
-            }
+
+            gridView.setAdapter(new EmoticonGridAdapter(ArticleActivity2.this, position));
+            gridView.setOnItemClickListener(new AcEmoticonGridItemClickListener());
+
             container.addView(gridView);
-            return container.getChildAt(position);
+            return gridView;
         }
 
         @Override
