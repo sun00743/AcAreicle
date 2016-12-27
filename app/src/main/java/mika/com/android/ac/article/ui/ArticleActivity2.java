@@ -280,7 +280,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
         quote = null;
         mCommentEdit.setText("");
         mCommentEdit.setHint("发评论...");
-        Snackbar.make(getWindow().getDecorView(), "( ´_ゝ`) 已取消引用", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getWindow().getDecorView(), "( ´_ゝ`) 已取消引用", Snackbar.LENGTH_LONG).show();
 //        ToastUtil.show("( ´_ゝ`) 已取消引用", this);
     }
 

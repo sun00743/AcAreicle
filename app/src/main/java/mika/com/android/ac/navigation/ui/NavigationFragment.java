@@ -17,10 +17,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -50,13 +52,17 @@ import mika.com.android.ac.util.SharedPrefsUtils;
 
 import static android.app.Activity.RESULT_OK;
 
-public class NavigationFragment extends Fragment implements AccountUserInfoResource.Listener,
-        NavigationHeaderLayout.Adapter, NavigationHeaderLayout.Listener,
-        NavigationAccountListLayout.Adapter, NavigationAccountListLayout.Listener {
+public class NavigationFragment extends Fragment implements
+        AccountUserInfoResource.Listener,
+        NavigationHeaderLayout.Adapter,
+        NavigationHeaderLayout.Listener,
+        NavigationAccountListLayout.Adapter,
+        NavigationAccountListLayout.Listener {
 
     @BindView(R.id.navigation)
     NavigationView mNavigationView;
     private NavigationHeaderLayout mHeaderLayout;
+    private TextView quoteCountText;
 
 //    private ArrayMap<Account, AccountUserInfoResource> mUserInfoResourceMap;
 
@@ -102,6 +108,10 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
         ButterKnife.bind(this, view);
         entry = new IsSigninEntry();
         mHeaderLayout = (NavigationHeaderLayout) mNavigationView.getHeaderView(0);
+        //get textView from actionLayout
+        View actionView = mNavigationView.getMenu().getItem(2).getActionView();
+        quoteCountText = ButterKnife.findById(actionView, R.id.quote_count);
+//        quoteCountText = (TextView) mNavigationView.getMenu().getItem(2).getActionView().findViewById(R.id.quote_count);
     }
 
     @Override
@@ -158,24 +168,28 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
         mNavigationViewAdapter = NavigationViewAdapter.override(mNavigationView, this, this);
     }
 
+    /**
+     * load acerInfo and banana;
+     */
     private void loadAcerInfo() {
         Volley.getInstance().addToRequestQueue(new AcerInfoRequest(mAcer.userId)
                 .setListener(new Response.Listener<AcerInfoResult2>() {
                     @Override
                     public void onResponse(AcerInfoResult2 response) {
                         if (response.success) {
-                            acerInfo = ((AcerInfoResult2) response).userjson;
-                            mHeaderLayout.bindAcer(acerInfo);
+                            acerInfo = response.userjson;
                             //get banana
                             mHeaderLayout.getBanana();
                         } else {
                             //todo 显示服务器错误信息
+                            acerInfo = null;
                         }
+                        mHeaderLayout.bindAcer(acerInfo);
                     }
                 }).setErrorListener(new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Log.e("loadAcerInfo", "onErrorResponse: " + error.getMessage());
                     }
                 }));
     }
@@ -185,6 +199,11 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
             mHeaderLayout.mSignin.setText(R.string.navigation_head_has_signin);
             mHeaderLayout.mSignin.setClickable(false);
         }
+    }
+
+    public void setQuoteCount(int count) {
+        if (count == 0) return;
+        quoteCountText.setText(String.format(Locale.CHINESE, "（%d条新召唤）", count));
     }
 
     @Override
@@ -231,6 +250,14 @@ public class NavigationFragment extends Fragment implements AccountUserInfoResou
     @Override
     public Acer getAcer() {
         return mAcer == null ? new Acer() : mAcer;
+    }
+
+    /**
+     * 获取acer info 失败
+     */
+    @Override
+    public void onGetAcerInfoError() {
+        loadAcerInfo();
     }
 
     /**

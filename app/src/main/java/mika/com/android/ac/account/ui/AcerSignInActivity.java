@@ -11,6 +11,7 @@ package mika.com.android.ac.account.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -70,41 +71,17 @@ public class AcerSignInActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         // TODO: 2016/12/6  delete this
-        mLoginRequest = new LoginRequest("月与萧","136892");
-        mLoginRequest.setShouldCache(true);
+//        mLoginRequest = new LoginRequest("月与萧","136892");
+//        mLoginRequest.setShouldCache(true);
 
         initListener();
     }
 
-    private void initListener(){
+    private void initListener() {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                attemptStartAuth();
-                onStartAuth();
-            }
-        });
-
-        mLoginRequest.setListener(new Response.Listener() {
-            @Override
-            public void onResponse(Object response) {
-                mLoginResult = GsonHelper.get().fromJson((String) response, LoginResult.class);
-                if(mLoginResult.success){
-                    acer = mLoginResult.data;
-                    new AcerDB(getApplicationContext()).saveAcer(acer);
-                    AcWenApplication.getInstance().setAcer(acer);
-                    AcWenApplication.LOGIN = true;
-                    //请求acer详细信息
-                    requestAcerInfo(acer.userId);
-                }else{
-                    // TODO: 2016/12/13 登录失败 
-                }
-            }
-        });
-        mLoginRequest.setErrorListener(new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("loginError ", error.getMessage());
+                attemptStartAuth();
             }
         });
     }
@@ -148,45 +125,73 @@ public class AcerSignInActivity extends AppCompatActivity {
         //view设置切换动画
         ViewUtils.crossfade(mFormLayout, mProgress, false);
 
-//        mLoginRequest = new LoginRequest(mUsername, mPassword);
-//        mLoginRequest.setShouldCache(true);
-        Volley.getInstance().addToRequestQueue(mLoginRequest);
+        mLoginRequest = new LoginRequest(mUsername, mPassword);
+        mLoginRequest.setShouldCache(true);
+        mLoginRequest.setListener(new Response.Listener() {
+            @Override
+            public void onResponse(Object response) {
+                mLoginResult = GsonHelper.get().fromJson((String) response, LoginResult.class);
+                if (mLoginResult.success) {
+                    acer = mLoginResult.data;
+                    new AcerDB(getApplicationContext()).saveAcer(acer);
+                    AcWenApplication.getInstance().setAcer(acer);
+                    AcWenApplication.LOGIN = true;
+                    //请求acer详细信息
+                    requestAcerInfo(acer.userId);
+                } else {
+                    ViewUtils.crossfade(mProgress, mFormLayout);
+                    if (mLoginResult.info.contains(getResources().getString(R.string.login_error_password))) {
+                        mPasswordLayout.setError(mLoginResult.info);
+                    } else {
+                        mUsernameLayout.setError(mLoginResult.info);
+                    }
+                }
+            }
+        });
+        mLoginRequest.setErrorListener(new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("loginError ", " " + error.getMessage());
+                ViewUtils.crossfade(mProgress, mFormLayout);
 
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                ViewUtils.crossfade(mProgress, mFormLayout);
-//            }
-//        },2000);
+                Snackbar.make(getWindow().getDecorView(), R.string.login_error_timeout, Snackbar.LENGTH_LONG).show();
+            }
+        });
+        //start request
+        Volley.getInstance().addToRequestQueue(mLoginRequest);
     }
 
     private void requestAcerInfo(int userId) {
         mAcerInfoRequest = new AcerInfoRequest(userId);
-        Volley.getInstance().addToRequestQueue(mAcerInfoRequest);
 
+        Volley.getInstance().addToRequestQueue(mAcerInfoRequest);
         mAcerInfoRequest.setListener(new Response.Listener() {
             @Override
             public void onResponse(Object response) {
-                if(((AcerInfoResult2)response).success){
-                    acerInfo = ((AcerInfoResult2)response).userjson;
-                    doResult();
-                }else{
-                    // TODO: 2016/12/13 获取个人资料失败
+                if (((AcerInfoResult2) response).success) {
+                    acerInfo = ((AcerInfoResult2) response).userjson;
+                } else {
+                    acerInfo = null;
                 }
+                doResult(acerInfo);
             }
         });
         mAcerInfoRequest.setErrorListener(new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e("getAcerInfo", "onErrorResponse: " + error.getMessage());
+                acerInfo = null;
+                doResult(acerInfo);
             }
         });
     }
 
-    private void doResult() {
+    private void doResult(AcerInfo2 acerInfo) {
         Intent result = new Intent();
-        result.putExtra("acer_info",acerInfo);
-        setResult(RESULT_OK,result);
+        if (acerInfo != null) {
+            result.putExtra("acer_info", acerInfo);
+        }
+        setResult(RESULT_OK, result);
         finish();
     }
 

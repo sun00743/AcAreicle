@@ -257,5 +257,6 @@ public class MainActivity extends AppCompatActivity implements
         if (mNotificationMenu != null) {
             ActionItemBadge.update(mNotificationMenu, mUnreadNotificationCount);
         }
+        mNavigationFragment.setQuoteCount(count);
     }
 }

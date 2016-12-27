@@ -13,24 +13,32 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Administrator on 2016/9/26.
+ * Created by mika on 2016/9/26.
  */
 
-public class LoginResult implements Parcelable{
+public class LoginResult implements Parcelable {
 
     public Acer data;
     public boolean success;
     public int status;
+    public String result;
+    public String info;
 
     protected LoginResult(Parcel in) {
+        data = in.readParcelable(Acer.class.getClassLoader());
         success = in.readByte() != 0;
         status = in.readInt();
+        result = in.readString();
+        info = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(data, flags);
         dest.writeByte((byte) (success ? 1 : 0));
         dest.writeInt(status);
+        dest.writeString(result);
+        dest.writeString(info);
     }
 
     @Override

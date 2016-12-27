@@ -37,11 +37,12 @@ import butterknife.ButterKnife;
 import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
 import mika.com.android.ac.network.Volley;
-import mika.com.android.ac.network.api.GetBananaRequest;
-import mika.com.android.ac.network.api.SigninRequest;
+import mika.com.android.ac.network.api.ApiRequest;
+import mika.com.android.ac.network.api.ApiRequests;
 import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.network.api.info.acapi.AcerInfo2;
 import mika.com.android.ac.network.api.info.acapi.GetBananaResult;
+import mika.com.android.ac.network.api.info.acapi.SignInResult;
 import mika.com.android.ac.network.api.info.apiv2.User;
 import mika.com.android.ac.network.api.info.apiv2.UserInfo;
 import mika.com.android.ac.ui.AnimateCompoundDrawableButton;
@@ -78,7 +79,7 @@ public class NavigationHeaderLayout extends FrameLayout {
     LinearLayout mInfoLayout;
     @BindView(R.id.name)
     TextView mNameText;
-    @BindView(R.id.description)
+    @BindView(R.id.acer_description)
     TextView mDescriptionText;
     @BindView(R.id.signin)
     AnimateCompoundDrawableButton mSignin;
@@ -163,6 +164,19 @@ public class NavigationHeaderLayout extends FrameLayout {
     }
 
     private void bindAcerInfo(AcerInfo2 acerInfo) {
+        if (acerInfo == null) {
+            mDescriptionText.setVisibility(VISIBLE);
+            mDescriptionText.setText(R.string.navigation_head_getbananafailed);
+            mSignin.setText(R.string.reload);
+            mSignin.setVisibility(VISIBLE);
+            mSignin.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAdapter.onGetAcerInfoError();
+                }
+            });
+            return;
+        }
 
         bindAvatarImage(mAvatarImage, acerInfo.avatar);
         mNameText.setText(acerInfo.name);
@@ -181,26 +195,32 @@ public class NavigationHeaderLayout extends FrameLayout {
         });
 
         mSignin.setVisibility(VISIBLE);
-        mSignin.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!AcWenApplication.LOGIN) {
-                    if (mAccountTransitionRunning) {
+        if (SharedPrefsUtils.getBoolean(isSigninEntry, getContext())) {
+            mSignin.setText(R.string.navigation_head_has_signin);
+            mSignin.setClickable(false);
+        } else {
+            mSignin.setText(R.string.navigation_head_signin);
+            mSignin.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!AcWenApplication.LOGIN) {
+                        if (mAccountTransitionRunning) {
+                            return;
+                        }
+                        if (mListener != null) {
+                            mListener.openProfile(null);
+                        }
                         return;
                     }
-                    if (mListener != null) {
-                        mListener.openProfile(null);
+                    ApiRequest<SignInResult> signinRequest = ApiRequests.newSignInRequest();
+                    if (signinRequest == null) {
+                        Log.e("signinRequest ", "onErrorResponse: unLogin");
+                        return;
                     }
-                    return;
-                }
-                if (!SharedPrefsUtils.getBoolean(isSigninEntry, getContext())) {
-
-                    SigninRequest signinRequest = new SigninRequest(AcWenApplication.getInstance().getAcer().access_token);
-                    mika.com.android.ac.network.Volley.getInstance().getRequestQueue().add(signinRequest);
-                    signinRequest.setListener(new Response.Listener() {
+                    signinRequest.setListener(new Response.Listener<SignInResult>() {
                         @Override
-                        public void onResponse(Object response) {
-                            mSignin.setText("已签到");
+                        public void onResponse(SignInResult response) {
+                            mSignin.setText(R.string.navigation_head_has_signin);
                             mSignin.setClickable(false);
                             SharedPrefsUtils.putBoolean(isSigninEntry, true, getContext());
                             getBanana();
@@ -208,25 +228,34 @@ public class NavigationHeaderLayout extends FrameLayout {
                     }).setErrorListener(new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.e("eeeeeeee", "onErrorResponse: " + error.getMessage());
+                            Log.e("signinRequest ", "onErrorResponse: " + error.getMessage());
                         }
                     });
+                    Volley.getInstance().getRequestQueue().add(signinRequest);
 
                 }
-            }
-        });
+            });
+        }
     }
 
     public void getBanana() {
-        GetBananaRequest getBananaRequest = new GetBananaRequest(AcWenApplication.getInstance().getAcer().access_token);
+        final ApiRequest<GetBananaResult> getBananaRequest = ApiRequests.newGetBananaRequest();
+        if (getBananaRequest == null) {
+            Log.e("GetBananaRequest ", "onErrorResponse: Acer error or unLogin");
+            mDescriptionText.setText(R.string.request_acer_error);
+            return;
+        }
         Volley.getInstance().addToRequestQueue(getBananaRequest);
         getBananaRequest.setListener(new Response.Listener<GetBananaResult>() {
             @Override
             public void onResponse(GetBananaResult response) {
                 if (response.success)
-                    mDescriptionText.setText(response.data.bananaCount + "个香蕉，" + response.data.bananaGold + "个金香蕉");
-                else
-                    mDescriptionText.setText(R.string.navigation_head_getbananafailed);
+                    mDescriptionText.setText(response.data.bananaCount + "个香蕉，" +
+                            response.data.bananaGold + "个金香蕉");
+                else {
+                    Log.e(getBananaRequest.getClass().getName(), "onResponse: get error" + response.toString());
+                    mDescriptionText.setText(R.string.navigation_head_reLogin);
+                }
             }
         }).setErrorListener(new Response.ErrorListener() {
             @Override
@@ -476,6 +505,8 @@ public class NavigationHeaderLayout extends FrameLayout {
         UserInfo getUserInfo(Account account);
 
         Acer getAcer();
+
+        void onGetAcerInfoError();
     }
 
     public interface Listener {

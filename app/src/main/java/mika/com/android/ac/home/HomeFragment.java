@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment implements AppBarManager {
         mTabAdapter.addTab(HomeArticleListFragment.newInstance(73,0), getString(R.string.home_bicanlvhua));
         mTabAdapter.addTab(HomeArticleListFragment.newInstance(74,0), getString(R.string.home_animation));
         mTabAdapter.addTab(HomeArticleListFragment.newInstance(75,0), getString(R.string.home_cartoon));
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(63,0), getString(R.string.home_game));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(164,0), getString(R.string.home_game));
 
 //        mTabAdapter.addTab(new TabFragmentPagerAdapter.FragmentCreator() {
 //            @Override

@@ -34,7 +34,7 @@ public class Volley {
     }
 
     private Volley() {
-        createAuthenticatorForActiveAccount();
+//        createAuthenticatorForActiveAccount();
         createAndStartRequestQueue();
     }
 

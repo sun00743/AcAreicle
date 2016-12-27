@@ -23,17 +23,12 @@ import mika.com.android.ac.util.Connectivity;
 public class SigninRequest extends Request {
 
     private static final String POST_SIGNIN_URL = "http://webapi.acfun.tv/record/actions/signin?access_token=";
-    private static final String APP_VERSION = "4.3.0";
-    private static final String PRODUCT_ID = "2000";
 
     public SigninRequest(String token){
         super(Method.POST, POST_SIGNIN_URL + token);
         addParam("channel", "1");
 
-        addHeader("appVersion", APP_VERSION);
-        addHeader("User-Agent", Connectivity.UA);
-        addHeader("productId", PRODUCT_ID);
-        addHeader("deviceType", "1");
+        addHeaders(Connectivity.UA_MAP);
         addHeader("uid", "623674");
         addHeader("Content-Type",Connectivity.CONTENT_TYPE_FORM);
     }

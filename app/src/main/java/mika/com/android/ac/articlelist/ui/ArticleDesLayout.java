@@ -42,37 +42,33 @@ import mika.com.android.ac.util.ViewUtils;
 
 /**
  * A LinearLayout that can display a article.
- * by mika
- * <p>
- * <p>Note that this layout tries to avoid the glitch if the same broadcast is bound again by
- * leaving attachment and text unchanged (since they cannot change once a broadcast is created).</p>
  */
-public class ArticleListLayout extends LinearLayout {
+public class ArticleDesLayout extends LinearLayout {
 
     /**
      * up头像
      */
-    @BindView(mika.com.android.ac.R.id.user_avatar)
+    @BindView(R.id.user_avatar)
     ImageView mAvatarImage;
     /**
      * up
      */
-    @BindView(mika.com.android.ac.R.id.user_name)
+    @BindView(R.id.user_name)
     TextView mNameText;
     /**
      * 投稿时间
      */
-    @BindView(mika.com.android.ac.R.id.time_format)
+    @BindView(R.id.time_format)
     TimeActionTextView mTimeFormatText;
     /**
      * 评论数
      */
-    @BindView(mika.com.android.ac.R.id.comment_count)
+    @BindView(R.id.comment_count)
     TextView mCommentCount;
     /**
      * 围观数
      */
-    @BindView(mika.com.android.ac.R.id.view_count)
+    @BindView(R.id.view_count)
     TextView mWatchCount;
     /**
      * 头layout
@@ -82,38 +78,38 @@ public class ArticleListLayout extends LinearLayout {
 
     @BindView(R.id.attachment)
     RelativeLayout mAttachmentLayout;
-    @BindView(mika.com.android.ac.R.id.attachment_image)
+    @BindView(R.id.attachment_image)
     ImageView mAttachmentImage;
     /**
      * 文章题目
      */
-    @BindView(mika.com.android.ac.R.id.article_title)
+    @BindView(R.id.article_title)
     TextView mArticleTitleText;
     /**
      * 文章概述
      */
-    @BindView(mika.com.android.ac.R.id.article_description)
+    @BindView(R.id.article_description)
     TextView mArticleDescriptionText;
-    @BindView(mika.com.android.ac.R.id.single_image)
+    @BindView(R.id.single_image)
     ImageLayout mSingleImageLayout;
-    //    @BindView(mika.com.android.ac.R.id.image_list_layout)
+    //    @BindView(R.id.image_list_layout)
 //    FrameLayout mImageListLayout;
-//    @BindView(mika.com.android.ac.R.id.image_list_description_layout)
+//    @BindView(R.id.image_list_description_layout)
 //    FrameLayout mImageListDescriptionLayout;
-//    @BindView(mika.com.android.ac.R.id.image_list_description)
+//    @BindView(R.id.image_list_description)
 //    TextView mImageListDescriptionText;
 //    @BindView(R.id.image_list)
 //    RecyclerView mImageList;
-    @BindView(mika.com.android.ac.R.id.text_space)
+    @BindView(R.id.text_space)
     Space mTextSpace;
-    @BindView(mika.com.android.ac.R.id.text)
+    @BindView(R.id.text)
     TextView mTextText;
 
-    @BindView(mika.com.android.ac.R.id.art_star)
+    @BindView(R.id.art_star)
     CardIconButton mStarButton;
-    @BindView(mika.com.android.ac.R.id.art_comment)
+    @BindView(R.id.art_comment)
     CardIconButton mCommentButton;
-    @BindView(mika.com.android.ac.R.id.art_banana)
+    @BindView(R.id.art_banana)
     CardIconButton mBananaButton;
 
     //判断是否在recycleView中
@@ -131,26 +127,26 @@ public class ArticleListLayout extends LinearLayout {
      */
     public String diffTime;
 
-    public ArticleListLayout(Context context) {
+    public ArticleDesLayout(Context context) {
         super(context);
 
         init();
     }
 
-    public ArticleListLayout(Context context, AttributeSet attrs) {
+    public ArticleDesLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         init();
     }
 
-    public ArticleListLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ArticleDesLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public ArticleListLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ArticleDesLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         init();

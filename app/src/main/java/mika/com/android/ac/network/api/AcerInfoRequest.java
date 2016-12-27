@@ -18,19 +18,19 @@ import java.io.UnsupportedEncodingException;
 
 import mika.com.android.ac.network.Request;
 import mika.com.android.ac.network.api.info.acapi.AcerInfoResult2;
+import mika.com.android.ac.util.Connectivity;
 import mika.com.android.ac.util.GsonHelper;
 
 /**
- * Created by mika on 2016/9/26
- *
+ * Created by mika on 2016/9/26;
+ * request acerInfo;
  */
 
 public class AcerInfoRequest extends Request {
 
-    private static final String ACER_INFO_URL2 = "http://www.acfun.tv/usercard.aspx?uid=";
-
     public AcerInfoRequest(int userId) {
-        super(Method.GET, ACER_INFO_URL2 + userId);
+        super(Method.GET, ApiContract.Request.AcApi.ACER_INFO);
+        addParam(Connectivity.UID, String.valueOf(userId));
     }
 
     @Override

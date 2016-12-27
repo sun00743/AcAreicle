@@ -25,17 +25,12 @@ import mika.com.android.ac.util.Connectivity;
 public class GetBananaRequest extends Request {
 
     private static final String GET_GETBANANA_URL = "http://mobile.acfun.tv/banana/getBananaCount.aspx?access_token=";
-    private static final String APP_VERSION = "4.3.0";
-    private static final String PRODUCT_ID = "2000";
 
-    public GetBananaRequest(String token){
+    public GetBananaRequest(String token, String uid){
         super(Method.GET, GET_GETBANANA_URL + token);
 
-        addHeader("appVersion", APP_VERSION);
-        addHeader("User-Agent", Connectivity.UA);
-        addHeader("productId", PRODUCT_ID);
-        addHeader("deviceType", "1");
-        addHeader("uid", "623674");
+        addHeaders(Connectivity.UA_MAP);
+        addHeader(Connectivity.UID, uid);
     }
 
     @Override

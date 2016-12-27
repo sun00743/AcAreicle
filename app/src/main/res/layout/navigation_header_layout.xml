@@ -35,10 +35,10 @@
                 android:id="@+id/recent_one_avatar"
                 android:layout_width="@dimen/touch_target_size"
                 android:layout_height="@dimen/touch_target_size"
-                android:layout_toLeftOf="@+id/recent_two_avatar"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_marginRight="@dimen/screen_edge_horizontal_margin_with_8dp_padding"
                 android:layout_marginTop="@dimen/screen_edge_horizontal_margin_with_4dp_padding"
+                android:layout_toLeftOf="@+id/recent_two_avatar"
                 android:padding="@dimen/avatar_padding" />
 
             <mika.com.android.ac.ui.SimpleCircleImageView
@@ -81,18 +81,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginBottom="@dimen/list_padding_vertical"
-            android:paddingRight="4dp"
             android:background="?selectableItemBackground"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingRight="4dp">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="@dimen/screen_edge_horizontal_16dp_margin"
                 android:layout_marginBottom="4dp"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/screen_edge_horizontal_16dp_margin">
 
                 <!--
                   ~ Use android:width="match_parent" for the two TextViews so that their bounds can
@@ -109,7 +109,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/description"
+                    android:id="@+id/acer_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
@@ -118,24 +118,24 @@
                     android:textColor="?android:textColorSecondary" />
             </LinearLayout>
 
-<!--
-            <ImageView
-                android:id="@+id/dropDown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/drop_down_icon_white_24dp" />
--->
+            <!--
+                        <ImageView
+                            android:id="@+id/dropDown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/drop_down_icon_white_24dp" />
+            -->
             <mika.com.android.ac.ui.AnimateCompoundDrawableButton
                 android:id="@+id/signin"
-                android:text="签到"
+                style="?borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="-10dp"
                 android:layout_gravity="top"
-                android:paddingLeft="10dp"
+                android:layout_marginBottom="-10dp"
                 android:drawablePadding="6dp"
-                android:visibility="visible"
-                style="?borderlessButtonStyle" />
+                android:paddingLeft="10dp"
+                android:text="签到"
+                android:visibility="visible" />
         </LinearLayout>
     </FrameLayout>
 </merge>

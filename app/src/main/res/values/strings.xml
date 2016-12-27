@@ -5,10 +5,10 @@
     <string name="close">关闭</string>
     <string name="copy_to_clipboard">复制到剪贴板</string>
     <string name="no">否</string>
-    <string name="reload">重新加载</string>
     <string name="yes">是</string>
+    <string name="reload">重试</string>
 
-    <string name="request_acer_error">用户信息异常</string>
+    <string name="request_acer_error">未登录，或者用户信息异常</string>
     <string name="quote_acer_delete">用户不存在或已删除</string>
     <string name="quote_comment_delete">该评论已被删除</string>
     <string name="quote_title_delete">未知领域</string>
@@ -33,19 +33,27 @@
     <string name="profile_stars">当前所有有效投稿的收藏数总和。</string>
     <string name="profile_comments">当前所有有效投稿的评论数总和。</string>
 
-
     <string name="minute_ago">分钟前</string>
     <string name="hour_ago">小时前</string>
     <string name="day_ago">天前</string>
     <string name="seconds_ago">秒前</string>
 
-    <string name="article_views"> 围观</string>
+    <string name="article_views">围观</string>
 
     <string name="nothing">这里空无一物</string>
-    <string name="navigation_head_getbananafailed">服务器爆炸，我能有什么办法（摊手）</string>
+    <string name="navigation_head_getbananafailed">服务器爆炸了(|||ﾟдﾟ)</string>
+    <string name="navigation_head_reLogin">出了点意外，重新登陆试试看吧</string>
     <string name="navigation_head_has_signin">已签到</string>
+    <string name="navigation_head_signin">签到</string>
     <string name="navigation_head_unLogin">未登录</string>
+    <string name="navigation_head_banana">个香蕉，</string>
+    <string name="navigation_head_goldbanana">个金香蕉</string>
 
+    <string name="login_error_timeout">( ´_ゝ`)服务器抽风，再来一次吧</string>
+    <string name="login_error_password">密纹都写错</string>
+
+
+<!-- ——————————————————————————————————————————————————————————————————————————　 -->
     <string name="activity_not_found">未找到可处理此操作的应用</string>
     <string name="copied_to_clipboard_format">已复制到剪贴板：\n%1$s</string>
     <string name="load_error">加载失败</string>
@@ -144,12 +152,12 @@
     <string name="auth_title_add">添加账户</string>
     <string name="auth_title_update">更新密码</string>
     <string name="auth_title_confirm">确认密码</string>
-    <string name="auth_username">用户名</string>
-    <string name="auth_password">密码</string>
+    <string name="auth_username">ID</string>
+    <string name="auth_password">密纹</string>
     <string name="auth_log_in">登录</string>
     <string name="auth_register">没有账户？现在注册</string>
-    <string name="auth_error_empty_username">请输入用户名</string>
-    <string name="auth_error_empty_password">请输入密码</string>
+    <string name="auth_error_empty_username">请输入ID，靴靴 ⊂彡☆))д`)</string>
+    <string name="auth_error_empty_password">你倒是输入密纹啊</string>
     <string name="auth_error_invalid_response">服务器应答无效</string>
     <string name="auth_error_unknown">未知错误</string>
     <string name="auth_select_account">选择账户</string>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group
         android:id="@+id/navigation_group_primary"
@@ -8,30 +9,30 @@
         <item
             android:id="@+id/navigation_home"
             android:icon="@drawable/home_icon_black_24dp"
-            android:title="@string/navigation_home"
-            />
+            android:title="@string/navigation_home" />
 
         <item
             android:id="@+id/navigation_message"
-            android:icon="@drawable/book_icon_black_24dp"
-            android:title="@string/navigation_message"
-            android:checkable="false"/>
+            android:checkable="false"
+            android:icon="@drawable/message_icon_black_24dp"
+            android:title="@string/navigation_message" />
 
         <item
             android:id="@+id/navigation_quote"
-            android:icon="@drawable/movie_icon_black_24dp"
-            android:title="@string/navigation_quote"
-            android:checkable="false" />
+            app:actionLayout="@layout/menu_item_quote"
+            android:checkable="false"
+            android:icon="@drawable/navigation_item_quote_24dp"
+            android:title="@string/navigation_quote" />
 
         <item
             android:id="@+id/navigation_star"
-            android:icon="@drawable/music_icon_black_24dp"
-            android:title="@string/navigation_star"
-            android:checkable="false" />
+            android:checkable="false"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="@string/navigation_star" />
     </group>
 
     <!-- Set an id on this group to show a divider. -->
-    <group android:id="@+id/navigation_group_secondary" >
+    <group android:id="@+id/navigation_group_secondary">
 
         <item
             android:id="@+id/navigation_settings"

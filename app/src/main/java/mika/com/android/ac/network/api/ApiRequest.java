@@ -15,7 +15,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Authenticator;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -25,21 +24,20 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 
 import mika.com.android.ac.network.Request;
-import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.util.GsonHelper;
 import mika.com.android.ac.util.LogUtils;
 
 public class ApiRequest<T> extends Request<T> {
 
     private Type mType;
-    private Authenticator mAuthenticator;
-    private String mAuthToken = "yue";
+//    private Authenticator mAuthenticator;
+//    private String mAuthToken = "yue";
 
     public ApiRequest(int method, String url, Type type) {
         super(method, url);
 
         mType = type;
-        mAuthenticator = Volley.getInstance().getAuthenticator();
+//        mAuthenticator = Volley.getInstance().getAuthenticator();
 
         setRetryPolicy(new RetryPolicy(ApiContract.Request.Base.INITIAL_TIMEOUT_MS,
                 ApiContract.Request.Base.MAX_NUM_RETRIES,

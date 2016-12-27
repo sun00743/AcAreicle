@@ -18,21 +18,18 @@ import java.util.Map;
 import mika.com.android.ac.util.Connectivity;
 import mika.com.android.ac.network.Request;
 
-/**
- *
- */
 public abstract class BaseArticleRequest<T> extends Request<T> {
-    protected final Class<T> mClazz;
+    private final Class<T> mClazz;
     private final Listener<T> mListener;
-    protected final Map<String, String> mPostBody;
+    private final Map<String, String> mPostBody;
 
     /**
-     * @param method
-     * @param url
-     * @param requestBody the form data to post,
-     * @param clazz
-     * @param listener
-     * @param errorListner
+     * @param method       get
+     * @param url          article url
+     * @param requestBody  the form data to post,
+     * @param clazz        Article entity
+     * @param listener     success listener
+     * @param errorListner error listener
      */
     public BaseArticleRequest(int method, String url, Map<String, String> requestBody, Class<T> clazz, Listener<T> listener, ErrorListener errorListner) {
         super(method, url);
@@ -42,25 +39,26 @@ public abstract class BaseArticleRequest<T> extends Request<T> {
     }
 
     public BaseArticleRequest(String url, Map<String, String> requestBody, Class<T> clazz, Listener<T> listener, ErrorListener errorListner) {
-        this(requestBody == null? Method.GET: Method.POST, url, requestBody, clazz, listener, errorListner);
+        this(requestBody == null ? Method.GET : Method.POST, url, requestBody, clazz, listener, errorListner);
     }
 
-    public BaseArticleRequest(String url, Class<T> clazz, Listener<T> listener, ErrorListener errorListner){
-        this(url,null,clazz,listener,errorListner);
+    public BaseArticleRequest(String url, Class<T> clazz, Listener<T> listener, ErrorListener errorListner) {
+        this(url, null, clazz, listener, errorListner);
     }
-    
+
     @Override
     protected final void deliverResponse(T response) {
-        if(response == null) 
+        if (response == null)
             deliverError(new VolleyError("error response !"));
-        else if(mListener != null)
+        else if (mListener != null)
             this.mListener.onResponse(response);
     }
-    
+
     @Override
     public Map<String, String> getHeaders() {
         return Connectivity.UA_MAP;
     }
+
     @Override
     public Map<String, String> getParams() {
         return mPostBody;

@@ -48,4 +48,15 @@ public class GetBananaResult implements Parcelable{
             return new GetBananaResult[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "GetBananaResult{" +
+                "success=" + success +
+                ", result='" + result + '\'' +
+                ", info='" + info + '\'' +
+                ", status=" + status +
+                ", data=" + data +
+                '}';
+    }
 }

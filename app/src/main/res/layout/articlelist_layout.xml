@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--
-  ~ Copyright (c) 2015 Zhang Hai <Dreaming.in.Code.ZH@Gmail.com>
-  ~ All Rights Reserved.
-  -->
-
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:id="@+id/item_head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/card_content_vertical_margin_with_4dp_padding"
         android:layout_marginBottom="@dimen/card_content_vertical_space_with_4dp_padding"
+        android:layout_marginTop="@dimen/card_content_vertical_margin_with_4dp_padding"
         android:paddingLeft="@dimen/card_content_horizontal_margin_with_4dp_padding"
         android:paddingRight="@dimen/card_content_horizontal_margin">
 
@@ -30,10 +23,10 @@
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/user_avatar"
             android:layout_alignTop="@id/user_avatar"
             android:layout_marginLeft="@dimen/card_content_horizontal_space_with_4dp_padding"
             android:layout_marginTop="@dimen/avatar_padding"
+            android:layout_toRightOf="@id/user_avatar"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -43,53 +36,53 @@
             android:id="@+id/time_format"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/user_name"
             android:layout_alignBottom="@id/user_avatar"
+            android:layout_alignLeft="@id/user_name"
             android:layout_marginBottom="@dimen/avatar_padding"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="?android:textColorSecondary" />
+            android:textColor="@color/black_54" />
 
         <mika.com.android.ac.ui.TimeActionTextView
             android:id="@+id/view_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:layout_alignParentRight="true"
             android:layout_alignBottom="@id/user_avatar"
+            android:layout_alignParentRight="true"
             android:layout_marginBottom="@dimen/avatar_padding"
+            android:layout_marginRight="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="?android:textColorSecondary" />
+            android:textColor="@color/black_54" />
 
         <mika.com.android.ac.ui.TimeActionTextView
             android:id="@+id/comment_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="12dp"
-            android:ellipsize="end"
-            android:visibility="gone"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="?android:textColorSecondary"
             android:layout_alignBaseline="@+id/view_count"
             android:layout_alignBottom="@+id/view_count"
+            android:layout_marginRight="12dp"
             android:layout_toLeftOf="@+id/view_count"
-            android:layout_toStartOf="@+id/view_count" />
+            android:layout_toStartOf="@+id/view_count"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/black_54"
+            android:visibility="gone" />
     </RelativeLayout>
 
-   <mika.com.android.ac.ui.ForegroundRelativeLayout
+    <RelativeLayout
         android:id="@+id/attachment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/card_content_horizontal_margin"
-        android:paddingRight="@dimen/card_content_horizontal_margin"
-        android:paddingBottom="@dimen/card_content_vertical_space"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?selectableItemBackground">
+        android:foreground="?selectableItemBackground"
+        android:paddingBottom="@dimen/card_content_vertical_space"
+        android:paddingLeft="@dimen/card_content_horizontal_margin"
+        android:paddingRight="@dimen/card_content_horizontal_margin">
 
         <View
             android:id="@+id/divider"
@@ -109,12 +102,12 @@
             android:scaleType="centerCrop" />
 
         <TextView
-            android:layout_alignParentLeft="true"
-            android:layout_marginRight="16dp"
             android:id="@+id/article_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_below="@id/divider"
+            android:layout_marginRight="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         <mika.com.android.ac.ui.AutoGoneTextView
@@ -125,7 +118,7 @@
             android:layout_below="@id/article_title"
             android:layout_marginTop="8dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-    </mika.com.android.ac.ui.ForegroundRelativeLayout>
+    </RelativeLayout>
 
     <mika.com.android.ac.ui.ImageLayout
         android:id="@+id/single_image"
@@ -135,39 +128,39 @@
         app:fillOrientation="horizontal" />
 
     <!--imageList layout-->
-<!--
-    <FrameLayout
-        android:id="@+id/image_list_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <mika.com.android.ac.ui.NestedRatioHeightRecyclerView
-            android:id="@+id/image_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:ratio="6:5" />
-
+    <!--
         <FrameLayout
-            android:id="@+id/image_list_description_layout"
+            android:id="@+id/image_list_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/scrim_height"
-            android:layout_gravity="bottom">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/image_list_description"
-                android:layout_width="wrap_content"
+            <mika.com.android.ac.ui.NestedRatioHeightRecyclerView
+                android:id="@+id/image_list"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="@dimen/card_content_horizontal_margin"
-                android:layout_marginRight="@dimen/card_content_horizontal_margin"
-                android:layout_marginTop="@dimen/card_content_vertical_margin"
-                android:layout_marginBottom="@dimen/card_content_vertical_margin"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1.Inverse" />
+                app:ratio="6:5" />
+
+            <FrameLayout
+                android:id="@+id/image_list_description_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/scrim_height"
+                android:layout_gravity="bottom">
+
+                <TextView
+                    android:id="@+id/image_list_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="@dimen/card_content_horizontal_margin"
+                    android:layout_marginRight="@dimen/card_content_horizontal_margin"
+                    android:layout_marginTop="@dimen/card_content_vertical_margin"
+                    android:layout_marginBottom="@dimen/card_content_vertical_margin"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1.Inverse" />
+            </FrameLayout>
         </FrameLayout>
-    </FrameLayout>
--->
+    -->
 
     <Space
         android:id="@+id/text_space"
@@ -186,11 +179,11 @@
         android:id="@+id/item_foot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/card_content_vertical_space"
         android:layout_marginTop="@dimen/card_content_vertical_space"
-        android:layout_marginBottom="@dimen/card_content_vertical_margin_small"
+        android:orientation="horizontal"
         android:paddingLeft="@dimen/card_content_horizontal_margin"
-        android:paddingRight="@dimen/card_content_horizontal_margin"
-        android:orientation="horizontal">
+        android:paddingRight="@dimen/card_content_horizontal_margin">
 
         <mika.com.android.ac.ui.CardIconButton
             android:id="@+id/art_banana"

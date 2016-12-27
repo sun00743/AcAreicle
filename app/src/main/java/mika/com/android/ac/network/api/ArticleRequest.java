@@ -9,14 +9,16 @@
 
 package mika.com.android.ac.network.api;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
+import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.HttpHeaderParser;
 
 import mika.com.android.ac.network.api.info.acapi.Article;
@@ -24,15 +26,16 @@ import mika.com.android.ac.util.Connectivity;
 
 /**
  * Created by Administrator on 2016/9/13.
+ * ArticleRequest
  */
 
 public class ArticleRequest extends BaseArticleRequest<Article> {
-    private static final String TAG = "Article";
+    public static final int ARTICLE_TIMEOUT_MS = 2000;
     public static final int MAX_AGE = 7 * 24 * 60 * 60 * 1000;
-    private static final String ARTICLE_API =  "http://api.aixifan.com/articles/";
+    private final String TAG = getClass().getName() + "Article";
 
-    public ArticleRequest(Context context, int aid, Response.Listener<Article> listener, Response.ErrorListener errListener) {
-        super(ARTICLE_API + aid, Article.class, listener, errListener);
+    public ArticleRequest(int aid, Response.Listener<Article> listener, Response.ErrorListener errListener) {
+        super(ApiContract.Request.AcApi.ARTICLE + aid, Article.class, listener, errListener);
     }
 
     @Override
@@ -42,20 +45,42 @@ public class ArticleRequest extends BaseArticleRequest<Article> {
                     HttpHeaderParser.parseCharset(response.headers));
             JSONObject rsp = JSON.parseObject(json);
             int code = rsp.getIntValue("code");
-            if(code != 200){
+            if (code != 200) {
                 throw new Article.InvalidArticleError();
             }
             JSONObject articleJson = rsp.getJSONObject("data");
-            if(articleJson == null)
+            if (articleJson == null)
                 return Response.error(new Article.InvalidArticleError());
+
             return Response.success(Article.newArticle(articleJson),
                     Connectivity.newCache(response, MAX_AGE));
-        } catch(Article.InvalidArticleError e){
+
+        } catch (Article.InvalidArticleError e) {
             Log.w(TAG, "Invalid Article! Need to redirect intent");
             return Response.error(e);
         } catch (Exception e) {
             Log.e(TAG, "parse article error", e);
             return Response.error(new ParseError(e));
         }
+    }
+
+    /**
+     * 设置高访问优先级
+     *
+     * @param priority high
+     */
+    @Override
+    public void setPriority(Priority priority) {
+        super.setPriority(Priority.HIGH);
+    }
+
+    /**
+     * 超时请求重试
+     *
+     * @param retryPolicy my
+     */
+    @Override
+    public Request<?> setRetryPolicy(RetryPolicy retryPolicy) {
+        return super.setRetryPolicy(new DefaultRetryPolicy(ARTICLE_TIMEOUT_MS, 0, 0));
     }
 }

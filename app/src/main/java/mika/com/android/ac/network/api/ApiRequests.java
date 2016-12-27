@@ -22,7 +22,9 @@ import java.util.Locale;
 import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.network.api.info.acapi.ArticleListResult;
 import mika.com.android.ac.network.api.info.acapi.CommentResult;
+import mika.com.android.ac.network.api.info.acapi.GetBananaResult;
 import mika.com.android.ac.network.api.info.acapi.Mention;
+import mika.com.android.ac.network.api.info.acapi.SignInResult;
 import mika.com.android.ac.network.api.info.apiv2.Broadcast;
 import mika.com.android.ac.network.api.info.apiv2.Comment;
 import mika.com.android.ac.network.api.info.apiv2.CommentList;
@@ -47,6 +49,9 @@ public class ApiRequests {
     }
 
 
+    /**
+     * get acer uid
+     */
     public static String getAcerUid() {
         if (AcWenApplication.getInstance().getAcer() == null) {
             return null;
@@ -55,6 +60,9 @@ public class ApiRequests {
         }
     }
 
+    /**
+     * get acer accesstoken
+     */
     public static String getAcerAccessToken() {
         if (AcWenApplication.getInstance().getAcer() == null) {
             return null;
@@ -191,11 +199,43 @@ public class ApiRequests {
     }
 
     /**
+     * 签到
+     */
+    public static ApiRequest<SignInResult> newSignInRequest() {
+        if (getAcerUid() == null || getAcerAccessToken() == null) {
+            return null;
+        } else {
+            ApiRequest<SignInResult> request = new ApiRequest<>(ApiRequest.Method.POST, ApiContract.Request.AcApi.SIGNIN + getAcerAccessToken(), SignInResult.class);
+            request.addParam(Connectivity.CHANNEL, ApiContract.Request.Params.CHANNEL);
+
+            request.addHeader(Connectivity.UID, getAcerUid());
+            request.addHeaders(Connectivity.UA_MAP);
+            request.addHeader("Content-Type",Connectivity.CONTENT_TYPE_FORM);
+            return request;
+        }
+    }
+
+    /**
+     * 获取香蕉数量
+     */
+    public static ApiRequest<GetBananaResult> newGetBananaRequest() {
+        ApiRequest<GetBananaResult> request = new ApiRequest<>(ApiRequest.Method.GET, ApiContract.Request.AcApi.GETBANANA, GetBananaResult.class);
+        if (getAcerUid() == null || getAcerAccessToken() == null) {
+            return null;
+        } else {
+            request.addParam(Connectivity.ACCESS_TOKEN, getAcerAccessToken());
+
+            request.addHeader(Connectivity.UID, getAcerUid());
+            request.addHeaders(Connectivity.UA_MAP);
+            return request;
+        }
+    }
+
+    /**
      * 召唤或者私信 Count push Request
-     *
      */
     public static ApiRequest<Mention> newPushRequest() {
-        ApiRequest request = new ApiRequest<>(ApiRequest.Method.GET, ApiContract.Request.AcApi.PUSH_REQUEST_URL, new TypeToken<Mention>() {
+        ApiRequest<Mention> request = new ApiRequest<>(ApiRequest.Method.GET, ApiContract.Request.AcApi.PUSH_REQUEST_URL, new TypeToken<Mention>() {
         });
         if (getAcerUid() == null || getAcerAccessToken() == null) {
             return null;
@@ -208,12 +248,10 @@ public class ApiRequests {
 
     /**
      * 文章列表Request
-     *
      */
     public static ApiRequest<ArticleListResult> newArticleListResultRequest(int channelid, int sort, int pageNo) {
 
-        ApiRequest request = new ApiRequest(ApiRequest.Method.GET, ApiContract.Request.AcApi.ARTICLE_LIST, new TypeToken<ArticleListResult>() {
-        });
+        ApiRequest<ArticleListResult> request = new ApiRequest<>(ApiRequest.Method.GET, ApiContract.Request.AcApi.ARTICLE_LIST, ArticleListResult.class);
         request.addParam(Connectivity.SORT, String.valueOf(sort));
         request.addParam(Connectivity.CHANNEL_ID, String.valueOf(channelid));
         request.addParam(Connectivity.PAGE_SIZE, ApiContract.Request.Params.ARTICLE_LIST_PAGE_SIZE);
@@ -224,11 +262,11 @@ public class ApiRequests {
 
     /**
      * 评论列表Request
-     *
      */
     public static ApiRequest<CommentResult> newCommentListResultRequest(int articleId, int pageNO) {
-        ApiRequest request = new ApiRequest(ApiRequest.Method.GET, ApiContract.Request.AcApi.COMMENT_LIST, new TypeToken<CommentResult>() {
-        });
+//        ApiRequest request = new ApiRequest(ApiRequest.Method.GET, ApiContract.Request.AcApi.COMMENT_LIST, new TypeToken<CommentResult>() {
+//        });
+        ApiRequest<CommentResult> request = new ApiRequest<>(ApiRequest.Method.GET, ApiContract.Request.AcApi.COMMENT_LIST, CommentResult.class);
         request.addParam(Connectivity.VERSION_COMMENT_LIST, ApiContract.Request.Params.VERSION_COMMENT_LIST);
         request.addParam(Connectivity.CONTENT_ID, String.valueOf(articleId));
         request.addParam(Connectivity.PAGE_SIZE, ApiContract.Request.Params.COMMENT_LIST_PAGE_SIZE);

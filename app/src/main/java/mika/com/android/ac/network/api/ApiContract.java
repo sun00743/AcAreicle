@@ -19,29 +19,36 @@ public interface ApiContract {
         String HOST_A = "http://mobile.app.acfun.cn";
         String HOST_B = "http://mobile.acfun.tv";
         String HOST_C = "http://www.acfun.tv";
+        String HOST_D = "http://api.aixifan.com";
+        String HOST_E = "http://webapi.acfun.tv";
 
         /**
          * api url
          */
         interface AcApi {
+            String ARTICLE = HOST_D + "/articles/";
             String PUSH_REQUEST_URL = HOST_A + "/member/unRead.aspx";
             String COMMENT_LIST = HOST_A + "/comment/content/list";
             String ARTICLE_LIST = HOST_C + "/list/getlist";
+            String GETBANANA = HOST_B + "/banana/getBananaCount.aspx";
+            String SIGNIN = HOST_E + "/record/actions/signin?access_token=";
+            String ACER_INFO = HOST_C + "/usercard.aspx";
         }
 
         /**
          * request params
          */
-        interface Params{
+        interface Params {
             String ARTICLE_LIST_PAGE_SIZE = "50";
             String COMMENT_LIST_PAGE_SIZE = "50";
             String VERSION_COMMENT_LIST = "4";
+            String CHANNEL = "1";
         }
 
         /**
          * request headers
          */
-        interface Headers{
+        interface Headers {
             String VERSION = "4.3.3";
             String MARKET = "huawei";
             String PRODUCT_ID = "2000";

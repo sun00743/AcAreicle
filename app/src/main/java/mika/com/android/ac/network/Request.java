@@ -9,6 +9,8 @@
 
 package mika.com.android.ac.network;
 
+import android.support.annotation.NonNull;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -44,7 +46,6 @@ public abstract class Request<T> extends com.android.volley.Request<T> {
      */
     public Request(int method, String url) {
         super(method, null, null);
-
         mUrl = url;
     }
 
@@ -52,7 +53,7 @@ public abstract class Request<T> extends com.android.volley.Request<T> {
         return mListener;
     }
 
-    public Request<T> setListener(Response.Listener<T> listener) {
+    public Request<T> setListener(@NonNull Response.Listener<T> listener) {
         mListener = listener;
         return this;
     }

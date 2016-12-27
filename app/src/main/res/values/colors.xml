@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--
-  ~ Copyright (c) 2015 Zhang Hai <Dreaming.in.Code.ZH@Gmail.com>
-  ~ All Rights Reserved.
-  -->
-
 <resources>
     <color name="test">#666</color>
+    <color name="write">#FFFFFFFF</color>
     <color name="green_100">#c8e6c9</color>
     <color name="green_300">#81c784</color>
     <color name="green_500">#4caf50</color>

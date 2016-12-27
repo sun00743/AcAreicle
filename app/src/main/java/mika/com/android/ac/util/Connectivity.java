@@ -57,6 +57,7 @@ public class Connectivity {
     public static String PRODUCT_ID = "productId";
     public static String HOST = "Host";
     public static String CHANNEL_ID = "channelId";
+    public static String CHANNEL = "channel";
     public static String SORT = "sort";
     public static String REQUEST_TIME = "requestTime";
 

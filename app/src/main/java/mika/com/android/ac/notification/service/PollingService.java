@@ -14,16 +14,41 @@ import mika.com.android.ac.network.api.ApiRequest;
 import mika.com.android.ac.network.api.ApiRequests;
 import mika.com.android.ac.network.api.info.acapi.Mention;
 
-public class PollingService extends Service implements
-        Response.Listener<Mention>,
-        Response.ErrorListener {
+public class PollingService extends Service
+//        implements
+//        Response.Listener<Mention>,
+//        Response.ErrorListener
+{
 
     private static final String ACTION = "ac.mika.message.poll";
     //    private MainActivity.PushBinder mBinder ;
     private PushBinder mBinder;
+    private MentionResponseListener mentionResponseListener;
     private OnNewMentionListener mMentionListener;
 
     public PollingService() {
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mentionResponseListener = new MentionResponseListener();
+        initNotificationManager();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        ApiRequest<Mention> request = ApiRequests.newPushRequest();
+        if (request == null) {
+            mentionResponseListener.onErrorResponse(new VolleyError(getResources().getString(R.string.request_acer_error)));
+
+            return super.onStartCommand(intent, flags, startId);
+        }
+        request.setListener(mentionResponseListener).setErrorListener(mentionResponseListener);
+        Volley.getInstance().addToRequestQueue(request);
+
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -42,44 +67,26 @@ public class PollingService extends Service implements
         return super.onUnbind(intent);
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        initNotificationManager();
-    }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        ApiRequest<Mention> request = ApiRequests.newPushRequest();
-        if (request == null) {
-            onErrorResponse(new VolleyError(getResources().getString(R.string.request_acer_error)));
-        }
-        request.setListener(this).setErrorListener(this);
-        Volley.getInstance().addToRequestQueue(request);
-
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public void onErrorResponse(VolleyError error) {
-    }
-
-    @Override
-    public void onResponse(Mention response) {
-        if(mMentionListener == null){
-            return;
-        }
-        mMentionListener.onNewMention(response.mention);
-
-//        Parcel parcel = Parcel.obtain();
-//        parcel.writeInt(response.mention);
-//        try {
-//            mBinder.transact(IBinder.FIRST_CALL_TRANSACTION, parcel, null, 0);
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
+//    @Override
+//    public void onErrorResponse(VolleyError error) {
+//    }
+//
+//    @Override
+//    public void onResponse(Mention response) {
+//        if (mMentionListener == null) {
+//            return;
 //        }
-    }
+//        mMentionListener.onNewMention(response.mention);
+//
+////        Parcel parcel = Parcel.obtain();
+////        parcel.writeInt(response.mention);
+////        try {
+////            mBinder.transact(IBinder.FIRST_CALL_TRANSACTION, parcel, null, 0);
+////        } catch (RemoteException e) {
+////            e.printStackTrace();
+////        }
+//    }
 
     private void initNotificationManager() {
     }
@@ -96,10 +103,35 @@ public class PollingService extends Service implements
         super.onDestroy();
     }
 
+    /**
+     * mention response
+     */
+    private class MentionResponseListener implements Response.Listener<Mention>, Response.ErrorListener {
+        @Override
+        public void onResponse(Mention response) {
+            if (mMentionListener == null) {
+                return;
+            }
+            mMentionListener.onNewMention(response.mention);
+        }
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+    }
+
+    /**
+     * mention listener
+     */
     public interface OnNewMentionListener {
         void onNewMention(int count);
     }
 
+    /**
+     * my binder
+     * return this service
+     */
     public class PushBinder extends Binder {
         public PollingService getPollingService() {
             return PollingService.this;

@@ -43,7 +43,7 @@ class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdapter.Vie
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(ViewUtils.inflate(mika.com.android.ac.R.layout.articledes_item, parent));
+        return new ViewHolder(ViewUtils.inflate(R.layout.articledes_item, parent));
     }
 
     @Override
@@ -59,7 +59,7 @@ class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdapter.Vie
 
         holder.articleDesLayout.isInList(true);
         holder.articleDesLayout.bindArticleList(articleList);
-        holder.articleDesLayout.setOnBtnClickedListener(new ArticleListLayout.OnBtnClickedListener()  {
+        holder.articleDesLayout.setOnBtnClickedListener(new ArticleDesLayout.OnBtnClickedListener()  {
             @Override
             public void onStarClicked() {
                 mOnBtnClickedListener.onStartClicked(articleList, false);
@@ -104,7 +104,7 @@ class ArticleDesAdapter extends SimpleAdapter<ArticleList, ArticleDesAdapter.Vie
         @BindView(R.id.card)
         CardView cardView;
         @BindView(R.id.articledes)
-        ArticleListLayout articleDesLayout;
+        ArticleDesLayout articleDesLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);

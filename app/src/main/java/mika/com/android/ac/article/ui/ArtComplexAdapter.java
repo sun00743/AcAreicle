@@ -78,6 +78,9 @@ import mika.com.android.ac.util.ImageUtils;
 import mika.com.android.ac.util.TextViewUtils;
 import mika.com.android.ac.util.ViewUtils;
 
+/**
+ * Complex
+ */
 public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewHolder> {
 
     private static final String UA = "acfun/1.0 (Linux; U; Android " + Build.VERSION.RELEASE + "; " + Build.MODEL + "; " + Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry().toLowerCase() + ") AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 ";
@@ -88,16 +91,16 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     private ArticleActivity2 activity;
 
-    public static final String TAG = "Article";
+    private static final String TAG = "Article";
     private static String ARTICLE_PATH;
     private static final String NAME_ARTICLE_HTML = "a63-article.html";
     private Article mArticle;
     private Document mDoc;
     private List<String> imgUrls;
     private DownloadImageTask mDownloadTask;
-    private String title;
+    //    private String title;
     private boolean isDownloaded;
-    private boolean isWebMode;
+//    private boolean isWebMode;
 
     private int aid;
     private Bundle mBundle;
@@ -109,7 +112,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private SubTitleHolder mSubTitleHolder;
     private HeadHolder mHeadHolder;
 
-    private int mWebViewHeight;
+    //    private int mWebViewHeight;
     private boolean isContentFirstLoad = true;
     private boolean isHeadFirstLoad = true;
     private boolean hasBundle = true;
@@ -126,7 +129,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         this.activity = activity;
         mBundle = bundle;
         this.aid = bundle.getInt("aid");
-        this.title = bundle.getString("title");
+//        this.title = bundle.getString("title");
         mCommentList = new SparseArray<>();
     }
 
@@ -289,9 +292,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         int oldSize = mCommentIdList.size() - 3;
         int newSize = commentIdList.size();
         int diff = newSize - oldSize;
-        if (newSize <= 0) {
-            return;
-        } else if (diff > 0 || !mCommentIdList.get(3).equals(((ArrayList) commentIdList).get(0))) {
+        // if newSize == 0, hasn't new comment
+        if (newSize == 0) return;
+        if (diff > 0 || !mCommentIdList.get(3).equals(((ArrayList) commentIdList).get(0))) {
             mCommentIdList.clear();
             mCommentIdList.add(AcWenApplication.ITEM_HEAD);
             mCommentIdList.add(AcWenApplication.ITEM_ARTICLE);
@@ -353,7 +356,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
             //是否被引用过了
             if (quote.isQuoted) {
-                // position < floor position在上
+                // position < floor, position在上
 
                 // 引用floor比position小, 说明引用floor在当前floor之上
 //                if(quote.quotedFloor < position){
@@ -427,10 +430,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private void initView() {
         //文章缓存路径
         ARTICLE_PATH = AcWenApplication.getExternalCacheFiledir("article").getAbsolutePath();
-        if (!isWebMode) {
-            if (aid == 0)
-                throw new IllegalArgumentException("没有 id");
-        }
+        if (aid == 0)
+            throw new IllegalArgumentException("没有 id");
         mCurrentHolder.mWeb.getSettings().setAppCachePath(ARTICLE_PATH);
         mCurrentHolder.mWeb.addJavascriptInterface(new ACJSObject(), "AC");
         mCurrentHolder.mWeb.setWebViewClient(new WebViewClient() {
@@ -451,9 +452,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     activity.loadComment();
                 }
 
-                if (isWebMode
-                        || imgUrls == null || imgUrls.isEmpty()
-                        || url.startsWith("file:///android_asset")
+                if (imgUrls == null || imgUrls.isEmpty() || url.startsWith("file:///android_asset")
                         || 0 == Constants.MODE_NO_PIC) // 无图模式
                     return;
 
@@ -481,7 +480,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
      * load article data
      */
     private void requestData() {
-        Request<?> request = new ArticleRequest(activity.getApplicationContext(), aid, new Response.Listener<Article>() {
+        Request<?> request = new ArticleRequest(aid, new Response.Listener<Article>() {
             @Override
             public void onResponse(Article response) {
                 mArticle = response;
@@ -492,14 +491,16 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     ImageUtils.loadAvatar(mHeadHolder.avatar, mArticle.poster.avatar);
                     mHeadHolder.username.setText(mArticle.poster.name);
                     mHeadHolder.time.setText(DateUtils.formatAgoTimes(System.currentTimeMillis() - mArticle.postTime));
-                    mHeadHolder.viewCount.setText(mArticle.views + " 围观");
+                    mHeadHolder.viewCount.setText(mArticle.views + " " + activity.getResources().getString(R.string.article_views));
                     mHeadHolder.articleTitle.setText(mArticle.title);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // TODO: 2016/12/5 文章加载失败
+                Log.e(TAG, "onErrorResponse: " + error.getMessage());
+                mEventListener.ProgressDismiss();
+
             }
         });
         request.setTag(TAG);
@@ -716,6 +717,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 }
                 for (int i = 0; i < contents.size(); i++) {
                     Article.SubContent sub = contents.get(i);
+                    //build content
                     handleSubContent(i, content, sub, params[0]);
                 }
                 FileWriter writer = null;
