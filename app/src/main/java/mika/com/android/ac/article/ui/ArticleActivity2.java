@@ -571,7 +571,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     @Override
     public void onLoadCommentListFinished(int requestCode) {
         if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findLastVisibleItemPosition() <=
-                mRecycleView.getAdapter().getItemCount() - 1) {
+                mRecycleView.getAdapter().getItemCount() - 2) {
             mLoadMoreAdapter.setItemVisible(false);
         }
         mLoadMoreAdapter.setNoMoreYet(!mCommentListResource.canLoadMore() && !mCommentListResource.isEmpty());
