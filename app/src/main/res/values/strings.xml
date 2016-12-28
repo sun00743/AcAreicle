@@ -24,7 +24,10 @@
 
     <string name="articlelist_lookcount">围观</string>
 
-    <string name="article_send_comment_hint">发评论…</string>
+    <string name="article_send_comment_hint">发评论...</string>
+    <string name="article_send_quote_cancel">( ´_ゝ`) 已取消引用</string>
+    <string name="article_send_quote">引用%1$s的评论...</string>
+    <string name="comment_content_illegal">评论不能少于5个字还不能纯表情 (｀･ω･)</string>
 
     <string name="profile_uid">uid</string>
     <string name="profile_registration_time">注册时间</string>
@@ -52,6 +55,20 @@
     <string name="login_error_timeout">( ´_ゝ`)服务器抽风，再来一次吧</string>
     <string name="login_error_password">密纹都写错</string>
 
+    <string name="load_more_no_more">没有了 ╮(╯▽╰)╭ </string>
+    <string name="load_more_no_comment">沙发可能还在 (　^ω^)</string>
+    <string name="post_comment_success">评论成功! (＾o＾)ﾉ</string>
+    <string name="post_comment_may_failed">(|||ﾟдﾟ)刷新看看吧</string>
+    <string name="post_comment_failed">评论失败，重新试试吧</string>
+
+    <string-array name="emoticon_tab_types">
+        <item>AC娘</item>
+        <item>匿名版</item>
+        <item>新娘</item>
+        <item>彩娘</item>
+        <item>TD猫</item>
+        <item>皮尔德</item>
+    </string-array>
 
 <!-- ——————————————————————————————————————————————————————————————————————————　 -->
     <string name="activity_not_found">未找到可处理此操作的应用</string>
@@ -156,8 +173,8 @@
     <string name="auth_password">密纹</string>
     <string name="auth_log_in">登录</string>
     <string name="auth_register">没有账户？现在注册</string>
-    <string name="auth_error_empty_username">请输入ID，靴靴 ⊂彡☆))д`)</string>
-    <string name="auth_error_empty_password">你倒是输入密纹啊</string>
+    <string name="auth_error_empty_username">请输入ID，靴靴！</string>
+    <string name="auth_error_empty_password">请输入密纹，靴靴！</string>
     <string name="auth_error_invalid_response">服务器应答无效</string>
     <string name="auth_error_unknown">未知错误</string>
     <string name="auth_select_account">选择账户</string>
@@ -297,13 +314,14 @@
     <string name="item_doing_format">在%1$s</string>
     <string name="item_done_format">%1$s过</string>
 
-    <!--        Preference        -->
+    <!-- ————————————————————————————————————     Preference     ————————————————————————————————————   -->
 
     <string name="settings_title">设置</string>
     <string name="settings_misc_title">其他</string>
+    <string name="settings_no_picture">流量无图</string>
     <string name="settings_auto_refresh_home_title">打开时自动刷新主页</string>
     <string name="settings_show_title_for_link_entity_title">显示完整链接文本</string>
-    <string name="settings_show_title_for_link_entity_summary">替换经过 dou.bz 缩短的链接</string>
+    <string name="settings_show_title_for_link_entity_summary">  </string>
     <string name="settings_open_url_with_title">打开链接的方式</string>
     <string name="settings_open_url_with_summary">%1$s</string>
     <string-array name="settings_open_url_with_entries">
@@ -319,10 +337,10 @@
 
     <string name="about_title">关于</string>
     <string name="about_name">@string/app_name</string>
-    <string name="about_words">acfun, Yet Another</string>
+    <string name="about_words">此软件仅供学习交流使用</string>
     <string name="about_version_format">版本 %1$s</string>
     <string name="about_credit">月与萧</string>
-    <string name="about_douban">\@ac-article</string>
+    <string name="about_douban">\sun00743@gmail.com</string>
 
     <string name="about_confirm_enable_scalpel_title">你发现了一把手术刀！</string>
     <string name="about_confirm_enable_scalpel_message">使用说明：\n1. 单指移动视角\n2. 双指上下缩放大小\n3. 双指左右缩放层距\n\n开启手术刀后普通界面将暂时无法正常交互，但你仍然可以使用返回键回到上个界面。\n重新打开应用后手术刀将自动关闭。\n\n要使用手术刀吗？</string>
@@ -343,9 +361,11 @@
         <item>1</item>
         <item>2</item>
     </string-array>
-    <string name="pref_default_value_open_url_with">1</string>
+    <string name="pref_default_value_open_url_with">0</string>
     <string name="pref_key_always_copy_to_clipboard_as_text">key_always_copy_to_clipboard_as_text</string>
     <bool name="pref_default_value_always_copy_to_clipboard_as_text">true</bool>
+    <string name="pref_key_no_picture">key_no_picture</string>
+    <bool name="pref_default_value_no_picture">false</bool>
 
     <string name="logout_title">注销</string>
     <string name="logout_logout">退出登录</string>

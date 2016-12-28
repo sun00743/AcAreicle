@@ -5,6 +5,11 @@
     <PreferenceCategory android:title="@string/settings_misc_title">
 
         <SwitchPreferenceCompat
+            android:key="@string/pref_key_no_picture"
+            android:defaultValue="@bool/pref_default_value_no_picture"
+            android:title="@string/settings_no_picture" />
+
+        <SwitchPreferenceCompat
             android:key="@string/pref_key_auto_refresh_home"
             android:defaultValue="@bool/pref_default_value_auto_refresh_home"
             android:title="@string/settings_auto_refresh_home_title" />

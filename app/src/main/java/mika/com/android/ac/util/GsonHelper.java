@@ -23,6 +23,10 @@ public class GsonHelper {
 
     private GsonHelper() {}
 
+    /**
+     * get the static final gson object
+     * @return gson
+     */
     public static Gson get() {
         return GSON;
     }

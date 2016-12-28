@@ -143,6 +143,7 @@ public class HomeArticleListResFragment extends ArticleListResFragment {
             setArticleDesList((ArrayList<ArticleList>) articleLists);
         }
 
+        // no cache or auto refresh
         if (!hasCache || Settings.AUTO_REFRESH_HOME.getValue(getActivity())) {
             mHandler.post(new Runnable() {
                 @Override

@@ -219,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void refreshNotificationList() {
-//        mNotificationListFragment.refresh();
     }
 
     @Override
@@ -236,19 +235,19 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onStarClicked() {
-//        getSupportFragmentManager().beginTransaction().replace(R.id.container, ).commit();
     }
 
     @Override
     public void onQuoteClicked() {
-        Intent intent = new Intent(this, QuoteActivity.class);
+        if(AcWenApplication.LOGIN){
+            Intent intent = new Intent(this, QuoteActivity.class);
 //        ActivityCompat.startActivity(this, intent, null);
-        startActivity(intent);
+            startActivity(intent);
+        }
     }
 
     @Override
     public void onMessageClicked() {
-//        getSupportFragmentManager().beginTransaction().replace(R.id.container, ).commit();
     }
 
     @Override

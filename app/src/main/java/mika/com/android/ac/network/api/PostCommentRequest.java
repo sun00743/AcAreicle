@@ -18,20 +18,18 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import mika.com.android.ac.network.Request;
+import mika.com.android.ac.network.api.info.acapi.PostCommentResult;
 import mika.com.android.ac.util.Connectivity;
+import mika.com.android.ac.util.GsonHelper;
 
-public class PostCommentRequest extends Request {
-
-    private static final String POST_COMMENT_URL = "http://mobile.acfun.tv/comment.aspx";
-    private static final String APP_VERSION = "4.3.0";
-    private static final String PRODUCT_ID = "2000";
-
+public class PostCommentRequest extends Request<PostCommentResult> {
+    private static final String CONTENT_TYPE = "Content-Type";
 
     public PostCommentRequest() {
-        super(Method.POST, POST_COMMENT_URL);
+        super(Method.POST, ApiContract.Request.AcApi.POST_COMMENT);
     }
 
-    public PostCommentRequest(String text, int quotedId, String token, int userId, int contentId){
+    public PostCommentRequest(String text, int quotedId, String token, int userId, int contentId) {
         this();
         addParam("text", text);
         addParam("quoteId", Integer.toString(quotedId));
@@ -41,50 +39,29 @@ public class PostCommentRequest extends Request {
         addParam("userId", Integer.toString(userId));
         addParam("captcha", "");
 
+        addHeaders(Connectivity.UA_MAP);
         addHeader("Cookie", "JSESSIONID=" + token);
-        addHeader("productId", PRODUCT_ID);
-        addHeader("appVersion", APP_VERSION);
         addHeader("token", token);
-        addHeader("User-Agent", Connectivity.UA);
-        addHeader("deviceType", "1");
-        addHeader("uid", "623674");
-        addHeader("Content-Type",Connectivity.CONTENT_TYPE_FORM);
+        addHeader(Connectivity.UID, Integer.toString(userId));
+        addHeader(CONTENT_TYPE, Connectivity.CONTENT_TYPE_FORM);
     }
 
     @Override
-    protected Response parseNetworkResponse(NetworkResponse response) {
+    protected Response<PostCommentResult> parseNetworkResponse(NetworkResponse response) {
         try {
             Map<String, String> headers = response.headers;
             String cookies = headers.get("Set-Cookie");
-            String data = new String(response.data, "UTF-8");
             // 解析服务器返回的cookie值
 //            String cookie = parseVolleyCookie(cookies);
             // 存储cookie
 //            SharedPreferenceUtil.putString(LoginActivity.this,"cookie", cookie);
-            return Response.success(data, HttpHeaderParser.parseCacheHeaders(response));
-        }
-        catch (UnsupportedEncodingException e) {
+
+            String data = new String(response.data, "UTF-8");
+            return Response.success(GsonHelper.get().fromJson(data, PostCommentResult.class),
+                    HttpHeaderParser.parseCacheHeaders(response));
+        } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         }
     }
 
-    @Override
-    public Request addHeader(String name, String value) {
-        return super.addHeader(name, value);
-    }
-
-    @Override
-    public Request addParam(String name, String value) {
-        return super.addParam(name, value);
-    }
-
-    @Override
-    public Map<String, String> getHeaders() {
-        return super.getHeaders();
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return 0;
-    }
 }

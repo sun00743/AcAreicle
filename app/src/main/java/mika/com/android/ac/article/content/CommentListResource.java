@@ -36,9 +36,11 @@ import mika.com.android.ac.network.api.info.acapi.CommentPage;
 import mika.com.android.ac.network.api.info.acapi.CommentResult;
 import mika.com.android.ac.util.ArrayUtils;
 import mika.com.android.ac.util.FragmentUtils;
+import mika.com.android.ac.util.GsonHelper;
 
 /**
  * Created by mika <sun00743@gmail.com> on 2016/9/18.
+ * load comment list
  */
 
 public class CommentListResource extends ResourceFragment implements
@@ -139,9 +141,14 @@ public class CommentListResource extends ResourceFragment implements
      * 判断articleList是否为null
      */
     public boolean isEmpty() {
-//        return mCommentMaps == null ||
-//                mCommentMaps.isEmpty();
         return mCommentLists == null || mCommentLists.size() == 0;
+    }
+
+    /**
+     * comment list size
+     */
+    public int size() {
+        return mCommentIdList.size();
     }
 
     public boolean isLoading() {
@@ -152,6 +159,9 @@ public class CommentListResource extends ResourceFragment implements
         return mLoadingMore;
     }
 
+    public boolean canLoadMore() {
+        return mCanLoadMore;
+    }
 
     private void setArgumentS(int articleId) {
         Bundle argumentsBundle = FragmentUtils.ensureArguments(this);
@@ -220,40 +230,21 @@ public class CommentListResource extends ResourceFragment implements
         //改变加载状态
         mLoading = false;
         mLoadingMore = false;
-        //通知界面加载数据完成
-        getListStateListener().onLoadCommentListFinished(requestCode);
 
         if (successful) {
             CommentPage mPage = result.data.page;
             mCanLoadMore = mPage.pageNo * requestState.count < mPage.totalCount;
             ++pageNO;
             if (requestState.loadMore) {
-                //加载更多
-//                getListStateListener().onCommentListAppended(requestCode, mPage.list);
-
-//                for (int i = 0; i < mPage.list.size(); i++) {
-//                    mCommentIdList.add(mPage.list.get(i).id);
-//                    mCommentLists.put(mPage.list.get(i).id, mPage.list.get(i));
-//                }
-//
+                // load more
                 mCommentIdList = ArrayUtils.toList(mPage.list);
                 Map<String, Comment> maps = new Gson().fromJson(mPage.map, new TypeToken<Map<String, Comment>>() {
                 }.getType());
                 getListStateListener().onCommentListAppended(requestCode, mCommentIdList, maps);
-
-
             } else {
-//                mCommentIdList.clear();
-//                mCommentLists.clear();
-//                for (int i = 0; i < mPage.list.size(); i++) {
-//                    mCommentIdList.add(i, mPage.list.get(i).id);
-//                    mCommentLists.put(mPage.list.get(i).id, mPage.list.get(i));
-//                }
-//
-//                getListStateListener().onCommentListChanged(requestCode, mCommentIdList, mCommentLists);
-
+                // refresh
                 mCommentIdList = ArrayUtils.toList(mPage.list);
-                Map<String, Comment> maps = new Gson().fromJson(mPage.map, new TypeToken<Map<String, Comment>>() {
+                Map<String, Comment> maps = GsonHelper.get().fromJson(mPage.map, new TypeToken<Map<String, Comment>>() {
                 }.getType());
                 mCommentLists = new SparseArray<>();
                 for (Comment com : maps.values()) {
@@ -263,7 +254,10 @@ public class CommentListResource extends ResourceFragment implements
             }
         } else {
             // TODO: 2016/12/5 服务器返回信息失败
+            getListStateListener().onLoadCommentListError(requestCode, error);
         }
+        // load finish
+        getListStateListener().onLoadCommentListFinished(requestCode);
     }
 
     private ListStateListener getListStateListener() {

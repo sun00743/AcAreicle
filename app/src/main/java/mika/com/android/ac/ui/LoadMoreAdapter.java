@@ -18,6 +18,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +31,7 @@ public class LoadMoreAdapter extends MergeAdapter {
 
     /**
      * @param loadMoreLayoutRes 加载更多时显示的界面，比如一个progress
-     * @param adapters RecycleView的adapter
+     * @param adapters          RecycleView的adapter
      */
     public LoadMoreAdapter(int loadMoreLayoutRes, RecyclerView.Adapter<?>... adapters) {
         super(mergeAdapters(adapters, new LoadMoreViewAdapter(loadMoreLayoutRes)));
@@ -56,13 +57,25 @@ public class LoadMoreAdapter extends MergeAdapter {
         mViewAdapter.setProgressVisible(progressVisible);
     }
 
+    public void setItemVisible(boolean visible) {
+        mViewAdapter.setItemViewVisible(visible);
+    }
+
+    public void setNoMoreYet(boolean noMoreYet) {
+        mViewAdapter.setNoMoreYet(noMoreYet);
+    }
+
     static class LoadMoreViewAdapter extends RecyclerView.Adapter<LoadMoreViewAdapter.ViewHolder> {
 
         private int mLoadMoreLayoutRes;
-
+        /**
+         * 若无数据，则不展示load more item
+         */
         private boolean mShowingItem;
-
         private ViewHolder mViewHolder;
+        private boolean mItemViewVisible = true;
+        private boolean mTextViewVisible;
+        private boolean isNoMoreYet;
         private boolean mProgressVisible;
 
         public LoadMoreViewAdapter(int loadMoreLayoutResId) {
@@ -80,18 +93,22 @@ public class LoadMoreAdapter extends MergeAdapter {
                 public void onItemRangeChanged(int positionStart, int itemCount) {
                     onChanged();
                 }
+
                 @Override
                 public void onItemRangeInserted(int positionStart, int itemCount) {
                     onChanged();
                 }
+
                 @Override
                 public void onItemRangeRemoved(int positionStart, int itemCount) {
                     onChanged();
                 }
+
                 @Override
                 public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
                     onChanged();
                 }
+
                 @Override
                 public void onChanged() {
                     // Don't show the progress item if our parent is empty - or else this can lead
@@ -135,6 +152,25 @@ public class LoadMoreAdapter extends MergeAdapter {
             }
         }
 
+        public void setNoMoreYet(boolean noMoreYet) {
+            if (isNoMoreYet == noMoreYet) {
+                return;
+            }
+            isNoMoreYet = noMoreYet;
+        }
+
+        public void setItemViewVisible(boolean visible) {
+            if (mItemViewVisible == visible) {
+                return;
+            }
+            mItemViewVisible = visible;
+            if (mShowingItem) {
+                if (mViewHolder != null) {
+                    notifyItemChanged(0);
+                }
+            }
+        }
+
         @Override
         public int getItemCount() {
             return mShowingItem ? 1 : 0;
@@ -159,7 +195,14 @@ public class LoadMoreAdapter extends MergeAdapter {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
+            ViewUtils.setVisibleOrInvisible(holder.itemView, mItemViewVisible);
             ViewUtils.setVisibleOrInvisible(holder.progress, mProgressVisible);
+            ViewUtils.setVisibleOrInvisible(holder.textView, !mProgressVisible);
+            if (isNoMoreYet) {
+                holder.textView.setText(R.string.load_more_no_more);
+            } else {
+                holder.textView.setText(R.string.load_more_no_comment);
+            }
             mViewHolder = holder;
         }
 
@@ -172,6 +215,8 @@ public class LoadMoreAdapter extends MergeAdapter {
 
             @BindView(R.id.progress)
             public ProgressBar progress;
+            @BindView(R.id.no_more)
+            public TextView textView;
 
             public ViewHolder(View itemView) {
                 super(itemView);

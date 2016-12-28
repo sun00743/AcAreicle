@@ -95,11 +95,8 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
         super.onActivityCreated(savedInstanceState);
 
         final Activity activity = getActivity();
-
         CustomTabsHelperFragment.attachTo(this);
-
         mArticleListResource = onAttachArticleListResource();
-
         mAcer = ((MainActivity) activity).getAcer();
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -151,6 +148,7 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
                         mArticleListResource.load(true);
                     }
                 });
+
         upDateRefreshing();
 
 //        CheatSheetUtils.setup(mGoTopFab);

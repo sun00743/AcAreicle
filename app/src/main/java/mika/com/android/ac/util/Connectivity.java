@@ -43,7 +43,6 @@ public class Connectivity {
     //    public static final String UA = "acfun/1.0 (Linux; U; Android " + Build.VERSION.RELEASE + "; " + Build.MODEL + "; " + Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry().toLowerCase() + ") AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 ";
     public static final String UA = "acvideo core";
     public static final Map<String, String> UA_MAP = new HashMap<>();
-    private static final String TAG = Connectivity.class.getSimpleName();
 
     public static final String PAGE_NO = "pageNo";
     public static final String PAGE_SIZE = "pageSize";

@@ -139,8 +139,6 @@ public abstract class BaseBroadcastListFragment extends Fragment
                     }
                 });
 
-        updateRefreshing();
-
         CheatSheetUtils.setup(mSendFab);
         mSendFab.setOnClickListener(new View.OnClickListener() {
             @Override

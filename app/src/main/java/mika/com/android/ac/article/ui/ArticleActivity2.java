@@ -43,10 +43,10 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindDimen;
@@ -80,6 +80,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
         DetectsSoftKeyBoardFrameLayout.SoftKeyBoardListener {
 
     private static final String[] tabs = {"AC娘", "匿名版", "新娘", "彩娘", "TD猫", "皮尔德"};
+    private static final int COMMENT_HEAD_POSITION = 2;
+    private static final int SCROLL_FLAG_POSITION = 2;
 
     @BindView(R.id.toolbar_art)
     Toolbar mToolbar;
@@ -172,14 +174,14 @@ public class ArticleActivity2 extends AppCompatActivity implements
      * 底部评论bar 事件
      */
     private void initSendBar() {
-//        发送按钮
+        //send button
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 doSendComment();
             }
         });
-//        表情按钮
+        //emoticon button
         insertEmo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,7 +191,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 } else if (!isEmoticonLayoutShow) {
                     isEmoticonLayoutShow = true;
                     isKeyBoardShow = false;
-                    inputMethodManager.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
+                    inputMethodManager.hideSoftInputFromWindow(mainLayout.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -201,8 +203,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
                     isEmoticonLayoutShow = false;
                     mEmoticonLayout.setVisibility(View.GONE);
                     mCommentEdit.requestFocus();
-                    inputMethodManager.toggleSoftInputFromWindow(
-                            mainLayout.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+                    inputMethodManager.toggleSoftInputFromWindow(mainLayout.getApplicationWindowToken(),
+                            InputMethodManager.SHOW_FORCED, InputMethodManager.RESULT_UNCHANGED_SHOWN);
                 }
             }
         });
@@ -220,6 +222,9 @@ public class ArticleActivity2 extends AppCompatActivity implements
         mEmoticonTab.setViewPager(mEmoticonPager);
     }
 
+    /**
+     * set recyclerView
+     */
     private void initRecycleView() {
         mRecycleView.setHasFixedSize(true);
         mRecycleView.setItemAnimator(new NoChangeAnimationItemAnimator());
@@ -227,12 +232,59 @@ public class ArticleActivity2 extends AppCompatActivity implements
         mArtComplexAdapter = new ArtComplexAdapter(initList(), this, getIntent().getExtras());
         mArtComplexAdapter.setEventListener(this);
         mLoadMoreAdapter = new LoadMoreAdapter(R.layout.load_more_card_item, mArtComplexAdapter);
+        mLoadMoreAdapter.setItemVisible(false);
         mRecycleView.setAdapter(mLoadMoreAdapter);
     }
 
     /**
+     * 进度条消失后，为recycleView添加ScrollListener
+     */
+    @Override
+    public void ProgressDismiss() {
+        mRecycleView.addOnScrollListener(new OnVerticalScrollWithPagingTouchSlopListener(this) {
+            //recyclerView向下滑动
+            @Override
+            public void onScrolledDown() {
+                if (RecyclerViewUtils.hasFirstChildReachedTop(mRecycleView)) {
+                    mAppBarWrapperLayout.hide();
+                }
+                if (!isEmoticonLayoutShow && !isKeyBoardShow && !isSending && !isEditing) {
+                    sendBarHide(mSendBar);
+                }
+
+                if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findLastVisibleItemPosition()
+                        == mRecycleView.getAdapter().getItemCount() - 1) {
+                    mArtComplexAdapter.setAutoLoad(false);
+                    loadComment();
+                    mLoadMoreAdapter.setItemVisible(true);
+                }
+            }
+
+            @Override
+            public void onScrolledUp() {
+                mAppBarWrapperLayout.show();
+                sendBarShow(mSendBar);
+            }
+
+            @Override
+            public void onScrolled(int dy) {
+                if (!RecyclerViewUtils.hasFirstChildReachedTop(mRecycleView)) {
+                    mAppBarWrapperLayout.show();
+                }
+            }
+
+            @Override
+            public void onScrolledToBottom() {
+
+            }
+        });
+
+        mProgress.setVisibility(View.GONE);
+        mLoadMoreAdapter.setItemVisible(true);
+    }
+
+    /**
      * 先给文章head 内容 和评论标题 加到list中
-     * \
      */
     private List<Integer> initList() {
         List<Integer> list = new ArrayList<>();
@@ -253,17 +305,17 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.action_star:
                 // TODO 收藏
                 return true;
             case R.id.action_top:
-                if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= 2 && ((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() < 12) {
-                    mRecycleView.smoothScrollToPosition(2);
-                } else if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= 12) {
+                if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= COMMENT_HEAD_POSITION
+                        && ((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() < SCROLL_FLAG_POSITION) {
+                    mRecycleView.smoothScrollToPosition(COMMENT_HEAD_POSITION);
+                } else if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= SCROLL_FLAG_POSITION) {
                     mRecycleView.scrollToPosition(4);
-                    mRecycleView.smoothScrollToPosition(2);
+                    mRecycleView.smoothScrollToPosition(COMMENT_HEAD_POSITION);
                 }
                 return true;
             case R.id.action_unquote:
@@ -279,9 +331,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
         isEditing = false;
         quote = null;
         mCommentEdit.setText("");
-        mCommentEdit.setHint("发评论...");
-        Snackbar.make(getWindow().getDecorView(), "( ´_ゝ`) 已取消引用", Snackbar.LENGTH_LONG).show();
-//        ToastUtil.show("( ´_ゝ`) 已取消引用", this);
+        mCommentEdit.setHint(R.string.article_send_comment_hint);
+        Snackbar.make(getWindow().getDecorView(), R.string.article_send_quote_cancel, Snackbar.LENGTH_LONG).show();
     }
 
     /**
@@ -290,47 +341,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
     private void setStarImage(MenuItem menuStar) {
         // TODO 修改图标状态
 //        menuStar.setIcon(ContextCompat.getDrawable(this,R.drawable.star_icon_white_24dp));
-    }
-
-    /**
-     * 进度条消失后，为recycleView添加ScrollListener
-     */
-    @Override
-    public void ProgressDismiss() {
-        mProgress.setVisibility(View.GONE);
-
-        mRecycleView.addOnScrollListener(new OnVerticalScrollWithPagingTouchSlopListener(this) {
-            //recyclerView向下滑动
-            @Override
-            public void onScrolledDown() {
-                if (RecyclerViewUtils.hasFirstChildReachedTop(mRecycleView)) {
-                    mAppBarWrapperLayout.hide();
-                }
-                if (!isEmoticonLayoutShow && !isKeyBoardShow && !isSending && !isEditing) {
-                    sendBarHide(mSendBar);
-                }
-            }
-
-            @Override
-            public void onScrolledUp() {
-                mAppBarWrapperLayout.show();
-                sendBarShow(mSendBar);
-            }
-
-            @Override
-            public void onScrolled(int dy) {
-                if (!RecyclerViewUtils.hasFirstChildReachedTop(mRecycleView)) {
-                    mAppBarWrapperLayout.show();
-                }
-            }
-
-            @Override
-            public void onScrolledToBottom() {
-                //显示progress
-                mArtComplexAdapter.setAutoLoad(false);
-                loadComment();
-            }
-        });
     }
 
     /**
@@ -355,18 +365,21 @@ public class ArticleActivity2 extends AppCompatActivity implements
         Volley.getInstance().addToRequestQueue(postCommentRequest);
     }
 
+    /**
+     * post response listener
+     */
     private void setPostListener() {
-        postCommentRequest.setListener(new Response.Listener() {
+        postCommentRequest.setListener(new Response.Listener<PostCommentResult>() {
             @Override
-            public void onResponse(Object response) {
+            public void onResponse(PostCommentResult response) {
                 quote = null;
-                postCommentResult = new Gson().fromJson((String) response, PostCommentResult.class);
+                postCommentResult = response;
                 if (postCommentResult.success) {
-                    Toast.makeText(ArticleActivity2.this, "评论成功! (＾o＾)ﾉ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ArticleActivity2.this, R.string.post_comment_success, Toast.LENGTH_SHORT).show();
                     changeSendState(false);
                     updateComment();
                 } else {
-                    Toast.makeText(ArticleActivity2.this, "(|||ﾟдﾟ)刷新看看吧", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ArticleActivity2.this, R.string.post_comment_may_failed, Toast.LENGTH_SHORT).show();
                     changeSendState(false);
                 }
             }
@@ -375,7 +388,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
             @Override
             public void onErrorResponse(VolleyError error) {
                 quote = null;
-                Toast.makeText(ArticleActivity2.this, "(|||ﾟдﾟ)刷新看看吧", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ArticleActivity2.this, R.string.post_comment_failed, Toast.LENGTH_SHORT).show();
                 changeSendState(false);
             }
         });
@@ -410,7 +423,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 isEditing = false;
                 menuUnquote.setVisible(false);
                 mCommentEdit.setText("");
-                mCommentEdit.setHint("发评论...");
+                mCommentEdit.setHint(R.string.article_send_comment_hint);
             }
         }
     }
@@ -434,7 +447,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     public void insertComment(Comment quote) {
         if (!isSendBarShowing)
             sendBarShow(mSendBar);
-        mCommentEdit.setHint("引用" + quote.username + "的评论...");
+        mCommentEdit.setHint(String.format(Locale.getDefault(), getResources().getString(R.string.article_send_quote), quote.username));
         menuUnquote.setVisible(true);
         isEditing = true;
         this.quote = quote;
@@ -456,7 +469,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
         Object[] spans = text.getSpans(0, text.length(), ImageSpan.class);
         int le = text.toString().length() - spans.length * 14;
         if (le < 5) {
-            Toast.makeText(this, "评论不能少于5个字还不能纯表情 (｀･ω･)", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.comment_content_illegal, Toast.LENGTH_LONG).show();
             return false;
         } else {
             return true;
@@ -470,12 +483,23 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     @Override
     public void dataReplaceOk() {
-        mRecycleView.scrollToPosition(2);
+        // scroll to comment head
+        mRecycleView.scrollToPosition(COMMENT_HEAD_POSITION);
     }
 
     @Override
     public void setHeadView(View headview) {
 
+    }
+
+    @Override
+    public void onArticleFailed() {
+        mProgress.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onArticleReload() {
+        mProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -541,13 +565,16 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     @Override
     public void onLoadCommentListStarted(int requestCode) {
-//        updateRefreshing();
         mLoadMoreAdapter.setProgressVisible(true);
     }
 
     @Override
     public void onLoadCommentListFinished(int requestCode) {
-//        updateRefreshing();
+        if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findLastVisibleItemPosition() <=
+                mRecycleView.getAdapter().getItemCount() - 1) {
+            mLoadMoreAdapter.setItemVisible(false);
+        }
+        mLoadMoreAdapter.setNoMoreYet(!mCommentListResource.canLoadMore() && !mCommentListResource.isEmpty());
         mLoadMoreAdapter.setProgressVisible(false);
         mArtComplexAdapter.setUpdataProgressGONE();
     }
@@ -622,8 +649,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
             Editable text = mCommentEdit.getText();
             String emoticon = parent.getItemAtPosition(position).toString();
             text.insert(index, emoticon);
-            EmotionView ev = (EmotionView) parent.getAdapter().getView(position, null, null);
-            Drawable d = ev.getmDrawable();
+            Drawable d = ((EmotionView) parent.getAdapter().getView(position, null, null)).getmDrawable();
             d.setBounds(0, 0, d.getIntrinsicWidth() / 2, d.getIntrinsicHeight() / 2);
             text.setSpan(new ImageSpan(d), index, index + emoticon.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }

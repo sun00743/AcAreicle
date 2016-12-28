@@ -25,6 +25,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -66,6 +67,7 @@ import mika.com.android.ac.network.api.ArticleRequest;
 import mika.com.android.ac.network.api.info.acapi.Article;
 import mika.com.android.ac.network.api.info.acapi.Comment;
 import mika.com.android.ac.network.api.info.acapi.Constants;
+import mika.com.android.ac.settings.info.Settings;
 import mika.com.android.ac.ui.FloorsView;
 import mika.com.android.ac.ui.SimpleAdapter;
 import mika.com.android.ac.ui.SimpleCircleImageView;
@@ -90,6 +92,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private static final int VIEW_TYPE_HEAD = 0x01;
 
     private ArticleActivity2 activity;
+    private Request articleRequest;
 
     private static final String TAG = "Article";
     private static String ARTICLE_PATH;
@@ -118,6 +121,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private boolean hasBundle = true;
 
     public void setAutoLoad(boolean autoLoad) {
+        if (isAutoLoad == autoLoad)
+            return;
         isAutoLoad = autoLoad;
     }
 
@@ -125,12 +130,12 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     public ArtComplexAdapter(List<Integer> list, ArticleActivity2 activity, Bundle bundle) {
         super(null);
-        mCommentIdList = list;
-        this.activity = activity;
-        mBundle = bundle;
         this.aid = bundle.getInt("aid");
+        this.activity = activity;
 //        this.title = bundle.getString("title");
+        mBundle = bundle;
         mCommentList = new SparseArray<>();
+        mCommentIdList = list;
     }
 
     @Override
@@ -210,11 +215,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 if (isContentFirstLoad) {
                     isContentFirstLoad = false;
 //                    ((ArticleHolder) holder).setSupportProgressBarIndeterminateVisibility(true);
-                    ((ArticleHolder) holder).mWeb.getSettings().setAllowFileAccess(true);
-                    ((ArticleHolder) holder).mWeb.getSettings().setJavaScriptEnabled(true);
-                    ((ArticleHolder) holder).mWeb.getSettings().setUserAgentString(UA);
-                    ((ArticleHolder) holder).mWeb.getSettings().setUseWideViewPort(true);
-                    ((ArticleHolder) holder).mWeb.getSettings().setLoadWithOverviewMode(true);
                     initView();
                     requestData();
                 }
@@ -292,7 +292,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         int oldSize = mCommentIdList.size() - 3;
         int newSize = commentIdList.size();
         int diff = newSize - oldSize;
-        // if newSize == 0, hasn't new comment
+        // if newSize == 0, hasn't comment
         if (newSize == 0) return;
         if (diff > 0 || !mCommentIdList.get(3).equals(((ArrayList) commentIdList).get(0))) {
             mCommentIdList.clear();
@@ -427,33 +427,43 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         cHolder.itemView.setPadding(0, padding, 0, 0);
     }
 
+    /**
+     * set article views
+     */
     private void initView() {
         //文章缓存路径
         ARTICLE_PATH = AcWenApplication.getExternalCacheFiledir("article").getAbsolutePath();
         if (aid == 0)
-            throw new IllegalArgumentException("没有 id");
+            throw new IllegalArgumentException("hasn't id");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            mCurrentHolder.mWeb.getSettings().setDisplayZoomControls(false);
+        mCurrentHolder.mWeb.getSettings().setAllowFileAccess(true);
+        mCurrentHolder.mWeb.getSettings().setJavaScriptEnabled(true);
+        mCurrentHolder.mWeb.getSettings().setUserAgentString(UA);
+        mCurrentHolder.mWeb.getSettings().setUseWideViewPort(true);
+        mCurrentHolder.mWeb.getSettings().setLoadWithOverviewMode(true);
         mCurrentHolder.mWeb.getSettings().setAppCachePath(ARTICLE_PATH);
         mCurrentHolder.mWeb.addJavascriptInterface(new ACJSObject(), "AC");
+        mCurrentHolder.mWeb.getSettings().setSupportZoom(true);
+        mCurrentHolder.mWeb.getSettings().setBuiltInZoomControls(true);
         mCurrentHolder.mWeb.setWebViewClient(new WebViewClient() {
-
             /**
              * 加载完页面后开始异步加载图片
              */
             @Override
             public void onPageFinished(final WebView view, String url) {
+                //同时加载评论，有些卡，先注释掉
+//                isAutoLoad = true;
+//                activity.loadComment();
 
+                mCurrentHolder.setArticleFailed(false);
                 mEventListener.ProgressDismiss();
                 //如果不出错
                 mSubTitleHolder.subtitle.setVisibility(View.VISIBLE);
 
-                if (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI) {
-                    //同时加载评论
-                    isAutoLoad = true;
-                    activity.loadComment();
-                }
-
                 if (imgUrls == null || imgUrls.isEmpty() || url.startsWith("file:///android_asset")
-                        || 0 == Constants.MODE_NO_PIC) // 无图模式
+                        || (Settings.NO_PICTURE.getValue(AcWenApplication.getInstance()) && AcWenApplication.getInstance().CONNECTIVITY_TYPE != NetState.WIFI)) // 无图模式
                     return;
 
                 if ((url.equals(Constants.HOME) || url.contains(NAME_ARTICLE_HTML))
@@ -464,48 +474,61 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     mDownloadTask = new DownloadImageTask();
                     mDownloadTask.execute(imgUrls.toArray(arr));
                 }
-
             }
-
         });
-        mCurrentHolder.mWeb.getSettings().setSupportZoom(true);
-        mCurrentHolder.mWeb.getSettings().setBuiltInZoomControls(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            mCurrentHolder.mWeb.getSettings().setDisplayZoomControls(false);
         //设置字号？
 //        setTextZoom(0);
+        //重新加载
+        mCurrentHolder.mReloadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (articleRequest != null) {
+                    mEventListener.onArticleReload();
+                    Volley.getInstance().addToRequestQueue(articleRequest);
+                }
+            }
+        });
     }
 
     /**
      * load article data
      */
     private void requestData() {
-        Request<?> request = new ArticleRequest(aid, new Response.Listener<Article>() {
+        articleRequest = new ArticleRequest(aid, new Response.Listener<Article>() {
             @Override
             public void onResponse(Article response) {
                 mArticle = response;
                 imgUrls = response.imgUrls;
-                new BuildDocTask().execute(mArticle);
-                // bundle中无 关键 数据，说明是从quote点击进入，需要填充head数据
-                if (!hasBundle) {
-                    ImageUtils.loadAvatar(mHeadHolder.avatar, mArticle.poster.avatar);
-                    mHeadHolder.username.setText(mArticle.poster.name);
-                    mHeadHolder.time.setText(DateUtils.formatAgoTimes(System.currentTimeMillis() - mArticle.postTime));
-                    mHeadHolder.viewCount.setText(mArticle.views + " " + activity.getResources().getString(R.string.article_views));
-                    mHeadHolder.articleTitle.setText(mArticle.title);
-                }
+                buildContent();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "onErrorResponse: " + error.getMessage());
-                mEventListener.ProgressDismiss();
-
+                //load failed
+                if (mEventListener != null && mCurrentHolder != null) {
+                    mEventListener.onArticleFailed();
+                    mCurrentHolder.setArticleFailed(true);
+                }
             }
         });
-        request.setTag(TAG);
-        request.setShouldCache(true);
-        Volley.getInstance().addToRequestQueue(request);
+        articleRequest.setTag(TAG);
+        articleRequest.setShouldCache(true);
+        Volley.getInstance().addToRequestQueue(articleRequest);
+    }
+
+    /**
+     * build article and head Content
+     */
+    private void buildContent() {
+        new BuildDocTask().execute(mArticle);
+        // bundle中无 关键 数据，说明是从quote点击进入，需要填充head数据
+        if (!hasBundle) {
+            ImageUtils.loadAvatar(mHeadHolder.avatar, mArticle.poster.avatar);
+            mHeadHolder.username.setText(mArticle.poster.name);
+            mHeadHolder.time.setText(DateUtils.formatAgoTimes(System.currentTimeMillis() - mArticle.postTime));
+            mHeadHolder.viewCount.setText(mArticle.views + " " + activity.getResources().getString(R.string.article_views));
+            mHeadHolder.articleTitle.setText(mArticle.title);
+        }
     }
 
     /**
@@ -557,6 +580,10 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
          * @param headview headview
          */
         void setHeadView(View headview);
+
+        void onArticleFailed();
+
+        void onArticleReload();
     }
 
     /**
@@ -592,14 +619,17 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         RelativeLayout mContent;
         @BindView(R.id.article_webview)
         WebView mWeb;
+        @BindView(R.id.article_reload)
+        Button mReloadBtn;
 
         ArticleHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        void setSupportProgressBarIndeterminateVisibility(boolean visible) {
-            mWeb.setVisibility(visible ? View.INVISIBLE : View.VISIBLE);
+        void setArticleFailed(boolean failed) {
+            mWeb.setVisibility(failed ? View.INVISIBLE : View.VISIBLE);
+            mReloadBtn.setVisibility(failed ? View.VISIBLE : View.GONE);
         }
 
         /**
@@ -805,7 +835,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 img.attr("org", src);
                 String localUri = FileUtil.getLocalFileUri(cache).toString();
 
-                if (0 == Constants.MODE_NO_PIC || AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI)
+                if (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI || !Settings.NO_PICTURE.getValue(activity))
                     img.attr("src", "file:///android_asset/loading.gif");
                 else {
 //                     no image mode , click to load and display image

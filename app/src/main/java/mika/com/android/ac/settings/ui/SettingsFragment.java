@@ -26,6 +26,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.settings);
+
         if(!AcWenApplication.LOGIN){
             PreferenceCategory logout = (PreferenceCategory) findPreference(LOGOUT);
             getPreferenceScreen().removePreference(logout);
@@ -36,11 +37,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 public boolean onPreferenceClick(Preference preference) {
                     new AcerDB(getActivity().getApplicationContext()).logout();
                     AcWenApplication.LOGIN = false;
+                    AcWenApplication.getInstance().setAcer(null);
                     getActivity().finish();
                     return false;
                 }
             });
         }
+
     }
 
     @Override

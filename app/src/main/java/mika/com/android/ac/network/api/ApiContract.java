@@ -33,6 +33,7 @@ public interface ApiContract {
             String GETBANANA = HOST_B + "/banana/getBananaCount.aspx";
             String SIGNIN = HOST_E + "/record/actions/signin?access_token=";
             String ACER_INFO = HOST_C + "/usercard.aspx";
+            String POST_COMMENT = HOST_B + "/comment.aspx";
         }
 
         /**

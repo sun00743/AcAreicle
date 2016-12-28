@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.R;
+import mika.com.android.ac.articlelist.content.ListSort;
 import mika.com.android.ac.articlelist.ui.HomeArticleListFragment;
 import mika.com.android.ac.ui.AppBarManager;
 import mika.com.android.ac.ui.AppBarWrapperLayout;
@@ -51,7 +52,8 @@ public class HomeFragment extends Fragment implements AppBarManager {
     /**
      * @deprecated Use {@link #newInstance()} instead.
      */
-    public HomeFragment() {}
+    public HomeFragment() {
+    }
 
     @Nullable
     @Override
@@ -76,14 +78,12 @@ public class HomeFragment extends Fragment implements AppBarManager {
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbar);
-
         mTabAdapter = new TabFragmentPagerAdapter(this);
-
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(110,0), getString(R.string.home_mixmain));
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(73,0), getString(R.string.home_bicanlvhua));
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(74,0), getString(R.string.home_animation));
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(75,0), getString(R.string.home_cartoon));
-        mTabAdapter.addTab(HomeArticleListFragment.newInstance(164,0), getString(R.string.home_game));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(ListSort.Channels.HOME, ListSort.Sort.NEWS), getString(R.string.home_mixmain));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(ListSort.Channels.GREEN, ListSort.Sort.NEWS), getString(R.string.home_bicanlvhua));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(ListSort.Channels.ANIMATION, ListSort.Sort.NEWS), getString(R.string.home_animation));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(ListSort.Channels.FICTION, ListSort.Sort.NEWS), getString(R.string.home_cartoon));
+        mTabAdapter.addTab(HomeArticleListFragment.newInstance(ListSort.Channels.GAME, ListSort.Sort.NEWS), getString(R.string.home_game));
 
 //        mTabAdapter.addTab(new TabFragmentPagerAdapter.FragmentCreator() {
 //            @Override
@@ -94,7 +94,6 @@ public class HomeFragment extends Fragment implements AppBarManager {
 
         mViewPager.setOffscreenPageLimit(mTabAdapter.getCount() - 1);
         mViewPager.setAdapter(mTabAdapter);
-
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -111,12 +110,11 @@ public class HomeFragment extends Fragment implements AppBarManager {
 
             }
         });
-
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    public void currentGoTop(){
-        if(mTabAdapter != null && mTabAdapter.getCount()>0 && mViewPager != null){
+    public void currentGoTop() {
+        if (mTabAdapter != null && mTabAdapter.getCount() > 0 && mViewPager != null) {
             mTabAdapter.getItem(mViewPager.getCurrentItem()).scrollToTop();
         }
     }
