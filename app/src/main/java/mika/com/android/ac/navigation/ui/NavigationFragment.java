@@ -39,7 +39,7 @@ import mika.com.android.ac.account.ui.AcerSignInActivity;
 import mika.com.android.ac.db.AcerDB;
 import mika.com.android.ac.link.NotImplementedManager;
 import mika.com.android.ac.network.Volley;
-import mika.com.android.ac.network.api.AcerInfoRequest;
+import mika.com.android.ac.network.api.ApiRequests;
 import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.network.api.info.acapi.AcerInfo2;
 import mika.com.android.ac.network.api.info.acapi.AcerInfoResult2;
@@ -63,12 +63,8 @@ public class NavigationFragment extends Fragment implements
     NavigationView mNavigationView;
     private NavigationHeaderLayout mHeaderLayout;
     private TextView quoteCountText;
-
-//    private ArrayMap<Account, AccountUserInfoResource> mUserInfoResourceMap;
-
     private NavigationViewAdapter mNavigationViewAdapter;
     private OnNavigationMenuClickListener mMenuClickListener;
-
     private Acer mAcer;
     private AcerInfo2 acerInfo;
     private IsSigninEntry entry;
@@ -111,7 +107,6 @@ public class NavigationFragment extends Fragment implements
         //get textView from actionLayout
         View actionView = mNavigationView.getMenu().getItem(2).getActionView();
         quoteCountText = ButterKnife.findById(actionView, R.id.quote_count);
-//        quoteCountText = (TextView) mNavigationView.getMenu().getItem(2).getActionView().findViewById(R.id.quote_count);
     }
 
     @Override
@@ -172,8 +167,8 @@ public class NavigationFragment extends Fragment implements
      * load acerInfo and banana;
      */
     private void loadAcerInfo() {
-        Volley.getInstance().addToRequestQueue(new AcerInfoRequest(mAcer.userId)
-                .setListener(new Response.Listener<AcerInfoResult2>() {
+        Volley.getInstance().addToRequestQueue(ApiRequests.newAcerInfo().setListener(
+                new Response.Listener<AcerInfoResult2>() {
                     @Override
                     public void onResponse(AcerInfoResult2 response) {
                         if (response.success) {
@@ -186,12 +181,15 @@ public class NavigationFragment extends Fragment implements
                         }
                         mHeaderLayout.bindAcer(acerInfo);
                     }
-                }).setErrorListener(new Response.ErrorListener() {
+                }
+        ).setErrorListener(
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("loadAcerInfo", "onErrorResponse: " + error.getMessage());
                     }
-                }));
+                }
+        ));
     }
 
     private void checkSignIn() {
@@ -203,7 +201,7 @@ public class NavigationFragment extends Fragment implements
 
     public void setQuoteCount(int count) {
         if (count == 0) return;
-        quoteCountText.setText(String.format(Locale.CHINESE, "（%d条新召唤）", count));
+        quoteCountText.setText(String.format(Locale.CHINESE, "（%1$d条新召唤）", count));
     }
 
     @Override

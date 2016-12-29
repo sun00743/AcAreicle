@@ -38,22 +38,23 @@ public class HomeArticleListFragment extends BaseArticleDesListFragment {
     private int channelId = 110;
     private int sort = 0;
 
-    public static HomeArticleListFragment newInstance(int channelId, int sort){
+    public static HomeArticleListFragment newInstance(int channelId, int sort) {
         HomeArticleListFragment fragment = new HomeArticleListFragment();
         Bundle arguments = FragmentUtils.ensureArguments(fragment);
-        arguments.putInt(EXTRA_CHANNEL_ID,channelId);
-        arguments.putInt(EXTRA_SORT,sort);
+        arguments.putInt(EXTRA_CHANNEL_ID, channelId);
+        arguments.putInt(EXTRA_SORT, sort);
         fragment.setArguments(arguments);
         return fragment;
     }
 
-    public HomeArticleListFragment() {}
+    public HomeArticleListFragment() {
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
 
         setPaddingTop(mToolbarAndTabHeight);
         channelId = getArguments().getInt(EXTRA_CHANNEL_ID);
@@ -63,13 +64,11 @@ public class HomeArticleListFragment extends BaseArticleDesListFragment {
     @Override
     protected void onSwipeRefresh() {
         super.onSwipeRefresh();
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.refreshNotificationList();
+        ((MainActivity) getActivity()).refreshNotificationList();
     }
 
     @Override
     protected ArticleListResFragment onAttachArticleListResource() {
-        return HomeArticleListResFragment.attachTo(this,channelId,sort);
+        return HomeArticleListResFragment.attachTo(this, channelId, sort);
     }
 }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.network.api.info.acapi.AcerInfoResult2;
 import mika.com.android.ac.network.api.info.acapi.ArticleListResult;
 import mika.com.android.ac.network.api.info.acapi.CommentResult;
 import mika.com.android.ac.network.api.info.acapi.GetBananaResult;
@@ -199,6 +200,15 @@ public class ApiRequests {
     }
 
     /**
+     * get acer information
+     */
+    public static ApiRequest<AcerInfoResult2> newAcerInfo() {
+        ApiRequest<AcerInfoResult2> request = new ApiRequest<>(ApiRequest.Method.GET, ApiContract.Request.AcApi.ACER_INFO, AcerInfoResult2.class);
+        request.addParam(Connectivity.UID, getAcerUid());
+        return request;
+    }
+
+    /**
      * 签到
      */
     public static ApiRequest<SignInResult> newSignInRequest() {
@@ -210,7 +220,7 @@ public class ApiRequests {
 
             request.addHeader(Connectivity.UID, getAcerUid());
             request.addHeaders(Connectivity.UA_MAP);
-            request.addHeader("Content-Type",Connectivity.CONTENT_TYPE_FORM);
+            request.addHeader("Content-Type", Connectivity.CONTENT_TYPE_FORM);
             return request;
         }
     }

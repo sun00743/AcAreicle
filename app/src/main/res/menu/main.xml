@@ -25,21 +25,14 @@
         android:title="@string/articlelist_gotop"
         app:showAsAction="always" />
 
-    <!--<item
-        android:id="@+id/action_search"
-        android:icon="@drawable/search_icon_white_24dp"
-        android:title="@string/main_pop"
-        android:orderInCategory="100"
-        app:showAsAction="always" />-->
-
     <item
         android:id="@+id/action_pop"
         android:title="@string/main_pop"
         android:orderInCategory="100"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_mostcomment"
-        android:title="@string/main_mostcomment"
+        android:id="@+id/action_new_comment"
+        android:title="@string/main_new_reply"
         android:orderInCategory="100"
         app:showAsAction="never" />
     <item

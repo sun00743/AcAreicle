@@ -29,6 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
+import mika.com.android.ac.articlelist.content.ListSort;
 import mika.com.android.ac.home.HomeFragment;
 import mika.com.android.ac.navigation.ui.NavigationFragment;
 import mika.com.android.ac.network.NetWorkStateReceiver;
@@ -149,12 +150,23 @@ public class MainActivity extends AppCompatActivity implements
                 mDrawerLayout.openDrawer(mNavigationFragment.getView());
                 return true;
             case R.id.action_notification:
-//                mNotificationListFragment.refresh();
                 mDrawerLayout.openDrawer(mNotificationDrawer);
 //                startActivity();
                 return true;
             case R.id.action_top:
                 homeFragment.currentGoTop();
+                return true;
+            case R.id.action_pop:
+                if (homeFragment != null)
+                    homeFragment.onArticleSortChanged(ListSort.Sort.HOT);
+                return true;
+            case R.id.action_new_comment:
+                if (homeFragment != null)
+                    homeFragment.onArticleSortChanged(ListSort.Sort.NEW_REPLY);
+                return true;
+            case R.id.action_news:
+                if (homeFragment != null)
+                    homeFragment.onArticleSortChanged(ListSort.Sort.NEWS);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -239,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onQuoteClicked() {
-        if(AcWenApplication.LOGIN){
+        if (AcWenApplication.LOGIN) {
             Intent intent = new Intent(this, QuoteActivity.class);
 //        ActivityCompat.startActivity(this, intent, null);
             startActivity(intent);

@@ -81,7 +81,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     private static final String[] tabs = {"AC娘", "匿名版", "新娘", "彩娘", "TD猫", "皮尔德"};
     private static final int COMMENT_HEAD_POSITION = 2;
-    private static final int SCROLL_FLAG_POSITION = 2;
+    private static final int SCROLL_FLAG_POSITION = 8;
 
     @BindView(R.id.toolbar_art)
     Toolbar mToolbar;
@@ -251,7 +251,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 if (!isEmoticonLayoutShow && !isKeyBoardShow && !isSending && !isEditing) {
                     sendBarHide(mSendBar);
                 }
-
+                // auto load more
                 if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findLastVisibleItemPosition()
                         == mRecycleView.getAdapter().getItemCount() - 1) {
                     mArtComplexAdapter.setAutoLoad(false);
@@ -311,10 +311,10 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 return true;
             case R.id.action_top:
                 if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= COMMENT_HEAD_POSITION
-                        && ((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() < SCROLL_FLAG_POSITION) {
+                        && ((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() <= SCROLL_FLAG_POSITION) {
                     mRecycleView.smoothScrollToPosition(COMMENT_HEAD_POSITION);
-                } else if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= SCROLL_FLAG_POSITION) {
-                    mRecycleView.scrollToPosition(4);
+                } else if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() > SCROLL_FLAG_POSITION) {
+                    mRecycleView.scrollToPosition(SCROLL_FLAG_POSITION);
                     mRecycleView.smoothScrollToPosition(COMMENT_HEAD_POSITION);
                 }
                 return true;
@@ -517,7 +517,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
         mAnimator = new AnimatorSet().setDuration(200);
         mAnimator.setInterpolator(new FastOutSlowInInterpolator());
 //        向上平移
-        mAnimator.play(new ObjectAnimator().ofFloat(sendBar, TRANSLATION_Y, DensityUtil.dip2px(this, sendBar.getHeight()), 0));
+        ObjectAnimator objectAnimator = new ObjectAnimator();
+        mAnimator.play(objectAnimator.ofFloat(sendBar, TRANSLATION_Y, DensityUtil.dip2px(this, sendBar.getHeight()), 0));
         mAnimator.start();
 
     }

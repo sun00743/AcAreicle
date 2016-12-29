@@ -27,6 +27,7 @@ import mika.com.android.ac.app.TargetedRetainedFragment;
 
 /**
  * Created by Administrator on 2016/9/7.
+ *
  */
 
 public class HomeArticleListResFragment extends ArticleListResFragment {
@@ -46,7 +47,7 @@ public class HomeArticleListResFragment extends ArticleListResFragment {
 
     private static HomeArticleListResFragment newInstance(int channelId, int sort){
         HomeArticleListResFragment resFragment = new HomeArticleListResFragment();
-        resFragment.setArguments(null,channelId,sort);
+        resFragment.setArguments(channelId,sort);
         return resFragment;
     }
 
@@ -75,12 +76,6 @@ public class HomeArticleListResFragment extends ArticleListResFragment {
     }
     /**
      * 交付到FragmentUtils中管理（在FragmentUtils中会获取相应的fragmentManager并调用beginTransaction）
-     * @param activity
-     * @param tag
-     * @param targetActivity
-     * @param targetFragment
-     * @param requestCode
-     * @return
      */
     private static HomeArticleListResFragment attachTo(FragmentActivity activity ,
                                                        int channelId, int sort, String tag,
@@ -180,5 +175,15 @@ public class HomeArticleListResFragment extends ArticleListResFragment {
 
     private void saveToCache(List<ArticleList> articleLists) {
         HomeArticleDesListCache.put(account, mChannelId, articleLists, getActivity());
+    }
+
+    @Override
+    public void setChannelId(int channelId) {
+        super.setChannelId(channelId);
+    }
+
+    @Override
+    public void setSort(int sort) {
+        super.setSort(sort);
     }
 }

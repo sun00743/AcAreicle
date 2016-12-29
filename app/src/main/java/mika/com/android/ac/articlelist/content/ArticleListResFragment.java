@@ -64,9 +64,9 @@ public class ArticleListResFragment extends ResourceFragment implements
      */
     private boolean mLoadingMore;
 
-    private static ArticleListResFragment newInstance(String userIdOrUid, int channelid, int mSort) {
+    private static ArticleListResFragment newInstance(int channelid, int mSort) {
         ArticleListResFragment resource = new ArticleListResFragment();
-        resource.setArguments(null, channelid, mSort);
+        resource.setArguments(channelid, mSort);
         return resource;
     }
 
@@ -101,7 +101,7 @@ public class ArticleListResFragment extends ResourceFragment implements
                                                    int requestCode) {
         ArticleListResFragment resource = FragmentUtils.findByTag(activity, tag);
         if (resource == null) {
-            resource = newInstance(userIdOrUid, channelid, mSort);
+            resource = newInstance(channelid, mSort);
             if (targetAtActivity) {
                 resource.targetAtActivity(requestCode);
             } else {
@@ -127,7 +127,7 @@ public class ArticleListResFragment extends ResourceFragment implements
     /**
      * 判断articleList是否为null
      *
-     * @return
+     * @return true is empty, false not
      */
     public boolean isEmpty() {
         return mArticleLists == null ||
@@ -143,7 +143,7 @@ public class ArticleListResFragment extends ResourceFragment implements
     }
 
 
-    protected void setArguments(String userIdOrUid, int channelid, int sort) {
+    protected void setArguments(int channelid, int sort) {
         Bundle arguments = FragmentUtils.ensureArguments(this);
 //        arguments.putString(EXTRA_USER_ID_OR_UID, userIdOrUid);
         arguments.putInt(EXTRA_CHANNELID, channelid);
@@ -333,12 +333,12 @@ public class ArticleListResFragment extends ResourceFragment implements
                 Collections.unmodifiableList(articleLists));
     }
 
-    protected void setChannelId(int channelId) {
-
+    public void setChannelId(int channelId) {
+        mChannelId = channelId;
     }
 
-    protected void setSort(int sort) {
-
+    public void setSort(int sort) {
+        mSort = sort;
     }
 
     private ListStateListener getListStateListener() {

@@ -128,4 +128,16 @@ public class HomeFragment extends Fragment implements AppBarManager {
     public void hideAppBar() {
         mAppBarWrapperLayout.hide();
     }
+
+    /**
+     * article sort menu item select
+     * @param sort sort
+     */
+    public void onArticleSortChanged(int sort) {
+        if (mTabAdapter != null && mTabAdapter.getCount() > 0) {
+            for (int i = 0; i < mTabAdapter.getCount(); i++) {
+                mTabAdapter.getItem(i).onSortChanged(sort);
+            }
+        }
+    }
 }

@@ -41,6 +41,10 @@ public interface ListSort {
         /**
          * 最新回复
          */
-        int REPLY = 5;
+        int NEW_REPLY = 5;
+        /**
+         * 人气最旺
+         */
+        int HOT = 7;
     }
 }

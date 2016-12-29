@@ -40,7 +40,7 @@ public interface ApiContract {
          * request params
          */
         interface Params {
-            String ARTICLE_LIST_PAGE_SIZE = "50";
+            String ARTICLE_LIST_PAGE_SIZE = "20";
             String COMMENT_LIST_PAGE_SIZE = "50";
             String VERSION_COMMENT_LIST = "4";
             String CHANNEL = "1";

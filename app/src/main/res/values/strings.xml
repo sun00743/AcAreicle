@@ -198,10 +198,9 @@
     <string name="navigation_manage_accounts">管理账户</string>
 
     <string name="main_notification">提醒</string>
-    <string name="main_doumail">豆邮</string>
-    <string name="main_mostcomment">评论最多</string>
     <string name="main_pop">人气最旺</string>
     <string name="main_news">最近发布</string>
+    <string name="main_new_reply">最新回复</string>
 
     <string name="home_broadcast">友邻广播</string>
     <string name="home_mixmain">综合</string>

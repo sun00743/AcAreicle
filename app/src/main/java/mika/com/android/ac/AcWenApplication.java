@@ -16,7 +16,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import com.bumptech.glide.request.target.ViewTarget;
 
@@ -73,12 +72,6 @@ public class AcWenApplication extends Application {
 //        AndroidThreeTen.init(this);
 //        FabricUtils.init(this);
         ViewTarget.setTagId(R.id.glide_view_target_tag_id);
-
-        if (isWifiConnected()) {
-            Log.e(sInstance.getPackageName().getClass().toString(), " wifi Connected");
-        } else {
-            Log.e(sInstance.getPackageName().getClass().toString(), " wifi DisConnected");
-        }
 //        getUDID();
     }
 

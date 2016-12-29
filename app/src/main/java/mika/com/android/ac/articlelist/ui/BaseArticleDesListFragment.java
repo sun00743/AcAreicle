@@ -57,7 +57,8 @@ import mika.com.android.ac.util.ViewUtils;
  */
 
 public abstract class BaseArticleDesListFragment extends Fragment implements
-        ArticleListResFragment.ListStateListener, ArticleDesAdapter.OnBtnClickedListener {
+        ArticleListResFragment.ListStateListener,
+        ArticleDesAdapter.OnBtnClickedListener {
 
     @BindView(R.id.swipe_refresh_artdes)
     FriendlySwipeRefreshLayout mSwipeRefreshLayout;
@@ -175,6 +176,11 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
         mArticleListResource.load(false);
     }
 
+    public void onSortChanged(int sort) {
+        mArticleListResource.setSort(sort);
+        onSwipeRefresh();
+    }
+
     protected void setPaddingTop(int paddingTop) {
         mSwipeRefreshLayout.setProgressViewOffset(paddingTop);
         mArticleDesList.setPadding(mArticleDesList.getPaddingLeft(), paddingTop,
@@ -186,10 +192,10 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
     @Override
     public void onOpenArticle(ArticleList articleList, View sharedView) {
         //打开文章界面
-        openArticle(articleList, sharedView, false);
+        openArticle(articleList, sharedView);
     }
 
-    private void openArticle(ArticleList articleList, View sharedView, boolean b) {
+    private void openArticle(ArticleList articleList, View sharedView) {
         //打开文章
         Activity activity = getActivity();
         Intent intent = new Intent(activity, ArticleActivity2.class);
