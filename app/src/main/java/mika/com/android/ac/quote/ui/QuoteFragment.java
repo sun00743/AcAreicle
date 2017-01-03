@@ -122,10 +122,21 @@ public class QuoteFragment extends Fragment implements
     @Override
     public void onDetach() {
         super.onDetach();
-        if(!mRecyclerAdapter.isEmpty()){
+        if (!mRecyclerAdapter.isEmpty()) {
             mResource.saveQuoteComment();
         }
         mListener = null;
+    }
+
+    private void updateRefresh() {
+        boolean loadMore = mResource.loadMore();
+        boolean empty = mResource.isEmpty();
+        boolean loading = mResource.isLoading();
+        boolean canLoadMore = mResource.canLoadMore();
+        refreshLayout.setRefreshing(loading && !loadMore);
+        mLoadMoreAdapter.setItemVisible(!canLoadMore || empty || (loadMore && loading));
+        mLoadMoreAdapter.setNoMoreYet(!empty);
+        mLoadMoreAdapter.setProgressVisible(loadMore);
     }
 
     @Override
@@ -141,25 +152,23 @@ public class QuoteFragment extends Fragment implements
     @Override
     public void onListLoadFinished() {
         refreshLayout.setRefreshing(false);
+        mLoadMoreAdapter.setItemVisible(!mResource.canLoadMore());
+        mLoadMoreAdapter.setNoMoreYet(!mResource.isEmpty());
         mLoadMoreAdapter.setProgressVisible(false);
     }
 
     @Override
     public void onListLoadStarted() {
         refreshLayout.setRefreshing(!mResource.isLoading() && !mResource.loadMore());
-        if(mResource.loadMore()){
+        if (mResource.loadMore()) {
+            mLoadMoreAdapter.setItemVisible(true);
             mLoadMoreAdapter.setProgressVisible(true);
         }
     }
 
     @Override
     public void onListLoadError(VolleyError error) {
-
-    }
-
-    @Override
-    public void onListRemoved() {
-
+        mLoadMoreAdapter.setItemText(getString(R.string.load_more_failed));
     }
 
     public interface OnQuoteInteractionListener {

@@ -10,7 +10,6 @@
 package mika.com.android.ac.main.ui;
 
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
@@ -37,7 +36,6 @@ import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.notification.service.AlarmPoll;
 import mika.com.android.ac.notification.service.PollingService;
 import mika.com.android.ac.notification.ui.NotificationListFragment;
-import mika.com.android.ac.quote.ui.QuoteActivity;
 import mika.com.android.ac.quote.ui.QuoteFragment;
 import mika.com.android.ac.scalpel.ScalpelHelperFragment;
 import mika.com.android.ac.ui.ActionItemBadge;
@@ -251,11 +249,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onQuoteClicked() {
-        if (AcWenApplication.LOGIN) {
-            Intent intent = new Intent(this, QuoteActivity.class);
-//        ActivityCompat.startActivity(this, intent, null);
-            startActivity(intent);
-        }
     }
 
     @Override

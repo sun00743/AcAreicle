@@ -27,7 +27,7 @@ public class QuoteListResource {
     private int usersId;
     private Handler mHandler = new Handler();
     private boolean loadMore;
-    private boolean canLoadMore;
+    private boolean canLoadMore = true;
     private boolean isLoading;
     private OnListChangeListener mListChangeListener;
     private int pageNO = 1;
@@ -103,32 +103,38 @@ public class QuoteListResource {
         QuoteListCache.putQuoteMyComment(usersId, MyComment, context);
     }
 
+    public void load(boolean loadMore){
+        load(loadMore, PAGE_SIZE);
+    }
+
     /**
      * load from server
+     *
      * @param loadMore true is loadMore, false is refresh or change
      */
-    public void load(boolean loadMore) {
+    public void load(boolean loadMore, int pageSize) {
         if (isLoading) {
             return;
         }
+        isLoading = true;
         this.loadMore = loadMore;
         mListChangeListener.onListLoadStarted();
-        isLoading = true;
         QuoteRequest request;
         if (loadMore) {
             if (!canLoadMore) {
+                isLoading = false;
+                mListChangeListener.onListLoadFinished();
                 return;
             }
             ++pageNO;
-            request = new QuoteRequest(pageNO, PAGE_SIZE);
         } else {
             pageNO = 1;
-            request = new QuoteRequest(pageNO, PAGE_SIZE);
         }
-        startRequest(request);
+        request = new QuoteRequest(pageNO, pageSize);
+        startRequest(request, loadMore);
     }
 
-    private void onResponse(boolean success, Object response, VolleyError error) {
+    private void onResponse(boolean success, boolean loadMore, Object response, VolleyError error) {
         if (success) {
             canLoadMore = (pageNO * PAGE_SIZE) < ((QuoteResult) response).data.page.totalCount;
 
@@ -149,7 +155,7 @@ public class QuoteListResource {
         } else {
             mListChangeListener.onListLoadError(error);
         }
-        loadMore = false;
+
         isLoading = false;
         mListChangeListener.onListLoadFinished();
     }
@@ -162,18 +168,26 @@ public class QuoteListResource {
         return loadMore;
     }
 
-    private void startRequest(Request request) {
+    public boolean canLoadMore() {
+        return canLoadMore;
+    }
+
+    public boolean isEmpty() {
+        return qList.isEmpty() || qList.size() == 0;
+    }
+
+    private void startRequest(Request<QuoteResult> request, final boolean loadMore) {
         Volley.getInstance().addToRequestQueue(request);
-        request.setListener(new Response.Listener() {
+        request.setListener(new Response.Listener<QuoteResult>() {
             @Override
-            public void onResponse(Object response) {
-                QuoteListResource.this.onResponse(true, response, null);
+            public void onResponse(QuoteResult response) {
+                QuoteListResource.this.onResponse(true, loadMore, response, null);
             }
         });
         request.setErrorListener(new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                onResponse(false, null, error);
+                onResponse(false, loadMore, null, error);
             }
         });
     }
@@ -188,7 +202,5 @@ public class QuoteListResource {
         void onListLoadStarted();
 
         void onListLoadError(VolleyError error);
-
-        void onListRemoved();
     }
 }

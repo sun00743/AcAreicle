@@ -22,7 +22,7 @@
         android:id="@+id/action_top"
         android:icon="@drawable/ic_gotop_24dp"
         android:orderInCategory="100"
-        android:title="@string/articlelist_gotop"
+        android:title="@string/article_list_go_top"
         app:showAsAction="always" />
 
     <item

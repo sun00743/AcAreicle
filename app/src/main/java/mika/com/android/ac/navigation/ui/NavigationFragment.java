@@ -46,6 +46,7 @@ import mika.com.android.ac.network.api.info.acapi.AcerInfoResult2;
 import mika.com.android.ac.network.api.info.apiv2.User;
 import mika.com.android.ac.network.api.info.apiv2.UserInfo;
 import mika.com.android.ac.profile.ui.ProfileActivity;
+import mika.com.android.ac.quote.ui.QuoteActivity;
 import mika.com.android.ac.settings.ui.SettingsActivity;
 import mika.com.android.ac.ui.DrawerManager;
 import mika.com.android.ac.util.SharedPrefsUtils;
@@ -142,7 +143,9 @@ public class NavigationFragment extends Fragment implements
                                 mMenuClickListener.onMessageClicked();
                                 break;
                             case R.id.navigation_quote:
-                                mMenuClickListener.onQuoteClicked();
+//                                mMenuClickListener.onQuoteClicked();
+                                openQuote();
+                                setQuoteCount(0);
                                 break;
                             case R.id.navigation_settings:
                                 openSettings();
@@ -200,8 +203,11 @@ public class NavigationFragment extends Fragment implements
     }
 
     public void setQuoteCount(int count) {
-        if (count == 0) return;
-        quoteCountText.setText(String.format(Locale.CHINESE, "（%1$d条新召唤）", count));
+        if (count == 0)
+            quoteCountText.setText(getString(R.string.empty));
+        else {
+            quoteCountText.setText(String.format(Locale.CHINESE, "（%1$d条新召唤）", count));
+        }
     }
 
     @Override
@@ -270,17 +276,36 @@ public class NavigationFragment extends Fragment implements
         }
     }
 
+    private void openQuote() {
+        if (AcWenApplication.LOGIN) {
+            Intent intent = new Intent(getActivity(), QuoteActivity.class);
+//        ActivityCompat.startActivity(this, intent, null);
+            startActivityForResult(intent, AcWenApplication.REQUEST_CODE_QUOTE);
+        } else {
+            startActivityForResult(new Intent(getActivity(), AcerSignInActivity.class), AcWenApplication.REQUEST_CODE_SIGN_IN);
+        }
+    }
+
+
     /**
      * 登录activity的result
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == AcWenApplication.REQUEST_CODE_SIGN_IN) {
-                acerInfo = data.getParcelableExtra("acer_info");
-                mHeaderLayout.bindAcer(acerInfo);
-                mHeaderLayout.getBanana();
-                checkSignIn();
+            switch (requestCode) {
+                case AcWenApplication.REQUEST_CODE_QUOTE:
+                    acerInfo = data.getParcelableExtra(getString(R.string.acer_info));
+                    mHeaderLayout.bindAcer(acerInfo);
+                    mHeaderLayout.getBanana();
+                    checkSignIn();
+                    break;
+                case AcWenApplication.REQUEST_CODE_SIGN_IN:
+                    acerInfo = data.getParcelableExtra(getString(R.string.acer_info));
+                    mHeaderLayout.bindAcer(acerInfo);
+                    mHeaderLayout.getBanana();
+                    checkSignIn();
+                    break;
             }
         }
     }

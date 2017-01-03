@@ -44,6 +44,10 @@ public class HomeArticleDesListCache {
                 new TypeToken<List<ArticleList>>() {}, context);
     }
 
+    public static void close(Context context){
+        DiskCacheHelper.close(context);
+    }
+
     private static String getKeyForAccount(Account account) {
 //        return KEY_PREFIX + '@' + account.name;
         return KEY_PREFIX + '@' + NAME;

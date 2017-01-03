@@ -4,4 +4,5 @@
 
     <integer name="request_code_login">7</integer>
     <integer name="intent_poll_code">0x00701</integer>
+    <integer name="request_code_quote">708</integer>
 </resources>

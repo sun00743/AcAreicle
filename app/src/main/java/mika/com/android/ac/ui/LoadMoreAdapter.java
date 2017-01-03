@@ -61,6 +61,10 @@ public class LoadMoreAdapter extends MergeAdapter {
         mViewAdapter.setItemViewVisible(visible);
     }
 
+    public void setItemText(String text){
+        mViewAdapter.setTextString(text);
+    }
+
     public void setNoMoreYet(boolean noMoreYet) {
         mViewAdapter.setNoMoreYet(noMoreYet);
     }
@@ -73,10 +77,19 @@ public class LoadMoreAdapter extends MergeAdapter {
          */
         private boolean mShowingItem;
         private ViewHolder mViewHolder;
+        /**
+         * load more item visible or invisible
+         */
         private boolean mItemViewVisible = true;
-        private boolean mTextViewVisible;
+        /**
+         * 判断没有更多还是无数据
+         */
         private boolean isNoMoreYet;
+        /**
+         * progress visible or text visible
+         */
         private boolean mProgressVisible;
+        private String mText;
 
         public LoadMoreViewAdapter(int loadMoreLayoutResId) {
 
@@ -171,6 +184,21 @@ public class LoadMoreAdapter extends MergeAdapter {
             }
         }
 
+        public void setTextString(String text) {
+            if (text == null || text.isEmpty()) {
+                mText = null;
+                return;
+            }
+            mText = text;
+            if (mShowingItem) {
+                if (mViewHolder != null) {
+                    onBindViewHolder(mViewHolder, 0);
+                } else {
+                    notifyItemChanged(0);
+                }
+            }
+        }
+
         @Override
         public int getItemCount() {
             return mShowingItem ? 1 : 0;
@@ -195,13 +223,16 @@ public class LoadMoreAdapter extends MergeAdapter {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            ViewUtils.setVisibleOrInvisible(holder.itemView, mItemViewVisible);
-            ViewUtils.setVisibleOrInvisible(holder.progress, mProgressVisible);
-            ViewUtils.setVisibleOrInvisible(holder.textView, !mProgressVisible);
+//            ViewUtils.setVisibleOrInvisible(holder.itemView, mItemViewVisible);
+            ViewUtils.setVisibleOrInvisible(holder.progress, mProgressVisible && mItemViewVisible);
+            ViewUtils.setVisibleOrInvisible(holder.textView, !mProgressVisible && mItemViewVisible);
             if (isNoMoreYet) {
                 holder.textView.setText(R.string.load_more_no_more);
             } else {
-                holder.textView.setText(R.string.load_more_no_comment);
+                holder.textView.setText(R.string.load_more_nothing);
+            }
+            if (mText != null && !mText.isEmpty()) {
+                holder.textView.setText(mText);
             }
             mViewHolder = holder;
         }

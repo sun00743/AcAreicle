@@ -30,7 +30,8 @@ public class IoUtils {
     private static final String STRING_DELIMITER = "|";
     private static final String STRING_DELIMITER_REGEX = "\\|";
 
-    private IoUtils() {}
+    private IoUtils() {
+    }
 
     public static void close(Closeable closeable) {
         try {
@@ -70,6 +71,12 @@ public class IoUtils {
         return new String(chars);
     }
 
+    /**
+     * 字节转换为16进制字符串
+     * @param bytes 字节数组
+     * @param lowerCased true:字符串为小写字符 ， false:字符串为大写字符
+     * @return 16进制字符串
+     */
     public static String byteArrayToHexString(byte[] bytes, boolean lowerCased) {
         return byteArrayToHexString(bytes, lowerCased ? HEX_DIGITS_LOWER_CASED
                 : HEX_DIGITS_UPPER_CASED);

@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
         android:layout_margin="@dimen/fab_margin"
-        android:contentDescription="@string/articlelist_gotop"
+        android:contentDescription="@string/article_list_go_top"
         android:src="@drawable/upward_icon_white_24dp"
         android:theme="?actionBarTheme"
         android:visibility="gone"

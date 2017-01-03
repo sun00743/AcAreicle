@@ -33,7 +33,7 @@ public class QuoteRequest extends Request {
     }
 
     @Override
-    protected Response parseNetworkResponse(NetworkResponse response) {
+    protected Response<QuoteResult> parseNetworkResponse(NetworkResponse response) {
         try {
             String data = new String(response.data, "utf-8");
             QuoteResult result = new Gson().fromJson(data, QuoteResult.class);

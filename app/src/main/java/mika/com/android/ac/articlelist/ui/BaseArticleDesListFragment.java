@@ -169,6 +169,7 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
         mSwipeRefreshLayout.setRefreshing(loading && (!empty || mSwipeRefreshLayout.isRefreshing())
                 && !loadingMore);
         ViewUtils.setVisibleOrGone(mProgress, loading && empty);
+        mLoadMoreAdapter.setItemVisible(loading && loadingMore);
         mLoadMoreAdapter.setProgressVisible(loading && !empty && loadingMore);
     }
 

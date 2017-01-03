@@ -14,6 +14,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -54,6 +57,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import butterknife.BindView;
@@ -90,43 +95,75 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private static final int VIEW_TYPE_COMMENT = 0x04;
     private static final int VIEW_TYPE_SUBTITLE = 0x03;
     private static final int VIEW_TYPE_HEAD = 0x01;
-
     private ArticleActivity2 activity;
     private Request articleRequest;
-
     private static final String TAG = "Article";
     private static String ARTICLE_PATH;
     private static final String NAME_ARTICLE_HTML = "a63-article.html";
     private Article mArticle;
     private Document mDoc;
     private List<String> imgUrls;
-    private DownloadImageTask mDownloadTask;
+    //    private DownloadImageTask mDownloadTask;
     //    private String title;
     private boolean isDownloaded;
 //    private boolean isWebMode;
-
     private int aid;
     private Bundle mBundle;
     private List<Integer> mCommentIdList;
     private SparseArray<Comment> mCommentList;
-
     private EventListener mEventListener;
     private ArticleHolder mCurrentHolder;
     private SubTitleHolder mSubTitleHolder;
     private HeadHolder mHeadHolder;
-
     //    private int mWebViewHeight;
     private boolean isContentFirstLoad = true;
     private boolean isHeadFirstLoad = true;
     private boolean hasBundle = true;
+    private boolean isAutoLoad = false;
+    /**
+     * down load image single thread pool
+     */
+    private static final ExecutorService mLoadImgThread = Executors.newSingleThreadExecutor();
+    private int imageIndex = 0;
+    /**
+     * load image handler, control image index , excuse show image js
+     */
+    private Handler mLoadImageHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            int index = msg.getData().getInt("imgNum");
+            ++imageIndex;
+            if (imgUrls.get(index) != null) {
+                mCurrentHolder.evaluateJavascript(
+                        "javascript:(function(){" +
+                                "var images = document.getElementsByTagName(\"img\");" +
+                                "var img = images[" + index + "];" +
+                                "img.src = img.getAttribute(\"loc\");" +
+                                "})()"
+                        , null);
+            }
+            if (imageIndex < imgUrls.size()) {
+                loadImagesExcuse();
+            } else if (imageIndex == imgUrls.size()) {
+                isDownloaded = true;
+                mCurrentHolder.evaluateJavascript(
+                        "javascript:(function(){"
+                                + "var images = document.getElementsByTagName(\"img\"); "
+                                + "var imgSrc = images[" + index + "].getAttribute(\"loc\"); "
+                                + "if(imgSrc != null)"
+                                + "images[" + index + "].setAttribute(\"src\",imgSrc);"
+                                + "})()"
+                        , null);
+            }
+
+        }
+    };
 
     public void setAutoLoad(boolean autoLoad) {
         if (isAutoLoad == autoLoad)
             return;
         isAutoLoad = autoLoad;
     }
-
-    private boolean isAutoLoad = false;
 
     public ArtComplexAdapter(List<Integer> list, ArticleActivity2 activity, Bundle bundle) {
         super(null);
@@ -470,9 +507,10 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                         && imgUrls.size() > 0
                         && !isDownloaded
                         && AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI) {
-                    String[] arr = new String[imgUrls.size()];
-                    mDownloadTask = new DownloadImageTask();
-                    mDownloadTask.execute(imgUrls.toArray(arr));
+//                    String[] arr = new String[imgUrls.size()];
+//                    mDownloadTask = new DownloadImageTask();
+//                    mDownloadTask.execute(imgUrls.toArray(arr));
+                    loadImagesExcuse();
                 }
             }
         });
@@ -548,16 +586,84 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         }
     }
 
-    public View getHeadView() {
-        return mHeadHolder.headContent;
-    }
-
-    public View getArticleView() {
-        return mCurrentHolder.mContent;
-    }
-
     public void setEventListener(EventListener listener) {
         mEventListener = listener;
+    }
+
+    public SubTitleHolder getmSubTitleHolder(){
+        if(mSubTitleHolder == null){
+            return null;
+        }else {
+            return mSubTitleHolder;
+        }
+    }
+
+    /**
+     * down load image single thread run
+     */
+    private void loadImagesExcuse() {
+        mLoadImgThread.execute(new Runnable() {
+            @Override
+            public void run() {
+                File cache = imageCaches.get(imageIndex);
+                if (cache.exists() && cache.canRead()) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("imgNum", imageIndex);
+                    Message msg = new Message();
+                    msg.setData(bundle);
+                    mLoadImageHandler.sendMessage(msg);
+                    return;
+                } else {
+                    cache.getParentFile().mkdirs();
+                }
+                File temp = new File(cache.getAbsolutePath() + ".tmp");
+
+                InputStream in = null;
+                OutputStream out = null;
+
+                try {
+                    URL parsedUrl = new URL(imgUrls.get(imageIndex));
+                    HttpURLConnection connection = Connectivity.openDefaultConnection(parsedUrl, 3000, 5000);
+                    if (temp.exists()) {
+                        connection.addRequestProperty("Range", "bytes=" + temp.length() + "-");
+                        out = new FileOutputStream(temp, true);
+                    } else
+                        out = new FileOutputStream(temp);
+                    try {
+                        int responseCode = connection.getResponseCode();
+                        if (responseCode == 200 || responseCode == 206) {
+                            in = connection.getInputStream();
+                            FileUtil.copyStream(in, out);
+                            cache.delete();
+                            if (!temp.renameTo(cache)) {
+                                Log.w(TAG, "rename failed" + temp.getName());
+                            }
+
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("imgNum", imageIndex);
+                            Message msg = new Message();
+                            msg.setData(bundle);
+                            mLoadImageHandler.sendMessage(msg);
+                        }
+                    } catch (SocketTimeoutException e) {
+                        Log.w(TAG, "retry", e);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (in != null)
+                            in.close();
+                    } catch (IOException ignored) {
+                    }
+                    try {
+                        if (out != null)
+                            out.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+        });
     }
 
     interface EventListener {
@@ -704,6 +810,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         ImageButton updateComment;
         @BindView(R.id.subtitle_Progress)
         ProgressBar subtitle_pro;
+//        @BindView(R.id.subtitle_comment_progress)
+//        ProgressBar mCommentProgress;
 
         SubTitleHolder(View itemView) {
             super(itemView);
@@ -939,116 +1047,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     /**
      * 异步下载图片到缓存目录
      */
-    private class DownloadImageTask extends AsyncTask<String, Integer, Void> {
-
-        int timeoutMs = 3000;
-        int tryTimes = 3;
-
-        @Override
-        protected Void doInBackground(String... params) {
-            for (int index = 0; index < params.length; index++) {
-                String url = params[index];
-                if (isCancelled()) {
-                    // cancel task on activity destory
-//                    Log.w(TAG, String.format("break download task,[%d/%d]", index+1, params.length));
-                    break;
-                }
-                File cache = imageCaches.get(imgUrls.indexOf(url));
-                if (cache.exists() && cache.canRead()) {
-//                    Log.i(TAG, String.format("already downloaded.[%d/%d]",index+1, params.length));
-                    publishProgress(index);
-                    continue;
-                } else {
-                    cache.getParentFile().mkdirs();
-                }
-                File temp = new File(cache.getAbsolutePath() + ".tmp");
-
-                InputStream in = null;
-                OutputStream out = null;
-
-                try {
-                    URL parsedUrl = new URL(url);
-                    retry:
-                    for (int i = 0; i < tryTimes && !isCancelled(); i++) {
-
-                        HttpURLConnection connection = Connectivity.openDefaultConnection(parsedUrl,
-                                timeoutMs * (1 + i / 2), (timeoutMs * (2 + i)));
-                        if (temp.exists()) {
-                            connection.addRequestProperty("Range", "bytes=" + temp.length() + "-");
-                            out = new FileOutputStream(temp, true);
-                        } else
-                            out = new FileOutputStream(temp);
-                        try {
-                            int responseCode = connection.getResponseCode();
-                            if (responseCode == 200 || responseCode == 206) {
-                                in = connection.getInputStream();
-                                FileUtil.copyStream(in, out);
-                                cache.delete();
-                                if (!temp.renameTo(cache)) {
-                                    Log.w(TAG, "重命名失败" + temp.getName());
-                                }
-                                publishProgress(index);
-                                break retry;
-                            }
-                        } catch (SocketTimeoutException e) {
-                            Log.w(TAG, "retry", e);
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (in != null)
-                            in.close();
-                    } catch (IOException ignored) {
-                    }
-                    try {
-                        if (out != null)
-                            out.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            if (imgUrls != null) {
-                String url = imgUrls.get(values[0]);
-                if (url == null)
-                    return;
-                int v = values[0] + 1;
-                mCurrentHolder.evaluateJavascript("javascript:(function(){" +
-                                "var images = document.getElementsByTagName(\"img\");" +
-                                "var img = images[" + v + "];" +
-                                "img.src = img.getAttribute(\"loc\");" +
-                                "})()",
-                        null);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            // 确保所有图片都顺利的显示出来
-            isDownloaded = true;
-            mCurrentHolder.evaluateJavascript("javascript:(function(){"
-                            + "var images = document.getElementsByTagName(\"img\"); "
-                            + "for(var i=0;i<images.length;i++){"
-                            + "var imgSrc = images[i].getAttribute(\"loc\"); "
-                            + "if(imgSrc != null)"
-                            + "images[i].setAttribute(\"src\",imgSrc);"
-                            + "}"
-                            + "})()",
-                    null);
-        }
-
-    }
-
-    /**
-     * 异步下载图片到缓存目录
-     */
     private class LoadImageTask extends AsyncTask<String, Integer, Void> {
 
         int timeoutMs = 3000;
@@ -1174,5 +1172,119 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             new LoadImageTask().execute(url, String.valueOf(index));
         }
     }
+
+/*
+    */
+/**
+ * 异步下载图片到缓存目录
+ *//*
+
+    private class DownloadImageTask extends AsyncTask<String, Integer, Void> {
+
+        int timeoutMs = 3000;
+        int tryTimes = 3;
+
+        @Override
+        protected Void doInBackground(String... params) {
+            for (int index = 0; index < params.length; index++) {
+                String url = params[index];
+                if (isCancelled()) {
+                    // cancel task on activity destory
+//                    Log.w(TAG, String.format("break download task,[%d/%d]", index+1, params.length));
+                    break;
+                }
+                File cache = imageCaches.get(imgUrls.indexOf(url));
+                if (cache.exists() && cache.canRead()) {
+//                    Log.i(TAG, String.format("already downloaded.[%d/%d]",index+1, params.length));
+                    publishProgress(index);
+                    continue;
+                } else {
+                    cache.getParentFile().mkdirs();
+                }
+                File temp = new File(cache.getAbsolutePath() + ".tmp");
+
+                InputStream in = null;
+                OutputStream out = null;
+
+                try {
+                    URL parsedUrl = new URL(url);
+                    retry:
+                    for (int i = 0; i < tryTimes && !isCancelled(); i++) {
+
+                        HttpURLConnection connection = Connectivity.openDefaultConnection(parsedUrl,
+                                timeoutMs * (1 + i / 2), (timeoutMs * (2 + i)));
+                        if (temp.exists()) {
+                            connection.addRequestProperty("Range", "bytes=" + temp.length() + "-");
+                            out = new FileOutputStream(temp, true);
+                        } else
+                            out = new FileOutputStream(temp);
+                        try {
+                            int responseCode = connection.getResponseCode();
+                            if (responseCode == 200 || responseCode == 206) {
+                                in = connection.getInputStream();
+                                FileUtil.copyStream(in, out);
+                                cache.delete();
+                                if (!temp.renameTo(cache)) {
+                                    Log.w(TAG, "rename failed" + temp.getName());
+                                }
+                                publishProgress(index);
+                                break retry;
+                            }
+                        } catch (SocketTimeoutException e) {
+                            Log.w(TAG, "retry", e);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (in != null)
+                            in.close();
+                    } catch (IOException ignored) {
+                    }
+                    try {
+                        if (out != null)
+                            out.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            if (imgUrls != null) {
+                String url = imgUrls.get(values[0]);
+                if (url == null)
+                    return;
+                int v = values[0] + 1;
+                mCurrentHolder.evaluateJavascript("javascript:(function(){" +
+                                "var images = document.getElementsByTagName(\"img\");" +
+                                "var img = images[" + v + "];" +
+                                "img.src = img.getAttribute(\"loc\");" +
+                                "})()",
+                        null);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            // 确保所有图片都顺利的显示出来
+            isDownloaded = true;
+            mCurrentHolder.evaluateJavascript("javascript:(function(){"
+                            + "var images = document.getElementsByTagName(\"img\"); "
+                            + "for(var i=0;i<images.length;i++){"
+                            + "var imgSrc = images[i].getAttribute(\"loc\"); "
+                            + "if(imgSrc != null)"
+                            + "images[i].setAttribute(\"src\",imgSrc);"
+                            + "}"
+                            + "})()",
+                    null);
+        }
+
+    }
+*/
 
 }

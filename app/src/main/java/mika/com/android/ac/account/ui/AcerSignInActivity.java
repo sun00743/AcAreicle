@@ -69,11 +69,6 @@ public class AcerSignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_acer_sign_in);
         ButterKnife.bind(this);
-
-        // TODO: 2016/12/6  delete this
-//        mLoginRequest = new LoginRequest("月与萧","136892");
-//        mLoginRequest.setShouldCache(true);
-
         initListener();
     }
 

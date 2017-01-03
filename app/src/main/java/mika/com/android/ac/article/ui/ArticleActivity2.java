@@ -59,7 +59,6 @@ import mika.com.android.ac.account.ui.AcerSignInActivity;
 import mika.com.android.ac.article.content.CommentListResource;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.PostCommentRequest;
-import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.network.api.info.acapi.Comment;
 import mika.com.android.ac.network.api.info.acapi.PostCommentResult;
 import mika.com.android.ac.ui.AppBarWrapperLayout;
@@ -114,7 +113,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
     RelativeLayout mEmoticonLayout;
 
     private int contentId;
-    private Acer acer;
     private AnimatorSet mAnimator;
     private boolean isSendBarShowing = true;
     private boolean isFirstLoad = true;
@@ -128,10 +126,10 @@ public class ArticleActivity2 extends AppCompatActivity implements
     private DetectsSoftKeyBoardFrameLayout mainLayout;
     private InputMethodManager inputMethodManager;
     private Comment quote;
-    private PostCommentRequest postCommentRequest;
     private PostCommentResult postCommentResult;
     private MenuItem menuStar;
     private MenuItem menuUnquote;
+    private boolean commentFirstClicked = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +138,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
 
         createUI();
-        acer = AcWenApplication.getInstance().getAcer();
         contentId = getIntent().getExtras().getInt("aid", 0);
         mCommentListResource = CommentListResource.attachTo(null, contentId, this);
     }
@@ -241,6 +238,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
      */
     @Override
     public void ProgressDismiss() {
+
         mRecycleView.addOnScrollListener(new OnVerticalScrollWithPagingTouchSlopListener(this) {
             //recyclerView向下滑动
             @Override
@@ -281,6 +279,13 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
         mProgress.setVisibility(View.GONE);
         mLoadMoreAdapter.setItemVisible(true);
+        // if article high < screen high , load comment
+//        if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findLastVisibleItemPosition()
+//                == mRecycleView.getAdapter().getItemCount() - 1) {
+//            mArtComplexAdapter.setAutoLoad(false);
+//            loadComment();
+//            mLoadMoreAdapter.setItemVisible(true);
+//        }
     }
 
     /**
@@ -310,12 +315,11 @@ public class ArticleActivity2 extends AppCompatActivity implements
                 // TODO 收藏
                 return true;
             case R.id.action_top:
-                if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() >= COMMENT_HEAD_POSITION
-                        && ((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() <= SCROLL_FLAG_POSITION) {
-                    mRecycleView.smoothScrollToPosition(COMMENT_HEAD_POSITION);
-                } else if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() > SCROLL_FLAG_POSITION) {
+                if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findFirstVisibleItemPosition() > SCROLL_FLAG_POSITION) {
                     mRecycleView.scrollToPosition(SCROLL_FLAG_POSITION);
                     mRecycleView.smoothScrollToPosition(COMMENT_HEAD_POSITION);
+                } else {
+                    mRecycleView.smoothScrollToPosition(3);
                 }
                 return true;
             case R.id.action_unquote:
@@ -344,7 +348,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     }
 
     /**
-     * 发送评论
+     * 发送评论按钮调用方法
      */
     private void doSendComment() {
 
@@ -360,15 +364,18 @@ public class ArticleActivity2 extends AppCompatActivity implements
         if (quote == null)
             quote = new Comment();
         changeSendState(true);
-        postCommentRequest = new PostCommentRequest(getCommentText(), quote.id, acer.access_token, acer.userId, contentId);
-        setPostListener();
+        PostCommentRequest postCommentRequest = new PostCommentRequest(getCommentText(), quote.id,
+                AcWenApplication.getInstance().getAcer().access_token, AcWenApplication.getInstance().getAcer().userId, contentId);
+        setPostListener(postCommentRequest);
         Volley.getInstance().addToRequestQueue(postCommentRequest);
     }
 
     /**
      * post response listener
+     *
+     * @param postCommentRequest request
      */
-    private void setPostListener() {
+    private void setPostListener(PostCommentRequest postCommentRequest) {
         postCommentRequest.setListener(new Response.Listener<PostCommentResult>() {
             @Override
             public void onResponse(PostCommentResult response) {
@@ -379,7 +386,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
                     changeSendState(false);
                     updateComment();
                 } else {
-                    Toast.makeText(ArticleActivity2.this, R.string.post_comment_may_failed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ArticleActivity2.this, R.string.post_comment_may_failed, Toast.LENGTH_LONG).show();
                     changeSendState(false);
                 }
             }
@@ -388,19 +395,10 @@ public class ArticleActivity2 extends AppCompatActivity implements
             @Override
             public void onErrorResponse(VolleyError error) {
                 quote = null;
-                Toast.makeText(ArticleActivity2.this, R.string.post_comment_failed, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ArticleActivity2.this, R.string.post_comment_may_failed, Toast.LENGTH_LONG).show();
                 changeSendState(false);
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == AcWenApplication.REQUEST_CODE_SIGN_IN) {
-                acer = AcWenApplication.getInstance().getAcer();
-            }
-        }
     }
 
     /**
@@ -572,7 +570,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
     @Override
     public void onLoadCommentListFinished(int requestCode) {
         if (((LinearLayoutManager) mRecycleView.getLayoutManager()).findLastVisibleItemPosition() <=
-                mRecycleView.getAdapter().getItemCount() - 2) {
+                mRecycleView.getAdapter().getItemCount() - COMMENT_HEAD_POSITION) {
             mLoadMoreAdapter.setItemVisible(false);
         }
         mLoadMoreAdapter.setNoMoreYet(!mCommentListResource.canLoadMore() && !mCommentListResource.isEmpty());
@@ -621,17 +619,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
     @Override
     public void onSoftKeyBoardDown(boolean isShowing) {
         isKeyBoardShow = isShowing;
-    }
-
-    /**
-     * 更新刷新状态
-     */
-    private void updateRefreshing() {
-        boolean loading = mCommentListResource.isLoading();
-        boolean empty = mCommentListResource.isEmpty();
-        boolean loadingMore = mCommentListResource.isLoadingMore();
-//        ViewUtils.setVisibleOrGone(mProgress, loading && empty);
-        mLoadMoreAdapter.setProgressVisible(loading && !empty && loadingMore);
     }
 
     private void setPaddingTop() {

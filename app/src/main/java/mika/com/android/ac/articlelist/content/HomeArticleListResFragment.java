@@ -27,7 +27,6 @@ import mika.com.android.ac.app.TargetedRetainedFragment;
 
 /**
  * Created by Administrator on 2016/9/7.
- *
  */
 
 public class HomeArticleListResFragment extends ArticleListResFragment {
@@ -45,48 +44,50 @@ public class HomeArticleListResFragment extends ArticleListResFragment {
      */
     private boolean mStopped;
 
-    private static HomeArticleListResFragment newInstance(int channelId, int sort){
+    private static HomeArticleListResFragment newInstance(int channelId, int sort) {
         HomeArticleListResFragment resFragment = new HomeArticleListResFragment();
-        resFragment.setArguments(channelId,sort);
+        resFragment.setArguments(channelId, sort);
         return resFragment;
     }
 
-    public HomeArticleListResFragment() {}
+    public HomeArticleListResFragment() {
+    }
 
     public static HomeArticleListResFragment attachTo(FragmentActivity activity,
-                                                      int channelId, int sort){
-        return attachTo(activity,channelId,sort,FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
+                                                      int channelId, int sort) {
+        return attachTo(activity, channelId, sort, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
     }
 
     public static HomeArticleListResFragment attachTo(FragmentActivity activity,
                                                       int channelId, int sort, String tag,
-                                                      int requestCode){
-        return attachTo(activity,channelId,sort, tag, true, null, requestCode);
-    }
-
-    public static HomeArticleListResFragment attachTo(Fragment fragment ,
-                                                      int channelId, int sort){
-        return attachTo(fragment,channelId,sort, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
+                                                      int requestCode) {
+        return attachTo(activity, channelId, sort, tag, true, null, requestCode);
     }
 
     public static HomeArticleListResFragment attachTo(Fragment fragment,
-                                                      int channelId, int sort,String tag,
-                                                      int requestCode){
-        return attachTo(fragment.getActivity(),channelId,sort, tag, false, fragment, requestCode);
+                                                      int channelId, int sort) {
+        return attachTo(fragment, channelId, sort, FRAGMENT_TAG_DEFAULT, TargetedRetainedFragment.REQUEST_CODE_INVALID);
     }
+
+    public static HomeArticleListResFragment attachTo(Fragment fragment,
+                                                      int channelId, int sort, String tag,
+                                                      int requestCode) {
+        return attachTo(fragment.getActivity(), channelId, sort, tag, false, fragment, requestCode);
+    }
+
     /**
      * 交付到FragmentUtils中管理（在FragmentUtils中会获取相应的fragmentManager并调用beginTransaction）
      */
-    private static HomeArticleListResFragment attachTo(FragmentActivity activity ,
+    private static HomeArticleListResFragment attachTo(FragmentActivity activity,
                                                        int channelId, int sort, String tag,
                                                        boolean targetActivity, Fragment targetFragment,
-                                                       int requestCode){
-        HomeArticleListResFragment resFragment = FragmentUtils.findByTag(activity,tag);
-        if(resFragment == null){
-            resFragment = newInstance(channelId,sort);
-            if(targetActivity){
+                                                       int requestCode) {
+        HomeArticleListResFragment resFragment = FragmentUtils.findByTag(activity, tag);
+        if (resFragment == null) {
+            resFragment = newInstance(channelId, sort);
+            if (targetActivity) {
                 resFragment.targetAtActivity(requestCode);
-            }else{
+            } else {
                 resFragment.targetAtFragment(targetFragment, requestCode);
             }
             FragmentUtils.add(resFragment, activity, tag);
@@ -114,7 +115,7 @@ public class HomeArticleListResFragment extends ArticleListResFragment {
     }
 
     private void loadFromCache() {
-        if(isLoading()){
+        if (isLoading()) {
             return;
         }
 
@@ -130,7 +131,7 @@ public class HomeArticleListResFragment extends ArticleListResFragment {
 
     private void onLoadFromCacheComplete(List<ArticleList> articleLists) {
         setLoading(false);
-        if(mStopped){
+        if (mStopped) {
             return;
         }
         boolean hasCache = articleLists != null && articleLists.size() > 0;
@@ -171,6 +172,12 @@ public class HomeArticleListResFragment extends ArticleListResFragment {
         if (articleLists != null && articleLists.size() > 0) {
             saveToCache(articleLists);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        HomeArticleDesListCache.close(getActivity());
     }
 
     private void saveToCache(List<ArticleList> articleLists) {

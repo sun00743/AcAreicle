@@ -90,7 +90,11 @@ public class DiskCache {
         try {
             return GsonHelper.get().fromJson(reader, type);
         } finally {
-            reader.close();
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

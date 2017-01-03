@@ -53,7 +53,7 @@ public class AcWenApplication extends Application {
     public static float density;
     public static boolean LOGIN;
     public static final int REQUEST_CODE_SIGN_IN = 7;
-    public static final int REQUEST_CODE_SETTING = 9;
+    public static final int REQUEST_CODE_QUOTE = 8;
     private static BitmapCache mBitmapCache;
     private boolean firstLoad = true;
 

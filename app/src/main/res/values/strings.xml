@@ -44,7 +44,7 @@
     <string name="article_views">围观</string>
 
     <string name="nothing">这里空无一物</string>
-    <string name="navigation_head_getbananafailed">服务器爆炸了(|||ﾟдﾟ)</string>
+    <string name="navigation_head_getbananafailed">请重试或重新登录</string>
     <string name="navigation_head_reLogin">出了点意外，重新登陆试试看吧</string>
     <string name="navigation_head_has_signin">已签到</string>
     <string name="navigation_head_signin">签到</string>
@@ -57,6 +57,8 @@
 
     <string name="load_more_no_more">没有了 ╮(╯▽╰)╭ </string>
     <string name="load_more_no_comment">沙发可能还在 (　^ω^)</string>
+    <string name="load_more_nothing">不毛之地，连根毛都没有</string>
+    <string name="load_more_failed">加载失败</string>
     <string name="post_comment_success">评论成功! (＾o＾)ﾉ</string>
     <string name="post_comment_may_failed">(|||ﾟдﾟ)刷新看看吧</string>
     <string name="post_comment_failed">评论失败，重新试试吧</string>
@@ -69,6 +71,15 @@
         <item>TD猫</item>
         <item>皮尔德</item>
     </string-array>
+
+    <string name="acer_info">acer_info</string>
+    <string name="empty"></string>
+
+    <string name="article_list_go_top">返回顶部</string>
+    <string name="article_go_comment">查看评论</string>
+    <string name="article_star">收藏</string>
+    <string name="article_subtitle_refresh">刷新评论</string>
+    <string name="article_comment_unquote">取消引用</string>
 
 <!-- ——————————————————————————————————————————————————————————————————————————　 -->
     <string name="activity_not_found">未找到可处理此操作的应用</string>
@@ -209,12 +220,7 @@
     <string name="home_cartoon">漫画·轻小说</string>
     <string name="home_game">游戏</string>
 
-    <string name="articlelist_gotop">返回顶部</string>
     <string name="app_ac_video_link">http://www.coolapk.com/apk/tv.ac.fun</string>
-
-    <string name="article_star">收藏</string>
-    <string name="article_subtitle_refresh">刷新评论</string>
-    <string name="article_comment_unquote">取消引用</string>
 
     <string name="broadcast_list_title_default">广播列表</string>
     <string name="broadcast_list_title_user_format">%s 的广播</string>

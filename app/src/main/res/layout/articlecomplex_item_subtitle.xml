@@ -8,6 +8,16 @@
     android:background="@color/write"
     android:visibility="gone">
 
+<!--
+    <ProgressBar
+        android:id="@+id/subtitle_comment_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:layout_below="@+id/subtitle_text" />
+-->
+
     <TextView
         android:id="@+id/subtitle_text"
         style="?android:attr/textViewStyle"
@@ -47,8 +57,8 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_toEndOf="@+id/subtitle_text"
-        android:layout_toRightOf="@+id/subtitle_text"
+        android:layout_toEndOf="@id/subtitle_text"
+        android:layout_toRightOf="@id/subtitle_text"
         android:visibility="gone" />
 
 </RelativeLayout>
