@@ -396,7 +396,8 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
         mUsernameText.setText(acerInfo.name);
         mSignatureText.setMovementMethod(ScrollingMovementMethod.getInstance());
         mSignatureText.setText(acerInfo.sign);
-//        banana.setJoinedAtAndLocation(userInfo.createdAt, userInfo.locationName);
+//        banana.setText(String.format(Locale.getDefault(), R.string.profile_head_count, acerInfo));
+
     }
 
     public interface Listener {

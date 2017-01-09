@@ -51,6 +51,8 @@ public class DiskCache {
     }
 
     private DiskLruCache.Snapshot getOrThrow(String key) throws IOException, NullPointerException {
+        if (mCache.isClosed())
+            throw new NullPointerException("DiskLruCache.get() returned null");
         DiskLruCache.Snapshot snapshot = mCache.get(mSafeKeyGenerator.getSafeKey(key));
         if (snapshot == null) {
             throw new NullPointerException("DiskLruCache.get() returned null");
@@ -112,6 +114,9 @@ public class DiskCache {
     }
 
     private DiskLruCache.Editor editOrThrow(String key) throws IOException, NullPointerException {
+        if (mCache.isClosed()){
+            throw new NullPointerException("DiskLruCache.edit() cache is closed");
+        }
         DiskLruCache.Editor editor = mCache.edit(mSafeKeyGenerator.getSafeKey(key));
         if (editor == null) {
             throw new NullPointerException("DiskLruCache.edit() returned null");

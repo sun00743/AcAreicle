@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,8 @@ public class QuoteFragment extends Fragment implements
 
     @BindDimen(R.dimen.toolbar_height)
     int toolbarHeight;
+    @BindView(R.id.frag_quote_toolbar)
+    Toolbar mToolbar;
     @BindView(R.id.quote_refresh)
     FriendlySwipeRefreshLayout refreshLayout;
     @BindView(R.id.quote_recycler)
@@ -88,6 +91,13 @@ public class QuoteFragment extends Fragment implements
             @Override
             public void onRefresh() {
                 mResource.load(false);
+            }
+        });
+
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
             }
         });
 
@@ -162,12 +172,14 @@ public class QuoteFragment extends Fragment implements
         refreshLayout.setRefreshing(!mResource.isLoading() && !mResource.loadMore());
         if (mResource.loadMore()) {
             mLoadMoreAdapter.setItemVisible(true);
-            mLoadMoreAdapter.setProgressVisible(true);
+            mLoadMoreAdapter.onLoadStarted();
         }
     }
 
     @Override
     public void onListLoadError(VolleyError error) {
+        if (this.isDetached())
+            return;
         mLoadMoreAdapter.setItemText(getString(R.string.load_more_failed));
     }
 

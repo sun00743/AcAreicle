@@ -38,7 +38,7 @@ import mika.com.android.ac.R;
 import mika.com.android.ac.network.api.info.acapi.Comment;
 
 /**
- * Created by Administrator on 2016/9/20.
+ * Created by Administrator on 2016/9/20
  */
 
 public class TextViewUtils {
@@ -68,11 +68,11 @@ public class TextViewUtils {
         Pattern http = Pattern.compile("http://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]",
                 Pattern.CASE_INSENSITIVE);
         Linkify.addLinks(textView, http, "http://");
-        Linkify.addLinks(textView, Pattern.compile("(ac\\d{5,})", Pattern.CASE_INSENSITIVE), "ac://");
+        Linkify.addLinks(textView, Pattern.compile("(ac\\d{5,})", Pattern.CASE_INSENSITIVE), "a_ac://");
     }
 
-    static void end(SpannableStringBuilder text, Class<?> kind,
-                    Object repl) {
+    private static void end(SpannableStringBuilder text, Class<?> kind,
+                            Object repl) {
         int len = text.length();
         Object obj = getLast(text);
         int where = text.getSpanStart(obj);
@@ -197,10 +197,10 @@ public class TextViewUtils {
         return new BitmapDrawable(view.getResources(), viewBmp);
     }
 
-    static class CommentImageGetter implements Html.ImageGetter {
+    private static class CommentImageGetter implements Html.ImageGetter {
         private TextView textView;
 
-        public CommentImageGetter(TextView textView) {
+        CommentImageGetter(TextView textView) {
             this.textView = textView;
         }
 
@@ -214,13 +214,11 @@ public class TextViewUtils {
                     AcWenApplication.putBitmapInCache(source, bm);
                 }
                 Drawable drawable = new BitmapDrawable(textView.getResources(), bm);
-                if (drawable != null) {
-                    int w = textView.getResources().getDimensionPixelSize(
-                            R.dimen.emotions_column_width);
-                    //指定drawable的绘制时边缘
-                    drawable.setBounds(0, 0, w, drawable.getIntrinsicHeight() * w
-                            / drawable.getIntrinsicWidth());
-                }
+                int w = textView.getResources().getDimensionPixelSize(
+                        R.dimen.emotions_column_width);
+                //指定drawable的绘制时边缘
+                drawable.setBounds(0, 0, w, drawable.getIntrinsicHeight() * w
+                        / drawable.getIntrinsicWidth());
                 return drawable;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -230,7 +228,7 @@ public class TextViewUtils {
         }
     }
 
-    static class CommentTagHandler implements Html.TagHandler {
+    private static class CommentTagHandler implements Html.TagHandler {
         @Override
         public void handleTag(boolean opening, String tag, Editable output,
                               XMLReader xmlReader) {

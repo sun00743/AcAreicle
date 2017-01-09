@@ -212,6 +212,7 @@ public class NavigationHeaderLayout extends FrameLayout {
                         }
                         return;
                     }
+                    mSignin.setText(R.string.navigation_head_do_signin);
                     ApiRequest<SignInResult> signinRequest = ApiRequests.newSignInRequest();
                     if (signinRequest == null) {
                         Log.e("signinRequest ", "onErrorResponse: unLogin");
@@ -228,6 +229,7 @@ public class NavigationHeaderLayout extends FrameLayout {
                     }).setErrorListener(new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            mSignin.setText(R.string.navigation_head_signin);
                             Log.e("signinRequest ", "onErrorResponse: " + error.getMessage());
                         }
                     });
@@ -507,6 +509,8 @@ public class NavigationHeaderLayout extends FrameLayout {
         Acer getAcer();
 
         void onGetAcerInfoError();
+
+        void onGetBananaError();
     }
 
     public interface Listener {

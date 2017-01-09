@@ -23,6 +23,7 @@ import com.bumptech.glide.request.target.Target;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import mika.com.android.ac.R;
 import mika.com.android.ac.util.ImageUtils;
 import mika.com.android.ac.util.ViewUtils;
 import uk.co.senab.photoview.PhotoView;
@@ -50,10 +51,10 @@ public class GalleryAdapter extends PagerAdapter {
 
     @Override
     public View instantiateItem(ViewGroup container, int position) {
-        View layout = ViewUtils.inflate(mika.com.android.ac.R.layout.gallery_item, container);
-        PhotoView imageView = ButterKnife.findById(layout, mika.com.android.ac.R.id.image);
-        final TextView errorText = ButterKnife.findById(layout, mika.com.android.ac.R.id.error);
-        final ProgressBar progressBar = ButterKnife.findById(layout, mika.com.android.ac.R.id.progress);
+        View layout = ViewUtils.inflate(R.layout.gallery_item, container);
+        PhotoView imageView = ButterKnife.findById(layout, R.id.image);
+        final TextView errorText = ButterKnife.findById(layout, R.id.error);
+        final ProgressBar progressBar = ButterKnife.findById(layout, R.id.progress);
         imageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
@@ -70,11 +71,12 @@ public class GalleryAdapter extends PagerAdapter {
                                                boolean isFirstResource) {
                         (e != null ? e : new NullPointerException()).printStackTrace();
                         int errorRes = e != null && e.getCause() instanceof TimeoutError
-                                ? mika.com.android.ac.R.string.gallery_load_timeout : mika.com.android.ac.R.string.gallery_load_error;
+                                ? R.string.gallery_load_timeout : R.string.gallery_load_error;
                         errorText.setText(errorRes);
                         ViewUtils.crossfade(progressBar, errorText);
                         return false;
                     }
+
                     @Override
                     public boolean onResourceReady(GlideDrawable resource, String model,
                                                    Target<GlideDrawable> target,

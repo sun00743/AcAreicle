@@ -18,8 +18,7 @@
 	<TextView
 		android:layout_marginTop="-3dp"
 		android:layout_marginLeft="12dp"
-        android:textSize="12dp"
-        android:text="username"
+        android:textSize="12sp"
         android:paddingRight="4dp"
         android:id="@+id/quote_item_username"
 		android:textColor="@color/black_54"
@@ -31,14 +30,13 @@
 
 	<TextView
 		android:layout_marginRight="-38dp"
-		android:text="12"
 		android:gravity="center"
 		android:id="@+id/quote_item_floor"
 		android:paddingLeft="4dp"
 		android:layout_width="38dp"
 		android:layout_height="22dp"
 		android:textColor="@color/black_54"
-		android:textSize="12dp"
+		android:textSize="12sp"
 		android:layout_toLeftOf="@id/quote_item_avatar"/>
 
 	<TextView
@@ -46,13 +44,13 @@
 		android:layout_marginRight="16dp"
         android:textSize="14sp"
 		android:lineSpacingExtra="@dimen/comment_lineSpacingExtra"
-        android:text="commentcommentcommentcommentcommentcommentcommentcommentcommentcommentcommentcomment"
-        android:layout_marginTop="2dp"
+		android:layout_marginTop="2dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 		android:focusable="false"
         android:textColor="@color/black_87"
 		android:layout_below="@id/quote_item_floor"
+		android:layout_toRightOf="@id/quote_item_avatar"
 		android:layout_toEndOf="@id/quote_item_avatar"
 		android:layout_alignLeft="@id/quote_item_username"
 		android:layout_alignStart="@id/quote_item_username" />

@@ -69,6 +69,11 @@ public class LoadMoreAdapter extends MergeAdapter {
         mViewAdapter.setNoMoreYet(noMoreYet);
     }
 
+    public void onLoadStarted() {
+        mViewAdapter.setTextString(null);
+        mViewAdapter.setProgressVisible(true);
+    }
+
     static class LoadMoreViewAdapter extends RecyclerView.Adapter<LoadMoreViewAdapter.ViewHolder> {
 
         private int mLoadMoreLayoutRes;

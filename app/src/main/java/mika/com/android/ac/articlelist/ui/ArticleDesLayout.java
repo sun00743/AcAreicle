@@ -15,7 +15,6 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -158,34 +157,6 @@ public class ArticleDesLayout extends LinearLayout {
 
         ViewUtils.inflateInto(R.layout.articlelist_layout, this);
         ButterKnife.bind(this);
-
-//        ViewCompat.setBackground(mImageListDescriptionLayout, DrawableUtils.makeScrimDrawable());
-//        mImageList.setHasFixedSize(true);
-//        mImageList.setLayoutManager(new LinearLayoutManager(getContext(),
-//                LinearLayoutManager.HORIZONTAL, false));
-//        mImageListAdapter = new HorizontalImageAdapter();
-//        mImageList.setAdapter(mImageListAdapter);
-//        mImageList.addOnScrollListener(new OnHorizontalScrollListener() {
-//
-//            private boolean mShowingDescription = true;
-//
-//            @Override
-//            public void onScrolledLeft() {
-//                if (!mShowingDescription) {
-//                    mShowingDescription = true;
-//                    ViewUtils.fadeIn(mImageListDescriptionLayout);
-//                }
-//            }
-//
-//            @Override
-//            public void onScrolledRight() {
-//                if (mShowingDescription) {
-//                    mShowingDescription = false;
-//                    ViewUtils.fadeOut(mImageListDescriptionLayout);
-//                }
-//            }
-//        });
-
         ViewUtils.setTextViewLinkClickable(mTextText);
 
         CheatSheetUtils.setup(mStarButton);
@@ -213,12 +184,10 @@ public class ArticleDesLayout extends LinearLayout {
      * 加载up头像
      */
     public void loadAvatarImage(final ArticleList articleList) {
-        Log.i("lllllllll", articleList.title);
         ImageUtils.loadAvatar(mAvatarImage, articleList.userAvatar);
     }
 
     public void cleanAvatarImage() {
-        Log.i("ccccccccc", mArticleTitleText.getText().toString());
         mAvatarImage.setImageResource(R.drawable.avatar_icon_grey600_40dp);
     }
 
@@ -295,6 +264,7 @@ public class ArticleDesLayout extends LinearLayout {
             mLikeButton.setActivated(broadcast.isLiked);
             mLikeButton.setEnabled(true);
         }*/
+        mStarButton.setText(String.valueOf(articleList.favoriteCount));
         mStarButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -303,17 +273,7 @@ public class ArticleDesLayout extends LinearLayout {
                 }
             }
         });
-        // todo 香蕉按钮
-        /*RebroadcastBroadcastManager rebroadcastBroadcastManager =
-                RebroadcastBroadcastManager.getInstance();
-        if (rebroadcastBroadcastManager.isWriting(broadcast.id)) {
-            mRebroadcastButton.setActivated(rebroadcastBroadcastManager.isWritingRebroadcast(
-                    broadcast.id));
-            mRebroadcastButton.setEnabled(false);
-        } else {
-            mRebroadcastButton.setActivated(broadcast.isRebroadcasted());
-            mRebroadcastButton.setEnabled(true);
-        }*/
+        // todo 香蕉按钮 或者 分享按钮吧
         mBananaButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

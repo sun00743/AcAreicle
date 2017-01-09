@@ -24,6 +24,7 @@ import mika.com.android.ac.util.TextViewUtils;
 
 /**
  * Created by mika on 2016/12/14.
+ *
  */
 
 public class QuoteRecyclerViewAdapter extends RecyclerView.Adapter<QuoteRecyclerViewAdapter.QuoteHolder> {

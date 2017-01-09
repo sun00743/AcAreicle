@@ -33,11 +33,12 @@ import mika.com.android.ac.AcWenApplication;
 
 public class
 FileUtil {
-    public static Uri getLocalFileUri(File file){
+    public static Uri getLocalFileUri(File file) {
         return Uri.fromFile(file);
     }
+
     public static long getFolderSize(File folder) {
-        if(folder == null) return 0;
+        if (folder == null) return 0;
         long size = 0;
         File[] files = folder.listFiles();
         for (int i = 0; i < files.length; i++) {
@@ -48,18 +49,19 @@ FileUtil {
         }
         return size;
     }
+
     /**
      * @see {@link FileUtil#getFolderSize(File)}
-     * @param folder
-     * @return
      */
-    public static String getFormatFolderSize(File folder){
+    public static String getFormatFolderSize(File folder) {
         return formatFileSize(getFolderSize(folder));
     }
-    
-    /*** 格式化文件大小(xxx.xx B/KB/MB/GB) */
+
+    /***
+     * 格式化文件大小(xxx.xx B/KB/MB/GB)
+     */
     public static String formatFileSize(long size) {
-        if(size <=0) return "0B";
+        if (size <= 0) return "0B";
         DecimalFormat df = new DecimalFormat("#.00");
         String fileSizeString = "";
         if (size < _1KB)
@@ -76,7 +78,7 @@ FileUtil {
 
     /**
      * 显示SD卡剩余空间
-     * 
+     *
      * @return SD卡不存在则返回null
      */
     public static String showFileAvailable() {
@@ -88,7 +90,7 @@ FileUtil {
 
     /**
      * 获得SD卡剩余空间
-     * 
+     *
      * @return SD卡未挂载则返回-1
      */
     @SuppressWarnings("deprecation")
@@ -102,10 +104,9 @@ FileUtil {
             return -1;
 
     }
+
     /**
-     *   "/" ~ "?"之间的".xxx"
-     * @param url
-     * @return
+     * "/" ~ "?"之间的".xxx"
      */
     public static String getUrlExt(String url) {
         if (!TextUtils.isEmpty(url)) {
@@ -121,27 +122,28 @@ FileUtil {
         }
         return ".jpg";
     }
-    
-    public static String guessVideoMimetype(String ext){
+
+    public static String guessVideoMimetype(String ext) {
         String mimetype = null;
-        if(".flv".equals(ext)){
+        if (".flv".equals(ext)) {
             mimetype = "video/x-flv";
-        }else if(".f4v".equals(ext)){
+        } else if (".f4v".equals(ext)) {
             mimetype = "video/x-f4v";
-        }else if(".mp4".equals(ext)){
+        } else if (".mp4".equals(ext)) {
             mimetype = "video/mp4";
-        }else mimetype = "video/*";
+        } else mimetype = "video/*";
 /*        else if(".hlv".equals(ext)){
             mimetype = "video/x-f4v"; // XXX: mimetype of hlv???
         }*/
         return mimetype;
     }
+
     public static final int _1KB = 1024;
     public static final int _1MB = _1KB * _1KB;
     public static final int _1GB = _1KB * _1MB;
+
     /**
      * @param type the http header, content-type
-     * @return
      */
     public static String getMimeType(String type) {
         if (type == null) {
@@ -156,9 +158,11 @@ FileUtil {
         }
         return type;
     }
-    public static String getHashName(String url){
+
+    public static String getHashName(String url) {
         return String.valueOf(url.hashCode()) + getUrlExt(url);
     }
+
     public static String getName(String url, boolean raw) {
         if (!TextUtils.isEmpty(url)) {
             if (raw) {
@@ -176,47 +180,46 @@ FileUtil {
                 }
             }
             return getHashName(url);
-            
+
         }
         return "cache";
     }
+
     public static void copyStream(InputStream in, OutputStream out) throws IOException {
-        byte[] buf = new byte[4*_1KB];
+        byte[] buf = new byte[4 * _1KB];
         int len = -1;
-        while((len = in.read(buf))!=-1){
-            out.write(buf,0,len);
+        while ((len = in.read(buf)) != -1) {
+            out.write(buf, 0, len);
         }
         buf = null;
     }
 
     /**
      * 简单的hash 散列存储
-     * @param type 文件根目录名
+     *
+     * @param type    文件根目录名
      * @param fileUri 文件 uri
      * @return 缓存文件
      */
-    public static File generateCacheFile(String type, String fileUri){
+    public static File generateCacheFile(String type, String fileUri) {
         int hashCode = fileUri.hashCode();
         String folderName = String.format("%x", hashCode & 0xf);
-        String fileName = String.format("%x", hashCode >>> 4)+getUrlExt(fileUri);
-        File cache =new File(AcWenApplication.getExternalCacheFiledir(type+"/"+folderName),fileName);
-        return cache;
-        
+        String fileName = String.format("%x", hashCode >>> 4) + getUrlExt(fileUri);
+        return new File(AcWenApplication.getExternalCacheFiledir(type + "/" + folderName), fileName);
     }
+
     /**
      * 图片缓存路径
-     * @param imgUri
-     * @return
      */
-    public static File generateImageCacheFile(String imgUri){
-        return generateCacheFile(AcWenApplication.IMAGE,imgUri);
+    public static File generateImageCacheFile(String imgUri) {
+        return generateCacheFile(AcWenApplication.IMAGE, imgUri);
     }
-    
-    public static boolean deleteFiles(File file){
-        if(file == null) return false;
-        if(file.isFile()) return file.delete();
-        else{
-            String[] progArray = new String[]{"rm","-r",file.getAbsolutePath()};
+
+    public static boolean deleteFiles(File file) {
+        if (file == null) return false;
+        if (file.isFile()) return file.delete();
+        else {
+            String[] progArray = new String[]{"rm", "-r", file.getAbsolutePath()};
             try {
                 Runtime.getRuntime().exec(progArray);
                 return true;
@@ -226,18 +229,18 @@ FileUtil {
             return false;
         }
     }
-    
-    public static final int MSG_DELETE_OK  = 200;
-    
-    public static final int MSG_DELETE_FAILED  = 300;
-    
+
+    public static final int MSG_DELETE_OK = 200;
+
+    public static final int MSG_DELETE_FAILED = 300;
+
     public static void deleteFilesAsync(final File file, final Handler handler) {
         new Thread() {
             public void run() {
-                
+
                 boolean ok = deleteFiles(file);
-                if(handler != null){
-                    if(ok)
+                if (handler != null) {
+                    if (ok)
                         handler.sendEmptyMessage(MSG_DELETE_OK);
                     else
                         handler.sendEmptyMessage(MSG_DELETE_FAILED);
@@ -245,21 +248,20 @@ FileUtil {
             }
         }.start();
     }
+
     /**
-     * 
      * @param source folder
-     * @param dest folder
-     * @return
+     * @param dest   folder
      */
     public static boolean move(String source, String dest) {
         File sourceFile = new File(source);
         List<String> sourceArray = new ArrayList<String>();
         sourceArray.add(0, "mv");
-        if(sourceFile.isDirectory()){
-            for(File file : sourceFile.listFiles()){
+        if (sourceFile.isDirectory()) {
+            for (File file : sourceFile.listFiles()) {
                 sourceArray.add(file.getAbsolutePath());
             }
-        }else{
+        } else {
             sourceArray.add(source);
         }
         new File(dest).mkdirs();
@@ -273,26 +275,21 @@ FileUtil {
         }
         return false;
     }
-    
-    public static boolean validate(String file){
+
+    public static boolean validate(String file) {
         File f = new File(file);
-        if(f.exists() && f.canWrite()) return f.isDirectory(); 
+        if (f.exists() && f.canWrite()) return f.isDirectory();
         return f.mkdirs();
     }
-    /**
-     * 
-     * @param sourceFile
-     * @param destDir
-     * @return
-     */
-    public static File copy(File sourceFile, String destDir){
-        if(!sourceFile.exists()) return null;
-            
+
+    public static File copy(File sourceFile, String destDir) {
+        if (!sourceFile.exists()) return null;
+
         InputStream in = null;
         OutputStream out = null;
         File saveFolder = new File(destDir);
-        if(!saveFolder.isDirectory()){
-            if(saveFolder.isFile()) saveFolder.delete();
+        if (!saveFolder.isDirectory()) {
+            if (saveFolder.isFile()) saveFolder.delete();
             saveFolder.mkdirs();
         }
         try {
@@ -307,18 +304,18 @@ FileUtil {
             IOUtils.close(in);
             IOUtils.close(out);
         }
-            
+
         return null;
     }
-    
-    public static boolean save(byte[] bytes, String savePath){
+
+    public static boolean save(byte[] bytes, String savePath) {
         FileOutputStream out = null;
         try {
             File saveFile = new File(savePath);
-            if(saveFile.isDirectory()){
+            if (saveFile.isDirectory()) {
                 saveFile = new File(savePath, String.valueOf(System.currentTimeMillis()));
             }
-            if(!saveFile.exists()){
+            if (!saveFile.exists()) {
                 saveFile.getParentFile().mkdirs();
             }
             out = new FileOutputStream(saveFile);
@@ -329,6 +326,6 @@ FileUtil {
         } finally {
             IOUtils.close(out);
         }
-        
+
     }
 }

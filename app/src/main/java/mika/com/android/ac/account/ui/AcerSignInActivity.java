@@ -97,6 +97,8 @@ public class AcerSignInActivity extends AppCompatActivity {
             mUsernameLayout.setError(getString(R.string.auth_error_empty_username));
             errorView = mUsernameEdit;
             cancel = true;
+        } else {
+            mUsernameLayout.setError(null);
         }
         if (TextUtils.isEmpty(mPassword)) {
             mPasswordLayout.setError(getString(R.string.auth_error_empty_password));
@@ -104,6 +106,8 @@ public class AcerSignInActivity extends AppCompatActivity {
                 errorView = mPasswordEdit;
             }
             cancel = true;
+        } else {
+            mPasswordLayout.setError(null);
         }
 
         if (cancel) {

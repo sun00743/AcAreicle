@@ -247,6 +247,7 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
 
     @Override
     public void onLoadArticleListStarted(int requestCode) {
+        mLoadMoreAdapter.setItemText(null);
         upDateRefreshing();
     }
 
@@ -262,6 +263,7 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
         LogUtils.e(error.toString());
         Activity activity = getActivity();
         ToastUtil.show(ApiError.getErrorString(error, activity), activity);
+        mLoadMoreAdapter.setItemText(getString(R.string.load_more_failed));
     }
 
     @Override

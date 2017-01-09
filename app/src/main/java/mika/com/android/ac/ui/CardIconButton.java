@@ -27,9 +27,9 @@ import mika.com.android.ac.util.ViewUtils;
 
 public class CardIconButton extends LinearLayout {
 
-    @BindView(mika.com.android.ac.R.id.cardiconbutton_image)
+    @BindView(R.id.cardiconbutton_image)
     ImageView mImage;
-    @BindView(mika.com.android.ac.R.id.cardiconbutton_text)
+    @BindView(R.id.cardiconbutton_text)
     TextView mText;
 
     public CardIconButton(Context context) {

@@ -21,7 +21,7 @@ import mika.com.android.ac.network.Request;
 import mika.com.android.ac.util.Connectivity;
 
 /**
- * Created by Administrator on 2016/9/25.
+ * Created by Administrator on 2016/9/25
  */
 
 public class LoginRequest extends Request {

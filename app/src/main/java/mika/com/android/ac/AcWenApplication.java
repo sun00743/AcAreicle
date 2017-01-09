@@ -39,13 +39,13 @@ public class AcWenApplication extends Application {
         sInstance = this;
     }
 
-    private static String externalCacheDir;
+//    private static String externalCacheDir;
 
     public static final String IMAGE = "Images";
     /**
      * 设备udid
      */
-    public static String UDID = "";
+//    public static String UDID = "";
     //    public static String ANDROID_ID = "";
     public static final int ITEM_HEAD = 0x124;
     public static final int ITEM_ARTICLE = 0x123;
@@ -55,10 +55,8 @@ public class AcWenApplication extends Application {
     public static final int REQUEST_CODE_SIGN_IN = 7;
     public static final int REQUEST_CODE_QUOTE = 8;
     private static BitmapCache mBitmapCache;
-    private boolean firstLoad = true;
 
     private Acer acer;
-
     public int CONNECTIVITY_TYPE;
 
     public static AcWenApplication getInstance() {
@@ -83,7 +81,7 @@ public class AcWenApplication extends Application {
         androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
         UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
         String uuid2 = UUID.randomUUID().toString();
-        UDID = deviceUuid.toString();
+//        UDID = deviceUuid.toString();
 
 //        ANDROID_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
     }
@@ -106,6 +104,7 @@ public class AcWenApplication extends Application {
      */
     public static File getExternalCacheFiledir(String dir) {
         File cacheFile = new File(sInstance.getExternalCacheDir(), dir);
+        //noinspection ResultOfMethodCallIgnored
         cacheFile.mkdirs();
         return cacheFile;
     }
@@ -162,14 +161,6 @@ public class AcWenApplication extends Application {
         return false;
     }
 
-    public boolean isFirstLoad() {
-        return firstLoad;
-    }
-
-    public void setFirstLoad(boolean firstLoad) {
-        this.firstLoad = firstLoad;
-    }
-
     /**
      * 夜间模式
      *
@@ -183,19 +174,25 @@ public class AcWenApplication extends Application {
     private static Document sDoc, sDocNight;
 
     public static Document getThemedDoc() throws IOException {
-        if (isNightMode()) {
-            if (sDocNight == null) {
-                InputStream in = getInstance().getAssets().open("article_night.html");
-                sDocNight = Jsoup.parse(in, "utf-8", "");
-            }
-            return sDocNight;
-        } else {
-            if (sDoc == null) {
-                InputStream in = getInstance().getAssets().open("article.html");
-                sDoc = Jsoup.parse(in, "utf-8", "");
-            }
-            return sDoc;
+        if (sDoc == null) {
+            InputStream in = getInstance().getAssets().open("article.html");
+            sDoc = Jsoup.parse(in, "utf-8", "");
         }
+        return sDoc;
+
+//        if (isNightMode()) {
+//            if (sDocNight == null) {
+//                InputStream in = getInstance().getAssets().open("article_night.html");
+//                sDocNight = Jsoup.parse(in, "utf-8", "");
+//            }
+//            return sDocNight;
+//        } else {
+//            if (sDoc == null) {
+//                InputStream in = getInstance().getAssets().open("article.html");
+//                sDoc = Jsoup.parse(in, "utf-8", "");
+//            }
+//            return sDoc;
+//        }
     }
 
 }

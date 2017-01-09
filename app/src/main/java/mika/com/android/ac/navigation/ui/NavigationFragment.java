@@ -265,6 +265,14 @@ public class NavigationFragment extends Fragment implements
     }
 
     /**
+     * get banana information error
+     */
+    @Override
+    public void onGetBananaError() {
+
+    }
+
+    /**
      * 打开Acer信息界面，或者登陆
      */
     @Override

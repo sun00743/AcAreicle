@@ -138,7 +138,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
 
         createUI();
-        contentId = getIntent().getExtras().getInt("aid", 0);
         mCommentListResource = CommentListResource.attachTo(null, contentId, this);
     }
 
@@ -151,6 +150,14 @@ public class ArticleActivity2 extends AppCompatActivity implements
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mainLayout = (DetectsSoftKeyBoardFrameLayout) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
         mainLayout.setSoftKeyBoardListener(this);
+        // intent from comment
+        if(Intent.ACTION_VIEW.equalsIgnoreCase(getIntent().getAction()) && getIntent().getData() != null
+                && getIntent().getData().getScheme().equals("a_ac")){
+            contentId = Integer.parseInt(getIntent().getDataString().substring(9));
+        }else {
+            contentId = getIntent().getExtras().getInt("aid", 0);
+        }
+
         setTitle(getIntent().getExtras().getString("title", "ac/" + contentId));
         //title style
         mToolbar.setTitleTextAppearance(this, R.style.Base_TextAppearance_AppCompat_ActivityTitle);
@@ -158,7 +165,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 finish();
-//                ActivityCompat.finishAfterTransition(ArticleActivity2.this);
             }
         });
 
@@ -226,7 +232,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
         mRecycleView.setHasFixedSize(true);
         mRecycleView.setItemAnimator(new NoChangeAnimationItemAnimator());
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mArtComplexAdapter = new ArtComplexAdapter(initList(), this, getIntent().getExtras());
+        mArtComplexAdapter = new ArtComplexAdapter(initList(), this, getIntent().getExtras(), contentId);
         mArtComplexAdapter.setEventListener(this);
         mLoadMoreAdapter = new LoadMoreAdapter(R.layout.load_more_card_item, mArtComplexAdapter);
         mLoadMoreAdapter.setItemVisible(false);
@@ -564,7 +570,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     @Override
     public void onLoadCommentListStarted(int requestCode) {
-        mLoadMoreAdapter.setProgressVisible(true);
+        mLoadMoreAdapter.onLoadStarted();
     }
 
     @Override
@@ -580,7 +586,7 @@ public class ArticleActivity2 extends AppCompatActivity implements
 
     @Override
     public void onLoadCommentListError(int requestCode, VolleyError error) {
-
+        mLoadMoreAdapter.setItemText(getString(R.string.load_more_failed));
     }
 
     @Override

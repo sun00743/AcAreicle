@@ -85,13 +85,6 @@ public class HomeFragment extends Fragment implements AppBarManager {
         mTabAdapter.addTab(HomeArticleListFragment.newInstance(ListSort.Channels.FICTION, ListSort.Sort.NEWS), getString(R.string.home_cartoon));
         mTabAdapter.addTab(HomeArticleListFragment.newInstance(ListSort.Channels.GAME, ListSort.Sort.NEWS), getString(R.string.home_game));
 
-//        mTabAdapter.addTab(new TabFragmentPagerAdapter.FragmentCreator() {
-//            @Override
-//            public Fragment createFragment() {
-//                return HomeBroadcastListFragment.newInstance();
-//            }
-//        }, getString(R.string.home_broadcast));
-
         mViewPager.setOffscreenPageLimit(mTabAdapter.getCount() - 1);
         mViewPager.setAdapter(mTabAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

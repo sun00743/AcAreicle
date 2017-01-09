@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,6 +73,14 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
     ProgressBar mExpProgress;
     @BindView(R.id.profile_exp_description)
     TextView mExpDescription;
+    @BindView(R.id.profile_posts)
+    TextView mPosts;
+    @BindView(R.id.profile_views)
+    TextView mViews;
+    @BindView(R.id.profile_stars)
+    TextView mStars;
+    @BindView(R.id.profile_comments)
+    TextView mComment;
 
     private Acer mAcer;
     private AcerInfo2 mAcerInfo;
@@ -154,9 +163,15 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
     private void initContent() {
         mUid.setText(String.valueOf(mAcerInfo.uid));
         mRegDate.setText(mAcerInfo.regTime);
-        mExpDescription.setText("Lv:" + mAcerInfo.level + " - Exp:" + mAcerInfo.currExp + "/" + mAcerInfo.nextLevelNeed
-                + " - Per:" + mAcerInfo.expPercent);
+//        mExpDescription.setText("Lv:" + mAcerInfo.level + " - Exp:" + mAcerInfo.currExp + "/" + mAcerInfo.nextLevelNeed
+//                + " - Per:" + mAcerInfo.expPercent);
+        mExpDescription.setText(String.format(Locale.getDefault(), getString(R.string.profile_content_exp),
+                mAcerInfo.currExp, mAcerInfo.nextLevelNeed, mAcerInfo.expPercent));
         mExpProgress.setProgress(mAcerInfo.expPercent);
+        mPosts.setText(String.format(Locale.getDefault(), getString(R.string.profile_posts_info), mAcerInfo.posts));
+        mViews.setText(String.format(Locale.getDefault(), getString(R.string.profile_views_info), mAcerInfo.views));
+        mStars.setText(String.format(Locale.getDefault(), getString(R.string.profile_stars_info), mAcerInfo.stows));
+        mComment.setText(String.format(Locale.getDefault(), getString(R.string.profile_comments_info), mAcerInfo.comments));
     }
 
     @Override

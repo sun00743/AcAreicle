@@ -50,17 +50,18 @@
     <TextView
         android:layout_marginTop="-2dp"
         android:gravity="top"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:id="@+id/comment_username"
         android:textColor="@color/black_54"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/comment_avatar"
+        android:layout_toRightOf="@id/comment_avatar"
         android:layout_toEndOf="@id/comment_avatar"/>
 
     <TextView
         android:layout_marginTop="8dp"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:id="@+id/comment_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -98,14 +98,24 @@
         </activity>
         <activity
             android:name=".settings.ui.AboutActivity"
+            android:launchMode="singleTop"
             android:label="@string/about_title"
             android:theme="@style/Theme.AcWen.PrimaryColorBackground" />
         <activity
             android:name=".article.ui.ArticleActivity2"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="a_ac" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".account.ui.AcerLoginActivity"
+            android:launchMode="singleTop"
             android:label="@string/title_activity_acer_login" />
         <activity android:name=".account.ui.AcerSignInActivity" />
         <activity android:name=".quote.ui.QuoteActivity" />

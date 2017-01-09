@@ -32,9 +32,13 @@
     <string name="profile_uid">uid</string>
     <string name="profile_registration_time">注册时间</string>
     <string name="profile_posts">用户发布成功的投稿总和。</string>
+    <string name="profile_posts_info">我的投稿总数 %1$d Posts。</string>
     <string name="profile_views">当前所有有效投稿的浏览数总和。</string>
+    <string name="profile_views_info">投稿总浏览数 %1$d Views。</string>
     <string name="profile_stars">当前所有有效投稿的收藏数总和。</string>
+    <string name="profile_stars_info">投稿总收藏数 %1$d Favors。</string>
     <string name="profile_comments">当前所有有效投稿的评论数总和。</string>
+    <string name="profile_comments_info">投稿总评论数 %1$d Comms。</string>
 
     <string name="minute_ago">分钟前</string>
     <string name="hour_ago">小时前</string>
@@ -44,9 +48,10 @@
     <string name="article_views">围观</string>
 
     <string name="nothing">这里空无一物</string>
-    <string name="navigation_head_getbananafailed">请重试或重新登录</string>
+    <string name="navigation_head_getbananafailed">香蕉都被猴子吃了</string>
     <string name="navigation_head_reLogin">出了点意外，重新登陆试试看吧</string>
     <string name="navigation_head_has_signin">已签到</string>
+    <string name="navigation_head_do_signin">签到中...</string>
     <string name="navigation_head_signin">签到</string>
     <string name="navigation_head_unLogin">未登录</string>
     <string name="navigation_head_banana">个香蕉，</string>
@@ -58,7 +63,7 @@
     <string name="load_more_no_more">没有了 ╮(╯▽╰)╭ </string>
     <string name="load_more_no_comment">沙发可能还在 (　^ω^)</string>
     <string name="load_more_nothing">不毛之地，连根毛都没有</string>
-    <string name="load_more_failed">加载失败</string>
+    <string name="load_more_failed">加载失败，再次滑动重试~w</string>
     <string name="post_comment_success">评论成功! (＾o＾)ﾉ</string>
     <string name="post_comment_may_failed">(|||ﾟдﾟ)刷新看看吧</string>
     <string name="post_comment_failed">评论失败，重新试试吧</string>
@@ -81,6 +86,8 @@
     <string name="article_subtitle_refresh">刷新评论</string>
     <string name="article_comment_unquote">取消引用</string>
 
+    <string name="profile_content_exp">Exp:%1$d/%2$d - Per:%3$d</string>
+    <string name="profile_head_count">共有%1$d次召唤、%2$d条私信、%3$d个新听众</string>
 <!-- ——————————————————————————————————————————————————————————————————————————　 -->
     <string name="activity_not_found">未找到可处理此操作的应用</string>
     <string name="copied_to_clipboard_format">已复制到剪贴板：\n%1$s</string>

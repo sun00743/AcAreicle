@@ -15,6 +15,7 @@ import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import android.widget.FrameLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.BuildConfig;
 import mika.com.android.ac.R;
 import mika.com.android.ac.articlelist.content.ListSort;
 import mika.com.android.ac.home.HomeFragment;
@@ -37,7 +39,6 @@ import mika.com.android.ac.notification.service.AlarmPoll;
 import mika.com.android.ac.notification.service.PollingService;
 import mika.com.android.ac.notification.ui.NotificationListFragment;
 import mika.com.android.ac.quote.ui.QuoteFragment;
-import mika.com.android.ac.scalpel.ScalpelHelperFragment;
 import mika.com.android.ac.ui.ActionItemBadge;
 import mika.com.android.ac.ui.DrawerManager;
 import mika.com.android.ac.util.FragmentUtils;
@@ -52,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @BindView(R.id.drawer)
     DrawerLayout mDrawerLayout;
-    @BindView(R.id.notification_list_drawer)
-    View mNotificationDrawer;
     @BindView(R.id.container)
     FrameLayout mContainerLayout;
 
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements
     //    private NotificationListFragment mNotificationListFragment;
     private boolean isRemoveAcerinfo;
     private HomeFragment homeFragment;
-    private QuoteFragment quoteFragment;
     private NetWorkStateReceiver netWorkStateReceiver;
 
     public ServiceConnection pushServiceConn;
@@ -71,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-/*
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectAll()
@@ -82,28 +79,22 @@ public class MainActivity extends AppCompatActivity implements
                     .penaltyLog()
                     .build());
         }
-*/
         TransitionUtils.setupTransitionBeforeDecorate(this);
 
         super.onCreate(savedInstanceState);
 
-//        if (!AccountUtils.ensureAccountAvailability(this)) {
-//            return;
-//        }
-
         setContentView(R.layout.main_activity);
-        doRegisterReceiver(); // 注册广播
+        // 注册监听联网状态广播
+        doRegisterReceiver();
         TransitionUtils.setupTransitionAfterSetContentView(this);
         ButterKnife.bind(this);
 
         bindPush();
-        ScalpelHelperFragment.attachTo(this);
+        //noinspection deprecation
+//        ScalpelHelperFragment.attachTo(this);
 
         mNavigationFragment = FragmentUtils.findById(this, R.id.navigation_fragment);
-//        mNotificationListFragment = FragmentUtils.findById(this, R.id.notification_list_fragment);
-//        mNotificationListFragment.setUnreadNotificationCountListener(this);
         homeFragment = HomeFragment.newInstance();
-        quoteFragment = new QuoteFragment();
         if (savedInstanceState == null) {
             FragmentUtils.add(homeFragment, this, R.id.container);
         }
@@ -148,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements
                 mDrawerLayout.openDrawer(mNavigationFragment.getView());
                 return true;
             case R.id.action_notification:
-                mDrawerLayout.openDrawer(mNotificationDrawer);
 //                startActivity();
                 return true;
             case R.id.action_top:
@@ -190,10 +180,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
+        if (mNavigationFragment.getView() == null) return;
         if (mDrawerLayout.isDrawerOpen(mNavigationFragment.getView())) {
             mDrawerLayout.closeDrawer(mNavigationFragment.getView());
-        } else if (mDrawerLayout.isDrawerOpen(mNotificationDrawer)) {
-            mDrawerLayout.closeDrawer(mNotificationDrawer);
         } else {
             super.onBackPressed();
         }
@@ -222,10 +211,6 @@ public class MainActivity extends AppCompatActivity implements
         if (mNotificationMenu != null) {
             ActionItemBadge.update(mNotificationMenu, mUnreadNotificationCount);
         }
-    }
-
-    private void onShowSettings() {
-
     }
 
     public void refreshNotificationList() {

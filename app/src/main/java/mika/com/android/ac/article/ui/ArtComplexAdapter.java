@@ -103,10 +103,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private Article mArticle;
     private Document mDoc;
     private List<String> imgUrls;
-    //    private DownloadImageTask mDownloadTask;
-    //    private String title;
     private boolean isDownloaded;
-//    private boolean isWebMode;
     private int aid;
     private Bundle mBundle;
     private List<Integer> mCommentIdList;
@@ -165,11 +162,10 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         isAutoLoad = autoLoad;
     }
 
-    public ArtComplexAdapter(List<Integer> list, ArticleActivity2 activity, Bundle bundle) {
+    public ArtComplexAdapter(List<Integer> list, ArticleActivity2 activity, Bundle bundle, int aid) {
         super(null);
-        this.aid = bundle.getInt("aid");
+        this.aid = aid;
         this.activity = activity;
-//        this.title = bundle.getString("title");
         mBundle = bundle;
         mCommentList = new SparseArray<>();
         mCommentIdList = list;
@@ -234,7 +230,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             case VIEW_TYPE_HEAD:
                 if (isHeadFirstLoad) {
                     isHeadFirstLoad = false;
-//                    mEventListener.setHeadView(mHeadHolder.headContent);
                     if (mBundle != null && mBundle.getString("username") != null) {
                         ImageUtils.loadAvatar(((HeadHolder) holder).avatar, mBundle.getString("avatar"));
                         ((HeadHolder) holder).username.setText(mBundle.getString("username"));
@@ -251,7 +246,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 mCurrentHolder = (ArticleHolder) holder;
                 if (isContentFirstLoad) {
                     isContentFirstLoad = false;
-//                    ((ArticleHolder) holder).setSupportProgressBarIndeterminateVisibility(true);
                     initView();
                     requestData();
                 }
@@ -286,7 +280,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                         mEventListener.insertComment(comment);
                     }
                 });
-//                cHolder.more.setOnClickListener();
 
                 int quoteId = comment.quoteId;
                 cHolder.hasQuote = quoteId > 0;
@@ -394,15 +387,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             //是否被引用过了
             if (quote.isQuoted) {
                 // position < floor, position在上
-
                 // 引用floor比position小, 说明引用floor在当前floor之上
-//                if(quote.quotedFloor < position){
-//                    //显示已被引用
-//                    cHolder.reQuote.setVisibility(View.VISIBLE);
-//                }else {
-//                    quote.quotedFloor = position;
-//                    quoteViewList.add(generateQuotesView(quote));
-//                }
 
                 //是否在同一层楼
                 if (quote.quotedFloor == position) {
@@ -506,7 +491,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 if ((url.equals(Constants.HOME) || url.contains(NAME_ARTICLE_HTML))
                         && imgUrls.size() > 0
                         && !isDownloaded
-                        && AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI) {
+                        && (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI || !Settings.NO_PICTURE.getValue(activity))) {
 //                    String[] arr = new String[imgUrls.size()];
 //                    mDownloadTask = new DownloadImageTask();
 //                    mDownloadTask.execute(imgUrls.toArray(arr));
@@ -590,10 +575,10 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         mEventListener = listener;
     }
 
-    public SubTitleHolder getmSubTitleHolder(){
-        if(mSubTitleHolder == null){
+    public SubTitleHolder getmSubTitleHolder() {
+        if (mSubTitleHolder == null) {
             return null;
-        }else {
+        } else {
             return mSubTitleHolder;
         }
     }
@@ -603,9 +588,12 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
      */
     private void loadImagesExcuse() {
         mLoadImgThread.execute(new Runnable() {
+            @SuppressWarnings("ResultOfMethodCallIgnored")
             @Override
             public void run() {
                 File cache = imageCaches.get(imageIndex);
+
+                // load cache
                 if (cache.exists() && cache.canRead()) {
                     Bundle bundle = new Bundle();
                     bundle.putInt("imgNum", imageIndex);
@@ -616,6 +604,13 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 } else {
                     cache.getParentFile().mkdirs();
                 }
+
+
+                // don't load cache
+//                if (!cache.exists() || !cache.canRead()) {
+//                    cache.getParentFile().mkdirs();
+//                }
+
                 File temp = new File(cache.getAbsolutePath() + ".tmp");
 
                 InputStream in = null;
@@ -634,7 +629,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                         if (responseCode == 200 || responseCode == 206) {
                             in = connection.getInputStream();
                             FileUtil.copyStream(in, out);
-                            cache.delete();
+                            if (!cache.delete()) {
+                                Log.w(TAG, "cache delete failed" );
+                            }
                             if (!temp.renameTo(cache)) {
                                 Log.w(TAG, "rename failed" + temp.getName());
                             }
@@ -864,6 +861,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     writer.write(mDoc.outerHtml());
                     content.empty(); // release
                 } catch (IOException e) {
+                    //noinspection ResultOfMethodCallIgnored   忽略注释
                     cacheFile.delete();
                 } finally {
                     IOUtils.close(writer);
@@ -889,12 +887,13 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
         private void handleSubContent(int p, Element content, Article.SubContent sub, Article article) {
             if (!article.title.equals(sub.subTitle)) {
-                content.append("<h2 class=\"article-subtitle\"><a class=\"anchor\" name=\"p" + p + "\"></a>Part " + (p + 1) + ". " + sub.subTitle + "</h2>");
+                content.append("<h2 class=\"article-subtitle\"><a class=\"anchor\" name=\"p"
+                        + p + "\"></a>Part " + (p + 1) + ". " + sub.subTitle + "</h2>");
             }
-            String data = sub.content.replaceAll("background-color:[^;\"]+;?", "").replaceAll("font-family:[^;\"]+;?", "");
+            String data = sub.content.replaceAll("background-color:[^;\"]+;?", "")
+                    .replaceAll("font-family:[^;\"]+;?", "");
 
             content.append(data);
-//                    .appendElement("hr");
             handleImages(content);
             handleStyles(content);
         }
@@ -905,7 +904,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             for (int i = 0; i < es.size(); i++) {
                 Element e = es.get(i);
 
-                ///这个地方
+                //这个地方
 //                if("span".equals(e.nodeName())){
 //                    continue;
 //                }
@@ -928,7 +927,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     continue;
                 if (parsedUri.getPath() == null) // wtf!
                     continue;
-                if (!"http".equals(parsedUri.getScheme())) {
+                if (!"http".equals(parsedUri.getScheme()) && !"https".equals(parsedUri.getScheme()) ) {
                     parsedUri = parsedUri.buildUpon()
                             .scheme("http")
                             .authority("www.acfun.tv")
@@ -944,12 +943,10 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 String localUri = FileUtil.getLocalFileUri(cache).toString();
 
                 if (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI || !Settings.NO_PICTURE.getValue(activity))
-                    img.attr("src", "file:///android_asset/loading.gif");
+                    img.attr("src", "file:///android_asset/img_loading.gif");
                 else {
 //                     no image mode , click to load and display image
-//                    img.after("<p >[图片]</p>");
-//                    img.remove();
-                    img.attr("src", "file:///android_asset/emotion/td/08.gif");
+                    img.attr("src", "file:///android_asset/img_load.png");
                     img.attr("loc", localUri);
                     img.removeAttr("style");
                     showImgClick(img, src, imgIndex);
@@ -1009,10 +1006,10 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 return;
             // 过滤掉图片的url跳转
             if (img.parent() != null && img.parent().tagName().equalsIgnoreCase("a")) {
-//                img.parent().attr("href", "javascript:window.AC.showImage('" + src + "');");
+                img.parent().attr("src", "file:///android_asset/img_loading.gif");
                 img.parent().attr("onclick", "javascript:window.AC.showImage('" + src + " ',' " + index + "');");
             } else {
-//                img.attr("onclick", "javascript:window.AC.showImage('" + src + "');");
+                img.attr("src", "file:///android_asset/img_loading.gif");
                 img.attr("onclick", "javascript:window.AC.showImage('" + src + " ',' " + index + "');");
             }
 
@@ -1022,7 +1019,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         protected void onPostExecute(Boolean result) {
             isDocBuilding.set(false);
             if (activity.isFinishing()) return;
-//            mCurrentHolder.setSupportProgressBarIndeterminateVisibility(false);
             if (result) {
                 if (cacheFile.exists()) {
                     mCurrentHolder.mWeb.loadUrl(Uri.fromFile(cacheFile).toString());
@@ -1067,6 +1063,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 publishProgress(index);
                 return null;
             } else {
+                //noinspection ResultOfMethodCallIgnored
                 cache.getParentFile().mkdirs();
             }
             File temp = new File(cache.getAbsolutePath() + ".tmp");
@@ -1091,6 +1088,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                         if (responseCode == 200 || responseCode == 206) {
                             in = connection.getInputStream();
                             FileUtil.copyStream(in, out); // write
+                            //noinspection ResultOfMethodCallIgnored
                             cache.delete();
                             if (!temp.renameTo(cache)) {
                                 Log.w(TAG, "重命名失败" + temp.getName());
@@ -1151,6 +1149,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     }
 
+    @SuppressWarnings("unused")
     private class ACJSObject {
 
         /**
@@ -1172,119 +1171,5 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             new LoadImageTask().execute(url, String.valueOf(index));
         }
     }
-
-/*
-    */
-/**
- * 异步下载图片到缓存目录
- *//*
-
-    private class DownloadImageTask extends AsyncTask<String, Integer, Void> {
-
-        int timeoutMs = 3000;
-        int tryTimes = 3;
-
-        @Override
-        protected Void doInBackground(String... params) {
-            for (int index = 0; index < params.length; index++) {
-                String url = params[index];
-                if (isCancelled()) {
-                    // cancel task on activity destory
-//                    Log.w(TAG, String.format("break download task,[%d/%d]", index+1, params.length));
-                    break;
-                }
-                File cache = imageCaches.get(imgUrls.indexOf(url));
-                if (cache.exists() && cache.canRead()) {
-//                    Log.i(TAG, String.format("already downloaded.[%d/%d]",index+1, params.length));
-                    publishProgress(index);
-                    continue;
-                } else {
-                    cache.getParentFile().mkdirs();
-                }
-                File temp = new File(cache.getAbsolutePath() + ".tmp");
-
-                InputStream in = null;
-                OutputStream out = null;
-
-                try {
-                    URL parsedUrl = new URL(url);
-                    retry:
-                    for (int i = 0; i < tryTimes && !isCancelled(); i++) {
-
-                        HttpURLConnection connection = Connectivity.openDefaultConnection(parsedUrl,
-                                timeoutMs * (1 + i / 2), (timeoutMs * (2 + i)));
-                        if (temp.exists()) {
-                            connection.addRequestProperty("Range", "bytes=" + temp.length() + "-");
-                            out = new FileOutputStream(temp, true);
-                        } else
-                            out = new FileOutputStream(temp);
-                        try {
-                            int responseCode = connection.getResponseCode();
-                            if (responseCode == 200 || responseCode == 206) {
-                                in = connection.getInputStream();
-                                FileUtil.copyStream(in, out);
-                                cache.delete();
-                                if (!temp.renameTo(cache)) {
-                                    Log.w(TAG, "rename failed" + temp.getName());
-                                }
-                                publishProgress(index);
-                                break retry;
-                            }
-                        } catch (SocketTimeoutException e) {
-                            Log.w(TAG, "retry", e);
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (in != null)
-                            in.close();
-                    } catch (IOException ignored) {
-                    }
-                    try {
-                        if (out != null)
-                            out.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            if (imgUrls != null) {
-                String url = imgUrls.get(values[0]);
-                if (url == null)
-                    return;
-                int v = values[0] + 1;
-                mCurrentHolder.evaluateJavascript("javascript:(function(){" +
-                                "var images = document.getElementsByTagName(\"img\");" +
-                                "var img = images[" + v + "];" +
-                                "img.src = img.getAttribute(\"loc\");" +
-                                "})()",
-                        null);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            // 确保所有图片都顺利的显示出来
-            isDownloaded = true;
-            mCurrentHolder.evaluateJavascript("javascript:(function(){"
-                            + "var images = document.getElementsByTagName(\"img\"); "
-                            + "for(var i=0;i<images.length;i++){"
-                            + "var imgSrc = images[i].getAttribute(\"loc\"); "
-                            + "if(imgSrc != null)"
-                            + "images[i].setAttribute(\"src\",imgSrc);"
-                            + "}"
-                            + "})()",
-                    null);
-        }
-
-    }
-*/
 
 }

@@ -23,6 +23,7 @@
         android:layout_gravity="start"
         tools:layout="@layout/navigation_fragment" />
 
+<!--
     <mika.com.android.ac.ui.MaxDimensionDispatchInsetsFrameLayout
         android:id="@+id/notification_list_drawer"
         android:layout_width="wrap_content"
@@ -30,6 +31,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@color/window_background_light">
+-->
 
 <!--
        <fragment
@@ -39,5 +41,5 @@
             android:layout_height="match_parent"
             tools:layout="@layout/notification_list_fragment" />
 -->
-    </mika.com.android.ac.ui.MaxDimensionDispatchInsetsFrameLayout>
+<!--    </mika.com.android.ac.ui.MaxDimensionDispatchInsetsFrameLayout>-->
 </mika.com.android.ac.ui.DispatchInsetsDrawerLayout>

@@ -18,7 +18,7 @@ import mika.com.android.ac.network.api.info.acapi.QuoteResult;
 import mika.com.android.ac.util.Callback;
 
 /**
- * Created by mika on 2016/12/14.
+ * Created by mika on 2016/12/14
  */
 
 public class QuoteListResource {

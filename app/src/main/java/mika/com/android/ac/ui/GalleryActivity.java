@@ -23,8 +23,9 @@ import java.util.ArrayList;
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import mika.com.android.ac.network.api.info.apiv2.Image;
 import me.zhanghai.android.systemuihelper.SystemUiHelper;
+import mika.com.android.ac.R;
+import mika.com.android.ac.network.api.info.apiv2.Image;
 
 public class GalleryActivity extends AppCompatActivity {
 
@@ -36,9 +37,9 @@ public class GalleryActivity extends AppCompatActivity {
     @BindInt(android.R.integer.config_mediumAnimTime)
     int mToolbarHideDuration;
 
-    @BindView(mika.com.android.ac.R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(mika.com.android.ac.R.id.viewPager)
+    @BindView(R.id.viewPager)
     ViewPager mViewPager;
 
     private SystemUiHelper mSystemUiHelper;

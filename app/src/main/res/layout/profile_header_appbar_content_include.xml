@@ -62,7 +62,6 @@
 
         <mika.com.android.ac.ui.JoinedAtLocationAutoGoneTextView
             android:id="@+id/banana"
-            android:text="共有0次召唤、0条私信、0个新听众和4条推送内容"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="24dp"
