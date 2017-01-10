@@ -191,7 +191,6 @@ FileUtil {
         while ((len = in.read(buf)) != -1) {
             out.write(buf, 0, len);
         }
-        buf = null;
     }
 
     /**

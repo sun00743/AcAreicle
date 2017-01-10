@@ -21,7 +21,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import mika.com.android.ac.app.TargetedRetainedFragment;
@@ -208,15 +207,6 @@ public class CommentListResource extends ResourceFragment implements
         mLoading = true;
         mLoadingMore = loadMore;
         getListStateListener().onLoadCommentListStarted(getRequestCode());
-
-        //文章ID
-//        Long untilId = null;
-//        if(loadMore && mArticleListResult != null){
-//            int size = mArticleListResult.paramsData.articleLists.size();
-//            if(size > 0){
-//                untilId = mArticleListResult.paramsData.articleLists.get(size-1).id;
-//            }
-//        }
         if (!loadMore) {
             pageNO = 1;
         }
@@ -333,11 +323,6 @@ public class CommentListResource extends ResourceFragment implements
          * 加载更多
          */
         void onCommentListAppended(int requestCode, ArrayList<Integer> newIdList, Map<String, Comment> newCommentMaps);
-
-        /**
-         * 加载更多
-         */
-        void onCommentListAppended(int requestCode, List<Comment> commentList);
 
         void onCommentChanged(int requestCode, int position, Comment newComment);
 

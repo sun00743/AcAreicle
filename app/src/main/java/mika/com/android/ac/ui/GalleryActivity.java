@@ -73,7 +73,7 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(mika.com.android.ac.R.layout.gallery_activity);
+        setContentView(R.layout.gallery_activity);
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);

@@ -9,6 +9,7 @@
 
 package mika.com.android.ac.article.ui;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -95,6 +96,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private static final int VIEW_TYPE_COMMENT = 0x04;
     private static final int VIEW_TYPE_SUBTITLE = 0x03;
     private static final int VIEW_TYPE_HEAD = 0x01;
+    private static final int MSG_IMG_LOADING_STATE = 8;
     private ArticleActivity2 activity;
     private Request articleRequest;
     private static final String TAG = "Article";
@@ -121,15 +123,25 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
      * down load image single thread pool
      */
     private static final ExecutorService mLoadImgThread = Executors.newSingleThreadExecutor();
-    private int imageIndex = 0;
     /**
      * load image handler, control image index , excuse show image js
      */
     private Handler mLoadImageHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
+            if (msg.what == MSG_IMG_LOADING_STATE){
+                int index =  msg.getData().getInt("proIndex");
+                mCurrentHolder.evaluateJavascript("javascript:(function(){" +
+                                "var images = document.getElementsByTagName(\"img\");" +
+                                "var img = images[" + index + "];" +
+                                "img.src = \"file:///android_asset/img_loading.gif\";" +
+                                "})()",
+                        null);
+                return;
+            }
+
             int index = msg.getData().getInt("imgNum");
-            ++imageIndex;
+            int next = index + 1;
             if (imgUrls.get(index) != null) {
                 mCurrentHolder.evaluateJavascript(
                         "javascript:(function(){" +
@@ -139,9 +151,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                                 "})()"
                         , null);
             }
-            if (imageIndex < imgUrls.size()) {
-                loadImagesExcuse();
-            } else if (imageIndex == imgUrls.size()) {
+            if (next < imgUrls.size()) {
+                loadImagesExcuse(next);
+            } else if (next == imgUrls.size()) {
                 isDownloaded = true;
                 mCurrentHolder.evaluateJavascript(
                         "javascript:(function(){"
@@ -152,7 +164,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                                 + "})()"
                         , null);
             }
-
         }
     };
 
@@ -358,18 +369,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     }
 
     /**
-     * 加载更多
-     */
-    public void insert(List<Comment> commentList) {
-        int oldSize = mCommentIdList.size();
-        for (int i = 0; i < commentList.size(); i++) {
-            mCommentIdList.add(commentList.get(i).id);
-            mCommentList.append(commentList.get(i).id, commentList.get(i));
-        }
-        notifyItemRangeInserted(oldSize, commentList.size());
-    }
-
-    /**
      * 向引用的评论列表里添加 quoteView
      */
     private void addQuoteViews(int position, CommentHolder cHolder, int quoteId, List<View> quoteViewList) {
@@ -452,6 +451,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     /**
      * set article views
      */
+    @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     private void initView() {
         //文章缓存路径
         ARTICLE_PATH = AcWenApplication.getExternalCacheFiledir("article").getAbsolutePath();
@@ -461,12 +461,12 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
             mCurrentHolder.mWeb.getSettings().setDisplayZoomControls(false);
         mCurrentHolder.mWeb.getSettings().setAllowFileAccess(true);
-        mCurrentHolder.mWeb.getSettings().setJavaScriptEnabled(true);
+        mCurrentHolder.mWeb.getSettings().setJavaScriptEnabled(true); // xxs漏洞
         mCurrentHolder.mWeb.getSettings().setUserAgentString(UA);
         mCurrentHolder.mWeb.getSettings().setUseWideViewPort(true);
         mCurrentHolder.mWeb.getSettings().setLoadWithOverviewMode(true);
         mCurrentHolder.mWeb.getSettings().setAppCachePath(ARTICLE_PATH);
-        mCurrentHolder.mWeb.addJavascriptInterface(new ACJSObject(), "AC");
+        mCurrentHolder.mWeb.addJavascriptInterface(new ACJSObject(), "AC"); // api < 17 ,不安全
         mCurrentHolder.mWeb.getSettings().setSupportZoom(true);
         mCurrentHolder.mWeb.getSettings().setBuiltInZoomControls(true);
         mCurrentHolder.mWeb.setWebViewClient(new WebViewClient() {
@@ -475,9 +475,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
              */
             @Override
             public void onPageFinished(final WebView view, String url) {
-                //同时加载评论，有些卡，先注释掉
-//                isAutoLoad = true;
-//                activity.loadComment();
 
                 mCurrentHolder.setArticleFailed(false);
                 mEventListener.ProgressDismiss();
@@ -487,20 +484,16 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 if (imgUrls == null || imgUrls.isEmpty() || url.startsWith("file:///android_asset")
                         || (Settings.NO_PICTURE.getValue(AcWenApplication.getInstance()) && AcWenApplication.getInstance().CONNECTIVITY_TYPE != NetState.WIFI)) // 无图模式
                     return;
-
                 if ((url.equals(Constants.HOME) || url.contains(NAME_ARTICLE_HTML))
                         && imgUrls.size() > 0
                         && !isDownloaded
                         && (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI || !Settings.NO_PICTURE.getValue(activity))) {
-//                    String[] arr = new String[imgUrls.size()];
-//                    mDownloadTask = new DownloadImageTask();
-//                    mDownloadTask.execute(imgUrls.toArray(arr));
-                    loadImagesExcuse();
+                    loadImagesExcuse(0);
                 }
             }
         });
-        //设置字号？
-//        setTextZoom(0);
+        //文本缩放
+//        mCurrentHolder.mWeb.getSettings().setTextZoom();
         //重新加载
         mCurrentHolder.mReloadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -586,17 +579,17 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     /**
      * down load image single thread run
      */
-    private void loadImagesExcuse() {
+    private void loadImagesExcuse(final int index) {
         mLoadImgThread.execute(new Runnable() {
             @SuppressWarnings("ResultOfMethodCallIgnored")
             @Override
             public void run() {
-                File cache = imageCaches.get(imageIndex);
+                File cache = imageCaches.get(index);
 
                 // load cache
                 if (cache.exists() && cache.canRead()) {
                     Bundle bundle = new Bundle();
-                    bundle.putInt("imgNum", imageIndex);
+                    bundle.putInt("imgNum", index);
                     Message msg = new Message();
                     msg.setData(bundle);
                     mLoadImageHandler.sendMessage(msg);
@@ -617,46 +610,35 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 OutputStream out = null;
 
                 try {
-                    URL parsedUrl = new URL(imgUrls.get(imageIndex));
+                    URL parsedUrl = new URL(imgUrls.get(index));
                     HttpURLConnection connection = Connectivity.openDefaultConnection(parsedUrl, 3000, 5000);
                     if (temp.exists()) {
                         connection.addRequestProperty("Range", "bytes=" + temp.length() + "-");
                         out = new FileOutputStream(temp, true);
-                    } else
+                    } else {
                         out = new FileOutputStream(temp);
-                    try {
-                        int responseCode = connection.getResponseCode();
-                        if (responseCode == 200 || responseCode == 206) {
-                            in = connection.getInputStream();
-                            FileUtil.copyStream(in, out);
-                            if (!cache.delete()) {
-                                Log.w(TAG, "cache delete failed" );
-                            }
-                            if (!temp.renameTo(cache)) {
-                                Log.w(TAG, "rename failed" + temp.getName());
-                            }
+                    }
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode == 200 || responseCode == 206) {
+                        in = connection.getInputStream();
+                        FileUtil.copyStream(in, out);
+                        cache.delete();
+                        temp.renameTo(cache);
 
-                            Bundle bundle = new Bundle();
-                            bundle.putInt("imgNum", imageIndex);
-                            Message msg = new Message();
-                            msg.setData(bundle);
-                            mLoadImageHandler.sendMessage(msg);
-                        }
-                    } catch (SocketTimeoutException e) {
-                        Log.w(TAG, "retry", e);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("imgNum", index);
+                        Message msg = new Message();
+                        msg.setData(bundle);
+                        mLoadImageHandler.sendMessage(msg);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
                     try {
-                        if (in != null)
-                            in.close();
-                    } catch (IOException ignored) {
-                    }
-                    try {
-                        if (out != null)
-                            out.close();
-                    } catch (IOException ignored) {
+                        if (in != null) in.close();
+                        if (out != null) out.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -678,11 +660,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         void updateComment();
 
         void dataReplaceOk();
-
-        /**
-         * @param headview headview
-         */
-        void setHeadView(View headview);
 
         void onArticleFailed();
 
@@ -927,7 +904,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     continue;
                 if (parsedUri.getPath() == null) // wtf!
                     continue;
-                if (!"http".equals(parsedUri.getScheme()) && !"https".equals(parsedUri.getScheme()) ) {
+                if (!"http".equals(parsedUri.getScheme()) && !"https".equals(parsedUri.getScheme())) {
                     parsedUri = parsedUri.buildUpon()
                             .scheme("http")
                             .authority("www.acfun.tv")
@@ -1006,10 +983,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 return;
             // 过滤掉图片的url跳转
             if (img.parent() != null && img.parent().tagName().equalsIgnoreCase("a")) {
-                img.parent().attr("src", "file:///android_asset/img_loading.gif");
                 img.parent().attr("onclick", "javascript:window.AC.showImage('" + src + " ',' " + index + "');");
             } else {
-                img.attr("src", "file:///android_asset/img_loading.gif");
                 img.attr("onclick", "javascript:window.AC.showImage('" + src + " ',' " + index + "');");
             }
 
@@ -1057,6 +1032,14 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             if (isCancelled()) {
                 return null;
             }
+
+            Bundle data = new Bundle();
+            data.putInt("proIndex", index);
+            Message msg = new Message();
+            msg.setData(data);
+            msg.what = MSG_IMG_LOADING_STATE;
+            mLoadImageHandler.sendMessage(msg);
+
             File cache = imageCaches.get(index);
             if (cache.exists() && cache.canRead()) {
                 // if exists, show image

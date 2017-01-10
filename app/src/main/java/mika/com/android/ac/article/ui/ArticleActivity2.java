@@ -492,11 +492,6 @@ public class ArticleActivity2 extends AppCompatActivity implements
     }
 
     @Override
-    public void setHeadView(View headview) {
-
-    }
-
-    @Override
     public void onArticleFailed() {
         mProgress.setVisibility(View.GONE);
     }
@@ -594,17 +589,12 @@ public class ArticleActivity2 extends AppCompatActivity implements
         mArtComplexAdapter.replace(newIdList, newCommentMaps);
     }
 
-    @Override
-    public void onCommentListAppended(int requestCode, ArrayList<Integer> newIdList, Map<String, Comment> newCommentMaps) {
-        mArtComplexAdapter.insert(newIdList, newCommentMaps);
-    }
-
     /**
      * using
      */
     @Override
-    public void onCommentListAppended(int requestCode, List<Comment> commentList) {
-        mArtComplexAdapter.insert(commentList);
+    public void onCommentListAppended(int requestCode, ArrayList<Integer> newIdList, Map<String, Comment> newCommentMaps) {
+        mArtComplexAdapter.insert(newIdList, newCommentMaps);
     }
 
     @Override

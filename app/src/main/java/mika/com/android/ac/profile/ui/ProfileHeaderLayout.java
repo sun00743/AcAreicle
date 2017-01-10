@@ -229,7 +229,7 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
     }
 
     private int getAppBarMaxHeight() {
-        return mUseWideLayout ? mMaxHeight * 3 / 5 : mMaxHeight * 1 / 2;
+        return mUseWideLayout ? mMaxHeight * 3 / 5 : mMaxHeight / 2;
     }
 
     private int computeVisibleAppBarHeight() {
