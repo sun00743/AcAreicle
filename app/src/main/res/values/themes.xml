@@ -162,8 +162,8 @@
         <item name="android:textColorLink">?colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/Widget.Douya.Toolbar.Button.Navigation</item>
 
-        <item name="colorPrimary">@color/douya_primary</item>
-        <item name="colorPrimaryDark">@color/douya_primary_dark</item>
+        <item name="colorPrimary">@color/AcWen_primary</item>
+        <item name="colorPrimaryDark">@color/AcWen_primary_dark</item>
         <item name="colorAccent">@android:color/white</item>
     </style>
 

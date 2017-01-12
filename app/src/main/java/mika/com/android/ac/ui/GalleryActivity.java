@@ -18,7 +18,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindInt;
 import butterknife.BindView;
@@ -33,6 +35,8 @@ public class GalleryActivity extends AppCompatActivity {
 
     public static final String EXTRA_IMAGE_LIST = KEY_PREFIX + "image_list";
     public static final String EXTRA_POSITION = KEY_PREFIX + "position";
+    ;
+    public static final String EXTRA_CACHE = KEY_PREFIX + "cache";
 
     @BindInt(android.R.integer.config_mediumAnimTime)
     int mToolbarHideDuration;
@@ -69,6 +73,19 @@ public class GalleryActivity extends AppCompatActivity {
         return makeIntent(image.getLargest(), context);
     }
 
+    public static Intent makeImageListIntent(List<File> imageCacheList, int position,
+                                             Context context) {
+        // TODO: 2017/1/11 image
+        ArrayList<String> image = new ArrayList<>();
+        for (int i = 0; i < imageCacheList.size(); i++) {
+            image.add(imageCacheList.get(i).getAbsolutePath());
+        }
+        return new Intent(context, GalleryActivity.class)
+                .putStringArrayListExtra(EXTRA_IMAGE_LIST, image)
+                .putExtra(EXTRA_CACHE, true)
+                .putExtra(EXTRA_POSITION, position);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,13 +120,14 @@ public class GalleryActivity extends AppCompatActivity {
         // This will set up window flags.
         mSystemUiHelper.show();
 
+        boolean hasCache = getIntent().getBooleanExtra(EXTRA_CACHE, false);
         ArrayList<String> imageList = getIntent().getStringArrayListExtra(EXTRA_IMAGE_LIST);
         mViewPager.setAdapter(new GalleryAdapter(imageList, new GalleryAdapter.OnTapListener() {
             @Override
             public void onTap() {
                 mSystemUiHelper.toggle();
             }
-        }));
+        }, hasCache));
         int position = getIntent().getIntExtra(EXTRA_POSITION, 0);
         mViewPager.setCurrentItem(position);
         mViewPager.setPageTransformer(true, new ViewPagerTransformers.Depth());

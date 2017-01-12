@@ -75,6 +75,7 @@ import mika.com.android.ac.network.api.info.acapi.Comment;
 import mika.com.android.ac.network.api.info.acapi.Constants;
 import mika.com.android.ac.settings.info.Settings;
 import mika.com.android.ac.ui.FloorsView;
+import mika.com.android.ac.ui.GalleryActivity;
 import mika.com.android.ac.ui.SimpleAdapter;
 import mika.com.android.ac.ui.SimpleCircleImageView;
 import mika.com.android.ac.ui.TimeActionTextView;
@@ -129,8 +130,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private Handler mLoadImageHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == MSG_IMG_LOADING_STATE){
-                int index =  msg.getData().getInt("proIndex");
+            if (msg.what == MSG_IMG_LOADING_STATE) {
+                int index = msg.getData().getInt("proIndex");
                 mCurrentHolder.evaluateJavascript("javascript:(function(){" +
                                 "var images = document.getElementsByTagName(\"img\");" +
                                 "var img = images[" + index + "];" +
@@ -231,7 +232,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             case VIEW_TYPE_SUBTITLE:
                 return new SubTitleHolder(ViewUtils.inflate(R.layout.articlecomplex_item_subtitle, parent));
             default:
-                return new CommentHolder(ViewUtils.inflate(R.layout.articlecomplex_item_comment, parent));
+                return new CommentHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.articlecomplex_item_comment, parent, false));
         }
     }
 
@@ -1025,6 +1026,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         private String url;
         private int index;
 
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         @Override
         protected Void doInBackground(String... params) {
             url = params[0];
@@ -1046,7 +1048,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 publishProgress(index);
                 return null;
             } else {
-                //noinspection ResultOfMethodCallIgnored
                 cache.getParentFile().mkdirs();
             }
             File temp = new File(cache.getAbsolutePath() + ".tmp");
@@ -1071,7 +1072,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                         if (responseCode == 200 || responseCode == 206) {
                             in = connection.getInputStream();
                             FileUtil.copyStream(in, out); // write
-                            //noinspection ResultOfMethodCallIgnored
                             cache.delete();
                             if (!temp.renameTo(cache)) {
                                 Log.w(TAG, "重命名失败" + temp.getName());
@@ -1089,9 +1089,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 try {
                     if (in != null)
                         in.close();
-                } catch (IOException ignored) {
-                }
-                try {
                     if (out != null)
                         out.close();
                 } catch (IOException ignored) {
@@ -1143,7 +1140,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 //            ImagePagerActivity.startCacheImage(ArticleActivity2.this,
 //                    (ArrayList<File>) imageCaches,
 //                    imgUrls.indexOf(url), aid, title);
-            Log.i("viewImage", "  ViewImage");
+            activity.startActivity(GalleryActivity.makeImageListIntent(imageCaches, imgUrls.indexOf(url), activity));
         }
 
         /**

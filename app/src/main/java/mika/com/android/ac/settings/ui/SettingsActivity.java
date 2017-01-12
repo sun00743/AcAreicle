@@ -18,11 +18,12 @@ import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import mika.com.android.ac.R;
 import mika.com.android.ac.scalpel.ScalpelHelperFragment;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    @BindView(mika.com.android.ac.R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
     public static Intent makeIntent(Context context) {
@@ -33,7 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(mika.com.android.ac.R.layout.settings_activity);
+        setContentView(R.layout.settings_activity);
         ButterKnife.bind(this);
 
         ScalpelHelperFragment.attachTo(this);

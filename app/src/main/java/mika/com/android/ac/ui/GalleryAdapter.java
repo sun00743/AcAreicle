@@ -9,6 +9,8 @@
 
 package mika.com.android.ac.ui;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,10 +35,12 @@ public class GalleryAdapter extends PagerAdapter {
 
     private List<String> mImageList;
     private OnTapListener mOnTapListener;
+    private boolean isCache;
 
-    public GalleryAdapter(List<String> imageList, OnTapListener onTapListener) {
+    public GalleryAdapter(List<String> imageList, OnTapListener onTapListener, boolean hasCache) {
         mImageList = imageList;
         mOnTapListener = onTapListener;
+        isCache = hasCache;
     }
 
     @Override
@@ -63,29 +67,36 @@ public class GalleryAdapter extends PagerAdapter {
                 }
             }
         });
-        ImageUtils.loadImage(imageView, mImageList.get(position),
-                new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model,
-                                               Target<GlideDrawable> target,
-                                               boolean isFirstResource) {
-                        (e != null ? e : new NullPointerException()).printStackTrace();
-                        int errorRes = e != null && e.getCause() instanceof TimeoutError
-                                ? R.string.gallery_load_timeout : R.string.gallery_load_error;
-                        errorText.setText(errorRes);
-                        ViewUtils.crossfade(progressBar, errorText);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model,
+        if (isCache){
+            Bitmap bm = BitmapFactory.decodeFile(mImageList.get(position));
+            ViewUtils.fadeOut(progressBar);
+            imageView.setImageBitmap(bm);
+        }else {
+            // load from net
+            ImageUtils.loadImage(imageView, mImageList.get(position),
+                    new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model,
                                                    Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache,
                                                    boolean isFirstResource) {
-                        ViewUtils.fadeOut(progressBar);
-                        return false;
-                    }
-                });
+                            (e != null ? e : new NullPointerException()).printStackTrace();
+                            int errorRes = e != null && e.getCause() instanceof TimeoutError
+                                    ? R.string.gallery_load_timeout : R.string.gallery_load_error;
+                            errorText.setText(errorRes);
+                            ViewUtils.crossfade(progressBar, errorText);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model,
+                                                       Target<GlideDrawable> target,
+                                                       boolean isFromMemoryCache,
+                                                       boolean isFirstResource) {
+                            ViewUtils.fadeOut(progressBar);
+                            return false;
+                        }
+                    });
+        }
         container.addView(layout);
         return layout;
     }
