@@ -84,9 +84,9 @@ public class Connectivity {
      */
     public static RequestQueue newRequestQueue(HttpStack stack) {
 
-        File cacheDir = AcWenApplication.isExternalStorageAvailable() ? AcWenApplication
-                .getExternalCacheFiledir(DEFAULT_CACHE_DIR) : new File(AcWenApplication
-                .getInstance().getCacheDir(), DEFAULT_CACHE_DIR);
+        File cacheDir = AcWenApplication.getInstance().isExternalStorageAvailable() ?
+                AcWenApplication.getInstance().getExternalCacheFiledir(DEFAULT_CACHE_DIR) :
+                new File(AcWenApplication.getInstance().getCacheDir(), DEFAULT_CACHE_DIR);
 
         if (stack == null) {
             if (Build.VERSION.SDK_INT >= 9) {

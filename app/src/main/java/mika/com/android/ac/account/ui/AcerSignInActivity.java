@@ -28,6 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
+import mika.com.android.ac.account.info.AccountContract;
 import mika.com.android.ac.db.AcerDB;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.AcerInfoRequest;
@@ -36,6 +37,7 @@ import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.network.api.info.acapi.AcerInfo2;
 import mika.com.android.ac.network.api.info.acapi.AcerInfoResult2;
 import mika.com.android.ac.network.api.info.acapi.LoginResult;
+import mika.com.android.ac.settings.info.Settings;
 import mika.com.android.ac.util.GsonHelper;
 import mika.com.android.ac.util.ViewUtils;
 
@@ -134,7 +136,8 @@ public class AcerSignInActivity extends AppCompatActivity {
                     acer = mLoginResult.data;
                     new AcerDB(getApplicationContext()).saveAcer(acer);
                     AcWenApplication.getInstance().setAcer(acer);
-                    AcWenApplication.LOGIN = true;
+//                    saveLoginInfo(mUsername, mPassword);
+                    AccountContract.setLogin(true);
                     //请求acer详细信息
                     requestAcerInfo(acer.userId);
                 } else {
@@ -158,6 +161,14 @@ public class AcerSignInActivity extends AppCompatActivity {
         });
         //start request
         Volley.getInstance().addToRequestQueue(mLoginRequest);
+    }
+
+    /**
+     * 保存登陆信息，自动登陆用
+     */
+    private void saveLoginInfo(String mUsername, String mPassword) {
+        Settings.ID.putValue(mUsername, getApplicationContext());
+        Settings.PWD.putValue(mPassword, getApplicationContext());
     }
 
     private void requestAcerInfo(int userId) {

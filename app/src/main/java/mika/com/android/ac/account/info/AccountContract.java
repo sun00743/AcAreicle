@@ -24,5 +24,15 @@ public class AccountContract {
             + ".refresh_token";
     public static final String KEY_USER_INFO = BuildConfig.APPLICATION_ID + ".user_info";
 
+    private static boolean login = false;
+
+    public static boolean isLogin() {
+        return login;
+    }
+
+    public static void setLogin(boolean login) {
+        AccountContract.login = login;
+    }
+
     private AccountContract() {}
 }

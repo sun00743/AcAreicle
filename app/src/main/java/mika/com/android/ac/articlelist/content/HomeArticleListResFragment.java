@@ -26,7 +26,7 @@ import mika.com.android.ac.util.FragmentUtils;
 import mika.com.android.ac.app.TargetedRetainedFragment;
 
 /**
- * Created by Administrator on 2016/9/7.
+ * Created by Administrator on 2016/9/7
  */
 
 public class HomeArticleListResFragment extends ArticleListResFragment {

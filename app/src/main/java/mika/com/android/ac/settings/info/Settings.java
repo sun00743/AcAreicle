@@ -13,6 +13,12 @@ import mika.com.android.ac.R;
 
 public class Settings {
 
+    public static final SettingsEntries.StringSettingsEntry ID = new SettingsEntries.StringSettingsEntry(
+            R.string.pref_key_login_id, R.string.pref_default_value_empty_string);
+
+    public static final SettingsEntries.StringSettingsEntry PWD = new SettingsEntries.StringSettingsEntry(
+            R.string.pref_key_login_pwd, R.string.pref_default_value_empty_string);
+
     public static final SettingsEntries.StringSettingsEntry API_KEY = new SettingsEntries.StringSettingsEntry(
             R.string.pref_key_api_key, R.string.pref_default_value_empty_string);
 

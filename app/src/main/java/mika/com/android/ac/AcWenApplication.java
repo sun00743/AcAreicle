@@ -15,7 +15,6 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
-import android.telephony.TelephonyManager;
 
 import com.bumptech.glide.request.target.ViewTarget;
 
@@ -25,7 +24,6 @@ import org.jsoup.nodes.Document;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 
 import mika.com.android.ac.network.NetState;
 import mika.com.android.ac.network.api.info.acapi.Acer;
@@ -35,27 +33,7 @@ public class AcWenApplication extends Application {
 
     private static AcWenApplication sInstance;
 
-    public AcWenApplication() {
-        sInstance = this;
-    }
-
-//    private static String externalCacheDir;
-
-    public static final String IMAGE = "Images";
-    /**
-     * 设备udid
-     */
-//    public static String UDID = "";
-    //    public static String ANDROID_ID = "";
-    public static final int ITEM_HEAD = 0x124;
-    public static final int ITEM_ARTICLE = 0x123;
-    public static final int ITEM_SUBTITLE = 0x125;
-    public static float density;
-    public static boolean LOGIN;
-    public static final int REQUEST_CODE_SIGN_IN = 7;
-    public static final int REQUEST_CODE_QUOTE = 8;
-    private static BitmapCache mBitmapCache;
-
+    private BitmapCache mBitmapCache;
     private Acer acer;
     public int CONNECTIVITY_TYPE;
 
@@ -63,36 +41,23 @@ public class AcWenApplication extends Application {
         return sInstance;
     }
 
+    public AcWenApplication() {
+        sInstance = this;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         init();
-//        AndroidThreeTen.init(this);
-//        FabricUtils.init(this);
         ViewTarget.setTagId(R.id.glide_view_target_tag_id);
-//        getUDID();
-    }
-
-    private void getUDID() {
-        final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-        final String tmDevice, tmSerial, tmPhone, androidId;
-        tmDevice = "" + tm.getDeviceId();
-        tmSerial = "" + tm.getSimSerialNumber();
-        androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
-        String uuid2 = UUID.randomUUID().toString();
-//        UDID = deviceUuid.toString();
-
-//        ANDROID_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     private void init() {
         CONNECTIVITY_TYPE = NetState.MOBILE;
-        density = sInstance.getResources().getDisplayMetrics().density;
         mBitmapCache = new BitmapCache();
     }
 
-    public static boolean isExternalStorageAvailable() {
+    public boolean isExternalStorageAvailable() {
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
@@ -102,7 +67,7 @@ public class AcWenApplication extends Application {
      * @param dir 缓存文件路径
      * @return 缓存文件
      */
-    public static File getExternalCacheFiledir(String dir) {
+    public File getExternalCacheFiledir(String dir) {
         File cacheFile = new File(sInstance.getExternalCacheDir(), dir);
         //noinspection ResultOfMethodCallIgnored
         cacheFile.mkdirs();
@@ -115,7 +80,7 @@ public class AcWenApplication extends Application {
      * @param url key
      * @return bitmap
      */
-    public static Bitmap getBitmapInCache(String url) {
+    public Bitmap getBitmapInCache(String url) {
         String key = getCacheKey(url, 0, 0);
         return mBitmapCache.getBitmap(key);
     }
@@ -123,19 +88,18 @@ public class AcWenApplication extends Application {
     /**
      * put bitmap cache
      *
-     * @param url key
+     * @param url   key
      * @param value bitmap
      */
-    public static void putBitmapInCache(String url, Bitmap value) {
+    public void putBitmapInCache(String url, Bitmap value) {
         String key = getCacheKey(url, 0, 0);
         mBitmapCache.putBitmap(key, value);
     }
 
     /**
      * copy from Volley - Image loader
-     *
      */
-    public static String getCacheKey(String url, int maxWidth, int maxHeight) {
+    public String getCacheKey(String url, int maxWidth, int maxHeight) {
         return "#W" + maxWidth + "#H" + maxHeight + url;
     }
 
@@ -166,14 +130,14 @@ public class AcWenApplication extends Application {
      *
      * @return false
      */
-    public static boolean isNightMode() {
+    public boolean isNightMode() {
 //        return AcApp.getConfig().getBoolean("is_night_mode", false);
         return false;
     }
 
-    private static Document sDoc, sDocNight;
+    private Document sDoc, sDocNight;
 
-    public static Document getThemedDoc() throws IOException {
+    public Document getThemedDoc() throws IOException {
         if (sDoc == null) {
             InputStream in = getInstance().getAssets().open("article.html");
             sDoc = Jsoup.parse(in, "utf-8", "");

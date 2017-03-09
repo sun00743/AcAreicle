@@ -35,20 +35,26 @@ import butterknife.ButterKnife;
 import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
 import mika.com.android.ac.account.content.AccountUserInfoResource;
+import mika.com.android.ac.account.info.AccountContract;
 import mika.com.android.ac.account.ui.AcerSignInActivity;
 import mika.com.android.ac.db.AcerDB;
 import mika.com.android.ac.link.NotImplementedManager;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.ApiRequests;
+import mika.com.android.ac.network.api.LoginRequest;
 import mika.com.android.ac.network.api.info.acapi.Acer;
 import mika.com.android.ac.network.api.info.acapi.AcerInfo2;
 import mika.com.android.ac.network.api.info.acapi.AcerInfoResult2;
+import mika.com.android.ac.network.api.info.acapi.LoginResult;
 import mika.com.android.ac.network.api.info.apiv2.User;
 import mika.com.android.ac.network.api.info.apiv2.UserInfo;
 import mika.com.android.ac.profile.ui.ProfileActivity;
 import mika.com.android.ac.quote.ui.QuoteActivity;
+import mika.com.android.ac.settings.info.Settings;
 import mika.com.android.ac.settings.ui.SettingsActivity;
 import mika.com.android.ac.ui.DrawerManager;
+import mika.com.android.ac.util.AppContact;
+import mika.com.android.ac.util.GsonHelper;
 import mika.com.android.ac.util.SharedPrefsUtils;
 
 import static android.app.Activity.RESULT_OK;
@@ -121,13 +127,15 @@ public class NavigationFragment extends Fragment implements
         mAcer = new AcerDB(getActivity().getApplicationContext()).getAcer();
         if (mAcer != null) {
             AcWenApplication.getInstance().setAcer(mAcer);
-            AcWenApplication.LOGIN = true;
+            AccountContract.setLogin(true);
             //get acerinfo
             loadAcerInfo();
+            // auto login
+//            autoLogin();
             // is signin ?
             checkSignIn();
         } else {
-            AcWenApplication.LOGIN = false;
+            AccountContract.setLogin(false);
             mHeaderLayout.bind();
         }
 
@@ -151,7 +159,7 @@ public class NavigationFragment extends Fragment implements
                                 openSettings();
                                 break;
                             case R.id.navigation_star:
-                                mMenuClickListener.onStarClicked();
+                                openFavorite();
                                 break;
                             default:
                                 NotImplementedManager.showNotYetImplementedToast(getActivity());
@@ -179,7 +187,6 @@ public class NavigationFragment extends Fragment implements
                             //get banana
                             mHeaderLayout.getBanana();
                         } else {
-                            //todo 显示服务器错误信息
                             acerInfo = null;
                         }
                         mHeaderLayout.bindAcer(acerInfo);
@@ -193,6 +200,32 @@ public class NavigationFragment extends Fragment implements
                     }
                 }
         ));
+    }
+
+    private void autoLogin() {
+        String id = Settings.ID.getValue(getActivity().getApplicationContext());
+        String pwd = Settings.PWD.getValue(getActivity().getApplicationContext());
+
+        if (!id.isEmpty() && !pwd.isEmpty()){
+            LoginRequest mLoginRequest = new LoginRequest(id, pwd);
+            mLoginRequest.setShouldCache(true);
+            mLoginRequest.setListener(new Response.Listener() {
+                @Override
+                public void onResponse(Object response) {
+                    LoginResult mLoginResult = GsonHelper.get().fromJson((String) response, LoginResult.class);
+                    if (mLoginResult.success) {
+                        mAcer = mLoginResult.data;
+                        new AcerDB(getActivity().getApplicationContext()).saveAcer(mAcer);
+                        AcWenApplication.getInstance().setAcer(mAcer);
+                        AccountContract.setLogin(true);
+                        //get acerinfo
+                        loadAcerInfo();
+                    }
+                }
+            });
+            //start request
+            Volley.getInstance().addToRequestQueue(mLoginRequest);
+        }
     }
 
     private void checkSignIn() {
@@ -277,20 +310,20 @@ public class NavigationFragment extends Fragment implements
      */
     @Override
     public void openProfile(Account account) {
-        if (AcWenApplication.LOGIN) {
+        if (AccountContract.isLogin()) {
             startActivity(ProfileActivity.makeIntent(mAcer, acerInfo, getActivity()));
         } else {
-            startActivityForResult(new Intent(getActivity(), AcerSignInActivity.class), AcWenApplication.REQUEST_CODE_SIGN_IN);
+            startActivityForResult(new Intent(getActivity(), AcerSignInActivity.class), AppContact.RequestCode.REQUEST_CODE_SIGN_IN);
         }
     }
 
     private void openQuote() {
-        if (AcWenApplication.LOGIN) {
+        if (AccountContract.isLogin()) {
             Intent intent = new Intent(getActivity(), QuoteActivity.class);
 //        ActivityCompat.startActivity(this, intent, null);
-            startActivityForResult(intent, AcWenApplication.REQUEST_CODE_QUOTE);
+            startActivityForResult(intent, AppContact.RequestCode.REQUEST_CODE_QUOTE);
         } else {
-            startActivityForResult(new Intent(getActivity(), AcerSignInActivity.class), AcWenApplication.REQUEST_CODE_SIGN_IN);
+            startActivityForResult(new Intent(getActivity(), AcerSignInActivity.class), AppContact.RequestCode.REQUEST_CODE_SIGN_IN);
         }
     }
 
@@ -302,13 +335,13 @@ public class NavigationFragment extends Fragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case AcWenApplication.REQUEST_CODE_QUOTE:
+                case AppContact.RequestCode.REQUEST_CODE_QUOTE:
                     acerInfo = data.getParcelableExtra(getString(R.string.acer_info));
                     mHeaderLayout.bindAcer(acerInfo);
                     mHeaderLayout.getBanana();
                     checkSignIn();
                     break;
-                case AcWenApplication.REQUEST_CODE_SIGN_IN:
+                case AppContact.RequestCode.REQUEST_CODE_SIGN_IN:
                     acerInfo = data.getParcelableExtra(getString(R.string.acer_info));
                     mHeaderLayout.bindAcer(acerInfo);
                     mHeaderLayout.getBanana();
@@ -337,6 +370,12 @@ public class NavigationFragment extends Fragment implements
      */
     private void openSettings() {
         startActivity(SettingsActivity.makeIntent(getActivity()));
+    }
+
+    /**
+     * 打开收藏界面
+     */
+    private void openFavorite() {
     }
 
     private void closeDrawer() {

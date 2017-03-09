@@ -87,8 +87,9 @@
     <string name="article_comment_unquote">取消引用</string>
 
     <string name="profile_content_exp">Exp:%1$d/%2$d - Per:%3$d</string>
-    <string name="profile_head_count">共有%1$d次召唤、%2$d条私信、%3$d个新听众</string>
-<!-- ——————————————————————————————————————————————————————————————————————————　 -->
+    <string name="profile_head_count">共有%1$d次召唤、%2$d条私信、%3$d个新听众、%4$d条推送</string>
+    <string name="normal_request_error">大概是服务器爆炸？或者重新登陆试试</string>
+    <!-- ——————————————————————————————————————————————————————————————————————————　 -->
     <string name="activity_not_found">未找到可处理此操作的应用</string>
     <string name="copied_to_clipboard_format">已复制到剪贴板：\n%1$s</string>
     <string name="load_error">加载失败</string>
@@ -401,4 +402,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="pref_key_login_id">key_login_id</string>
+    <string name="pref_key_login_pwd">key_login_pwd</string>
+    <string name="comment_watch">查看反白</string>
+    <string name="comment_copy">复制评论</string>
+    <string name="copy_complete">复制成功</string>
 </resources>

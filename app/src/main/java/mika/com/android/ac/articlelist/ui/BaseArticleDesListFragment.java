@@ -30,8 +30,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.zhanghai.android.customtabshelper.CustomTabsHelperFragment;
-import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
+import mika.com.android.ac.account.info.AccountContract;
 import mika.com.android.ac.article.ui.ArticleActivity2;
 import mika.com.android.ac.articlelist.content.ArticleListResFragment;
 import mika.com.android.ac.main.ui.MainActivity;
@@ -209,7 +209,7 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
         bundle.putLong("view_count", articleList.viewCount);
         bundle.putString("avatar", articleList.userAvatar);
         //如果是登陆状态，把这个也传过去
-        if (AcWenApplication.LOGIN) {
+        if (AccountContract.isLogin()) {
             bundle.putString("access_token", mAcer.access_token);
             bundle.putInt("userId", mAcer.userId);
         }

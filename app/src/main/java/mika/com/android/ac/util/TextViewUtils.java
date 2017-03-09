@@ -207,11 +207,11 @@ public class TextViewUtils {
         @Override
         public Drawable getDrawable(String source) {
             try {
-                Bitmap bm = AcWenApplication.getBitmapInCache(source);
+                Bitmap bm = AcWenApplication.getInstance().getBitmapInCache(source);
                 if (bm == null) {
                     bm = BitmapFactory.decodeStream(textView.getContext().getAssets()
                             .open(source));
-                    AcWenApplication.putBitmapInCache(source, bm);
+                    AcWenApplication.getInstance().putBitmapInCache(source, bm);
                 }
                 Drawable drawable = new BitmapDrawable(textView.getResources(), bm);
                 int w = textView.getResources().getDimensionPixelSize(

@@ -16,6 +16,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
+import mika.com.android.ac.account.info.AccountContract;
 import mika.com.android.ac.db.AcerDB;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -27,7 +28,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.settings);
 
-        if(!AcWenApplication.LOGIN){
+        if(!AccountContract.isLogin()){
             PreferenceCategory logout = (PreferenceCategory) findPreference(LOGOUT);
             getPreferenceScreen().removePreference(logout);
         }else{
@@ -36,7 +37,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     new AcerDB(getActivity().getApplicationContext()).logout();
-                    AcWenApplication.LOGIN = false;
+                    AccountContract.setLogin(false);
                     AcWenApplication.getInstance().setAcer(null);
                     getActivity().finish();
                     return false;

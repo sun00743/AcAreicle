@@ -46,7 +46,7 @@ import java.util.Map;
 @SuppressWarnings("deprecation")
 public class BasicNetwork extends com.android.volley.toolbox.BasicNetwork {
 
-    private static int SLOW_REQUEST_THRESHOLD_MS = 3000;
+    private static int SLOW_REQUEST_THRESHOLD_MS = 5000;
 
     public BasicNetwork(HttpStack httpStack) {
         super(httpStack);

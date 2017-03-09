@@ -33,7 +33,7 @@ public interface ApiContract {
             String GETBANANA = HOST_B + "/banana/getBananaCount.aspx";
             String SIGNIN = HOST_E + "/record/actions/signin?access_token=";
             String ACER_INFO = HOST_C + "/usercard.aspx";
-            String POST_COMMENT = HOST_B + "/comment.aspx";
+            String POST_COMMENT = HOST_A + "/comment.aspx";
         }
 
         /**
@@ -44,6 +44,13 @@ public interface ApiContract {
             String COMMENT_LIST_PAGE_SIZE = "50";
             String VERSION_COMMENT_LIST = "4";
             String CHANNEL = "1";
+            String COMMENT_TEXT = "text";
+            String QUOTE_ID = "quoteId";
+            String CONTENT_ID = "contentId";
+            String SOURCE = "source";
+            String ACCESS_TOKEN = "access_token";
+            String USER_ID = "userId";
+            String CAPTCHA = "captcha";
         }
 
         /**
@@ -54,6 +61,8 @@ public interface ApiContract {
             String MARKET = "huawei";
             String PRODUCT_ID = "2000";
             String HOST = "mobile.app.acfun.cn";
+            String COOKIE = "Cookie";
+            String TOKEN = "token";
         }
 
         interface Token {

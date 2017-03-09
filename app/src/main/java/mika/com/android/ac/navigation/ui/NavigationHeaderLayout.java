@@ -34,8 +34,8 @@ import com.transitionseverywhere.TransitionSet;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
-import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
+import mika.com.android.ac.account.info.AccountContract;
 import mika.com.android.ac.network.Volley;
 import mika.com.android.ac.network.api.ApiRequest;
 import mika.com.android.ac.network.api.ApiRequests;
@@ -203,7 +203,7 @@ public class NavigationHeaderLayout extends FrameLayout {
             mSignin.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!AcWenApplication.LOGIN) {
+                    if (!AccountContract.isLogin()) {
                         if (mAccountTransitionRunning) {
                             return;
                         }

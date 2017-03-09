@@ -55,6 +55,7 @@ import butterknife.ButterKnife;
 import me.zhanghai.android.materialedittext.MaterialEditText;
 import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.R;
+import mika.com.android.ac.account.info.AccountContract;
 import mika.com.android.ac.account.ui.AcerSignInActivity;
 import mika.com.android.ac.article.content.CommentListResource;
 import mika.com.android.ac.network.Volley;
@@ -68,6 +69,7 @@ import mika.com.android.ac.ui.LoadMoreAdapter;
 import mika.com.android.ac.ui.NoChangeAnimationItemAnimator;
 import mika.com.android.ac.ui.OnVerticalScrollWithPagingTouchSlopListener;
 import mika.com.android.ac.ui.PagerSlidingTabStrip;
+import mika.com.android.ac.util.AppContact;
 import mika.com.android.ac.util.DensityUtil;
 import mika.com.android.ac.util.RecyclerViewUtils;
 
@@ -299,9 +301,9 @@ public class ArticleActivity2 extends AppCompatActivity implements
      */
     private List<Integer> initList() {
         List<Integer> list = new ArrayList<>();
-        list.add(AcWenApplication.ITEM_HEAD);
-        list.add(AcWenApplication.ITEM_ARTICLE);
-        list.add(AcWenApplication.ITEM_SUBTITLE);
+        list.add(AppContact.ItemTag.ITEM_HEAD);
+        list.add(AppContact.ItemTag.ITEM_ARTICLE);
+        list.add(AppContact.ItemTag.ITEM_SUBTITLE);
         return list;
     }
 
@@ -348,6 +350,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
     /**
      * 设置menu 收藏图标
      */
+
+
     private void setStarImage(MenuItem menuStar) {
         // TODO 修改图标状态
 //        menuStar.setIcon(ContextCompat.getDrawable(this,R.drawable.star_icon_white_24dp));
@@ -358,8 +362,8 @@ public class ArticleActivity2 extends AppCompatActivity implements
      */
     private void doSendComment() {
 
-        if (!AcWenApplication.LOGIN) {
-            startActivityForResult(new Intent(this, AcerSignInActivity.class), AcWenApplication.REQUEST_CODE_SIGN_IN);
+        if (!AccountContract.isLogin()) {
+            startActivityForResult(new Intent(this, AcerSignInActivity.class), AppContact.RequestCode.REQUEST_CODE_SIGN_IN);
             return;
         }
 

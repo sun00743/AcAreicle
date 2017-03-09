@@ -11,6 +11,9 @@ package mika.com.android.ac.article.ui;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,11 +21,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ValueCallback;
@@ -79,12 +85,14 @@ import mika.com.android.ac.ui.GalleryActivity;
 import mika.com.android.ac.ui.SimpleAdapter;
 import mika.com.android.ac.ui.SimpleCircleImageView;
 import mika.com.android.ac.ui.TimeActionTextView;
+import mika.com.android.ac.util.AppContact;
 import mika.com.android.ac.util.Connectivity;
 import mika.com.android.ac.util.DateUtils;
 import mika.com.android.ac.util.DensityUtil;
 import mika.com.android.ac.util.FileUtil;
 import mika.com.android.ac.util.ImageUtils;
 import mika.com.android.ac.util.TextViewUtils;
+import mika.com.android.ac.util.ToastUtil;
 import mika.com.android.ac.util.ViewUtils;
 
 /**
@@ -237,7 +245,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case VIEW_TYPE_HEAD:
                 if (isHeadFirstLoad) {
@@ -275,9 +283,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 break;
             default:
                 final Comment comment = getComment(position);
-                CommentHolder cHolder = (CommentHolder) holder;
+                final CommentHolder cHolder = (CommentHolder) holder;
                 releaseComment((CommentHolder) holder);
-
+                //判断评论是不是up发的
                 if (mArticle.poster.id == comment.userId) {
                     cHolder.userName.setText("#" + comment.floor + " #up " + comment.username);
                 } else {
@@ -286,10 +294,18 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 cHolder.tiem.setText(comment.calculateTimeDiff());
                 TextViewUtils.setCommentContent(cHolder.content, comment);
                 ImageUtils.loadAvatar(cHolder.avatar, comment.avatar);
+                //引用
                 cHolder.quoted.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         mEventListener.insertComment(comment);
+                    }
+                });
+                //更多
+                cHolder.more.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        morePopupMenu(v, cHolder.content);
                     }
                 });
 
@@ -297,7 +313,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 cHolder.hasQuote = quoteId > 0;
                 List<View> quoteViewList = new ArrayList<>();
                 //添加引用的views到list中
-                addQuoteViews(position, cHolder, quoteId, quoteViewList);     //添加引用评论view
+                addQuoteViews(position, cHolder, quoteId, quoteViewList);
+                //添加引用评论view
                 cHolder.quoteItemsView.setQuoteList(quoteViewList);
                 if (!quoteViewList.isEmpty()) {
                     RelativeLayout.LayoutParams quoteItemsParams = new RelativeLayout.LayoutParams(-1, -2);
@@ -325,7 +342,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
 
     /**
      * 初次加载/刷新
-     *
      * @param commentIdList 评论id list
      * @param commentMaps   评论bean map
      */
@@ -338,9 +354,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         if (newSize == 0) return;
         if (diff > 0 || !mCommentIdList.get(3).equals(((ArrayList) commentIdList).get(0))) {
             mCommentIdList.clear();
-            mCommentIdList.add(AcWenApplication.ITEM_HEAD);
-            mCommentIdList.add(AcWenApplication.ITEM_ARTICLE);
-            mCommentIdList.add(AcWenApplication.ITEM_SUBTITLE);
+            mCommentIdList.add(AppContact.ItemTag.ITEM_HEAD);
+            mCommentIdList.add(AppContact.ItemTag.ITEM_ARTICLE);
+            mCommentIdList.add(AppContact.ItemTag.ITEM_SUBTITLE);
             mCommentIdList.addAll(commentIdList);
             mCommentList = commentMaps;
 
@@ -355,7 +371,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     /**
      * 加载更多
      * Using
-     *
      * @param commentIdList 评论id list
      * @param commentMaps   评论bean map
      */
@@ -411,12 +426,38 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     }
 
     /**
+     * 评论右上角更多按钮 popupMenu
+     */
+    private void morePopupMenu(View anchor, final TextView content) {
+        PopupMenu menu = new PopupMenu(activity, anchor, Gravity.BOTTOM);
+        menu.inflate(R.menu.comment);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_watch:
+                        content.setTextColor(activity.getResources().getColor(R.color.black_54));
+                        return true;
+                    case R.id.action_copy:
+                        ClipboardManager cbm = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData data = ClipData.newPlainText("comment", content.getText());
+                        cbm.setPrimaryClip(data);
+                        ToastUtil.show(activity.getString(R.string.copy_complete), activity);
+                        return true;
+                }
+                return false;
+            }
+        });
+        menu.show();
+    }
+
+    /**
      * 生成引用的评论的view
      */
     private View generateQuotesView(final Comment quote) {
         RelativeLayout quoteLayout = (RelativeLayout) LayoutInflater.from(activity).inflate(R.layout.articlecomplex_item_quote, null);
         TextView username = (TextView) quoteLayout.findViewById(R.id.quote_item_username);
-        TextView content = (TextView) quoteLayout.findViewById(R.id.quote_item_comments_content);
+        final TextView content = (TextView) quoteLayout.findViewById(R.id.quote_item_comments_content);
         SimpleCircleImageView avatar = (SimpleCircleImageView) quoteLayout.findViewById(R.id.quote_item_avatar);
         ImageView quoted = (ImageView) quoteLayout.findViewById(R.id.comment_quoteimg);
         ImageView more = (ImageView) quoteLayout.findViewById(R.id.comment_more);
@@ -436,7 +477,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2016/12/5   评论右上更多按钮
+                morePopupMenu(v, content);
             }
         });
         ImageUtils.loadAvatar(avatar, quote.avatar);
@@ -455,12 +496,11 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     private void initView() {
         //文章缓存路径
-        ARTICLE_PATH = AcWenApplication.getExternalCacheFiledir("article").getAbsolutePath();
+        ARTICLE_PATH = AcWenApplication.getInstance().getExternalCacheFiledir("article").getAbsolutePath();
         if (aid == 0)
             throw new IllegalArgumentException("hasn't id");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            mCurrentHolder.mWeb.getSettings().setDisplayZoomControls(false);
+        mCurrentHolder.mWeb.getSettings().setDisplayZoomControls(false);
         mCurrentHolder.mWeb.getSettings().setAllowFileAccess(true);
         mCurrentHolder.mWeb.getSettings().setJavaScriptEnabled(true); // xxs漏洞
         mCurrentHolder.mWeb.getSettings().setUserAgentString(UA);
@@ -816,7 +856,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         @Override
         protected Boolean doInBackground(Article... params) {
             try {
-                mDoc = AcWenApplication.getThemedDoc();
+                mDoc = AcWenApplication.getInstance().getThemedDoc();
                 initCaches();
 
                 Element content = mDoc.getElementById("content");

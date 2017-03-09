@@ -13,7 +13,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Administrator on 2016/9/26.
+ * Created by Administrator on 2016/9/26
  */
 
 public class Acer implements Parcelable{

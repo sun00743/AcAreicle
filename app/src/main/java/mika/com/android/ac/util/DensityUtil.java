@@ -11,21 +11,18 @@ package mika.com.android.ac.util;
 
 import android.content.Context;
 
-import mika.com.android.ac.AcWenApplication;
-
 public class DensityUtil {
+
+    public static float getDensity(Context context){
+        return context.getResources().getDisplayMetrics().density;
+    }
+
     public static int dip2px(Context context, float dipValue) {
-        if(AcWenApplication.density == 1f){
-            AcWenApplication.density  = context.getResources().getDisplayMetrics().density;
-        }
-        return (int) (dipValue * AcWenApplication.density + 0.5f);
+        return (int) (dipValue * getDensity(context) + 0.5f);
     }
 
     public static int px2dip(Context context, float pxValue) {
-        if(AcWenApplication.density == 1f){
-            AcWenApplication.density  = context.getResources().getDisplayMetrics().density;
-        }
-        return (int) (pxValue / AcWenApplication.density + 0.5f);
+        return (int) (pxValue / getDensity(context) + 0.5f);
     }
 
 }

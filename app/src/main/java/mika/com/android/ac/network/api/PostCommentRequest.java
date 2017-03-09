@@ -22,8 +22,17 @@ import mika.com.android.ac.network.api.info.acapi.PostCommentResult;
 import mika.com.android.ac.util.Connectivity;
 import mika.com.android.ac.util.GsonHelper;
 
+import static mika.com.android.ac.network.api.ApiContract.Request.Headers.COOKIE;
+import static mika.com.android.ac.network.api.ApiContract.Request.Headers.TOKEN;
+import static mika.com.android.ac.network.api.ApiContract.Request.Params.CONTENT_ID;
+import static mika.com.android.ac.network.api.ApiContract.Request.Params.QUOTE_ID;
+
 public class PostCommentRequest extends Request<PostCommentResult> {
+
     private static final String CONTENT_TYPE = "Content-Type";
+    private static final String CAPTCHA = "";
+    private static final String SOURCE_MOBILE = "mobile";
+    private static final String JSESSION_ID = "JSESSIONID=";
 
     public PostCommentRequest() {
         super(Method.POST, ApiContract.Request.AcApi.POST_COMMENT);
@@ -31,17 +40,17 @@ public class PostCommentRequest extends Request<PostCommentResult> {
 
     public PostCommentRequest(String text, int quotedId, String token, int userId, int contentId) {
         this();
-        addParam("text", text);
-        addParam("quoteId", Integer.toString(quotedId));
-        addParam("contentId", Integer.toString(contentId));
-        addParam("source", "mobile");
-        addParam("access_token", token);
-        addParam("userId", Integer.toString(userId));
-        addParam("captcha", "");
+        addParam(ApiContract.Request.Params.COMMENT_TEXT, text);
+        addParam(QUOTE_ID, Integer.toString(quotedId));
+        addParam(CONTENT_ID, Integer.toString(contentId));
+        addParam(ApiContract.Request.Params.SOURCE, SOURCE_MOBILE);
+        addParam(ApiContract.Request.Params.ACCESS_TOKEN, token);
+        addParam(ApiContract.Request.Params.USER_ID, Integer.toString(userId));
+        addParam(ApiContract.Request.Params.CAPTCHA, CAPTCHA);
 
         addHeaders(Connectivity.UA_MAP);
-        addHeader("Cookie", "JSESSIONID=" + token);
-        addHeader("token", token);
+        addHeader(COOKIE, JSESSION_ID + token);
+        addHeader(TOKEN, token);
         addHeader(Connectivity.UID, Integer.toString(userId));
         addHeader(CONTENT_TYPE, Connectivity.CONTENT_TYPE_FORM);
     }

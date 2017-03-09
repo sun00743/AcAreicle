@@ -26,6 +26,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import java.util.Locale;
+
 import butterknife.BindColor;
 import butterknife.BindDimen;
 import butterknife.BindView;
@@ -33,7 +38,11 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import mika.com.android.ac.R;
 import mika.com.android.ac.followship.content.FollowUserManager;
+import mika.com.android.ac.network.Volley;
+import mika.com.android.ac.network.api.ApiRequest;
+import mika.com.android.ac.network.api.ApiRequests;
 import mika.com.android.ac.network.api.info.acapi.AcerInfo2;
+import mika.com.android.ac.network.api.info.acapi.Mention;
 import mika.com.android.ac.network.api.info.apiv2.User;
 import mika.com.android.ac.network.api.info.apiv2.UserInfo;
 import mika.com.android.ac.profile.util.ProfileUtils;
@@ -396,8 +405,22 @@ public class ProfileHeaderLayout extends FrameLayout implements FlexibleSpaceHea
         mUsernameText.setText(acerInfo.name);
         mSignatureText.setMovementMethod(ScrollingMovementMethod.getInstance());
         mSignatureText.setText(acerInfo.sign);
-//        banana.setText(String.format(Locale.getDefault(), R.string.profile_head_count, acerInfo));
-
+        ApiRequest<Mention> request = ApiRequests.newPushRequest();
+        if (request == null){
+            return;
+        }
+        Volley.getInstance().addToRequestQueue(request.setListener(new Response.Listener<Mention>() {
+            @Override
+            public void onResponse(Mention response) {
+                banana.setText(String.format(Locale.getDefault(), context.getString(R.string.profile_head_count),
+                        response.mention, response.unReadMail, response.newFollowed, response.newPush));
+            }
+        }).setErrorListener(new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                banana.setText(context.getString(R.string.normal_request_error));
+            }
+        }));
     }
 
     public interface Listener {

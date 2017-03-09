@@ -26,7 +26,7 @@ import mika.com.android.ac.util.Connectivity;
 
 public class LoginRequest extends Request {
 
-    private static final String LOGIN_URL = "http://mobile.acfun.tv/oauth2/authorize2.aspx";
+    private static final String LOGIN_URL = "http://mobile.app.acfun.cn/oauth2/authorize2.aspx";
 
     public LoginRequest() {
         super(Method.POST, LOGIN_URL);
@@ -41,6 +41,7 @@ public class LoginRequest extends Request {
         addParam("client_id", "ELSH6ruK0qva88DD");
         addHeader("User-Agent", Connectivity.UA);
         addHeader("deviceType", "1");
+        addHeader("appVersion", "4.4.1");
 //        addHeader("Content-Type",Connectivity.CONTENT_TYPE_FORM);
     }
 
@@ -86,4 +87,5 @@ public class LoginRequest extends Request {
     public int compareTo(Object o) {
         return 0;
     }
+
 }

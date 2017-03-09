@@ -50,7 +50,7 @@ public class EmotionView extends View {
     public void setEmotionId(int id, int type) {
         String name = getEmotionName(id, type);
         try {
-            Bitmap bm = AcWenApplication.getBitmapInCache(name);
+            Bitmap bm = AcWenApplication.getInstance().getBitmapInCache(name);
             if (bm == null) {
                 Options opts = new Options();
                 opts.inJustDecodeBounds = true;
@@ -65,7 +65,7 @@ public class EmotionView extends View {
 
                 bm = BitmapFactory
                         .decodeStream(getContext().getAssets().open(name), null, opts);
-                AcWenApplication.putBitmapInCache(name, bm);
+                AcWenApplication.getInstance().putBitmapInCache(name, bm);
 //                    Log.d(TAG, "put emotion in cache : " + name);
             }
             mDrawable = new BitmapDrawable(getResources(), bm);

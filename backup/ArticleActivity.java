@@ -663,7 +663,6 @@ public class ArticleActivity extends BaseWebViewActivity implements
                     img.attr("src", "file:///android_asset/loading.gif");
                 else {
                     // 无图模式
-                    // TODO 点击后加载图片
                     img.after("<p >[图片]</p>");
                     img.remove();
                     continue;

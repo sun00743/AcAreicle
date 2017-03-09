@@ -31,8 +31,10 @@ import java.util.Locale;
 
 import mika.com.android.ac.AcWenApplication;
 
-public class
-FileUtil {
+public class FileUtil {
+
+    public static final String IMAGE = "Images";
+
     public static Uri getLocalFileUri(File file) {
         return Uri.fromFile(file);
     }
@@ -95,7 +97,7 @@ FileUtil {
      */
     @SuppressWarnings("deprecation")
     public static long getExternalAvailable() {
-        if (AcWenApplication.isExternalStorageAvailable()) {
+        if (AcWenApplication.getInstance().isExternalStorageAvailable()) {
             StatFs sf = new StatFs(Environment.getExternalStorageDirectory().getPath());
             long blockSize = sf.getBlockSize();
             long availCount = sf.getAvailableBlocks();
@@ -204,14 +206,14 @@ FileUtil {
         int hashCode = fileUri.hashCode();
         String folderName = String.format("%x", hashCode & 0xf);
         String fileName = String.format("%x", hashCode >>> 4) + getUrlExt(fileUri);
-        return new File(AcWenApplication.getExternalCacheFiledir(type + "/" + folderName), fileName);
+        return new File(AcWenApplication.getInstance().getExternalCacheFiledir(type + "/" + folderName), fileName);
     }
 
     /**
      * 图片缓存路径
      */
     public static File generateImageCacheFile(String imgUri) {
-        return generateCacheFile(AcWenApplication.IMAGE, imgUri);
+        return generateCacheFile(IMAGE, imgUri);
     }
 
     public static boolean deleteFiles(File file) {

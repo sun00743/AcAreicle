@@ -27,9 +27,9 @@ import android.widget.FrameLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import mika.com.android.ac.AcWenApplication;
 import mika.com.android.ac.BuildConfig;
 import mika.com.android.ac.R;
+import mika.com.android.ac.account.info.AccountContract;
 import mika.com.android.ac.articlelist.content.ListSort;
 import mika.com.android.ac.home.HomeFragment;
 import mika.com.android.ac.navigation.ui.NavigationFragment;
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (!AcWenApplication.LOGIN) {
+        if (!AccountContract.isLogin()) {
             if (!isRemoveAcerinfo) {
                 mNavigationFragment.onUserInfoChanged(0, null);
                 isRemoveAcerinfo = true;
@@ -230,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onStarClicked() {
+
     }
 
     @Override

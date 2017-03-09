@@ -52,6 +52,7 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
 
     private static final String EXTRA_ACER = KEY_PREFIX + "acer";
     private static final String EXTRA_ACER_INFO = KEY_PREFIX + "acer_info";
+    private static final String EXTRA_ID = KEY_PREFIX + "acer_id";
 
     @BindView(R.id.scroll)
     ProfileLayout mScrollLayout;
@@ -93,6 +94,15 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
         arguments.putParcelable(EXTRA_ACER_INFO, acerInfo2);
         return fragment;
     }
+
+    public static ProfileFragment newInstance(int acerId) {
+        //noinspection deprecation
+        ProfileFragment fragment = new ProfileFragment();
+        Bundle arguments = FragmentUtils.ensureArguments(fragment);
+        arguments.putInt(EXTRA_ID, acerId);
+        return fragment;
+    }
+
 
     public ProfileFragment() {
     }
