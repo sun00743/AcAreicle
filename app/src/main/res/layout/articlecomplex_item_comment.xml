@@ -5,11 +5,11 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:descendantFocusability="blocksDescendants"
-    android:paddingTop="8dp"
+    android:duplicateParentState="true"
+    android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
-    android:paddingBottom="0dp"
-    android:duplicateParentState="true" >
+    android:paddingTop="8dp">
 
     <RelativeLayout
         android:id="@+id/comment_requote_content"
@@ -20,16 +20,16 @@
             android:id="@+id/comment_requote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="0dp"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="4dp"
-            android:layout_marginBottom="0dp"
-            android:paddingTop="0dp"
-            android:paddingLeft="68dp"
-            android:paddingBottom="0dp"
+            android:layout_marginTop="10dp"
             android:gravity="center_vertical"
-            android:textColor="@android:color/holo_blue_dark"
+            android:paddingBottom="0dp"
+            android:paddingLeft="68dp"
+            android:paddingTop="0dp"
             android:text="@string/hide_requote"
+            android:textColor="@android:color/holo_blue_dark"
             android:textSize="12sp"
             android:visibility="gone" />
 
@@ -37,83 +37,86 @@
 
     <mika.com.android.ac.ui.SimpleCircleImageView
         android:id="@+id/comment_avatar"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_below="@id/comment_requote_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/comment_requote_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="12dp" />
 
     <TextView
-        android:layout_marginTop="-2dp"
-        android:gravity="top"
-        android:textSize="12sp"
         android:id="@+id/comment_username"
-        android:textColor="@color/black_54"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/comment_avatar"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="-2dp"
+        android:layout_toEndOf="@id/comment_avatar"
+        android:layout_toLeftOf="@+id/comment_quoteimg"
         android:layout_toRightOf="@id/comment_avatar"
-        android:layout_toEndOf="@id/comment_avatar"/>
+        android:layout_toStartOf="@+id/comment_quoteimg"
+        android:gravity="top"
+        android:textColor="@color/black_54"
+        android:textSize="12sp" />
 
     <TextView
-        android:layout_marginTop="8dp"
-        android:textSize="12sp"
         android:id="@+id/comment_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black_54"
         android:layout_alignBottom="@id/comment_avatar"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@id/comment_avatar"
         android:layout_toRightOf="@id/comment_avatar"
-        android:layout_toEndOf="@id/comment_avatar" />
+        android:textColor="@color/black_54"
+        android:textSize="12sp" />
 
     <TextView
-        android:lineSpacingExtra="@dimen/comment_lineSpacingExtra"
         android:id="@+id/comments_content"
-        android:layout_marginTop="-4dp"
-        android:textSize="14sp"
-        android:layout_marginRight="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black_87"
-        android:focusable="false"
         android:layout_below="@id/comment_avatar"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="-4dp"
+        android:layout_toEndOf="@id/comment_avatar"
         android:layout_toRightOf="@id/comment_avatar"
-        android:layout_toEndOf="@id/comment_avatar" />
+        android:focusable="false"
+        android:lineSpacingExtra="@dimen/comment_lineSpacingExtra"
+        android:textColor="@color/black_87"
+        android:textSize="14sp" />
 
     <ImageView
         android:id="@+id/comment_more"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:visibility="visible"
-        android:src="@drawable/ic_more"
-        android:layout_alignTop="@id/comment_avatar"
+        android:layout_alignEnd="@id/comments_content"
         android:layout_alignRight="@id/comments_content"
-        android:layout_alignEnd="@id/comments_content" />
+        android:layout_alignTop="@id/comment_avatar"
+        android:src="@drawable/ic_more"
+        android:visibility="visible" />
 
     <ImageView
         android:id="@+id/comment_quoteimg"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginRight="16dp"
-        android:visibility="visible"
-        android:src="@drawable/ic_quote"
         android:layout_alignTop="@id/comment_more"
+        android:layout_marginRight="16dp"
         android:layout_toLeftOf="@id/comment_more"
-        android:layout_toStartOf="@id/comment_more" />
+        android:layout_toStartOf="@id/comment_more"
+        android:src="@drawable/ic_quote"
+        android:visibility="visible" />
 
     <View
-        android:layout_marginRight="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="24dp"
-        android:layout_below="@id/comments_content"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?dividerHorizontal">
-
-    </View>
+        android:layout_below="@id/comments_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="24dp"
+        android:background="?dividerHorizontal" />
 
 </RelativeLayout>

@@ -61,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="-16dp"
-                android:text="@string/about_douban"
+                android:text="@string/about_wenzang"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 style="?borderlessButtonStyle" />
         </LinearLayout>

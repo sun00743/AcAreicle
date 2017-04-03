@@ -90,12 +90,6 @@ public class AboutFragment extends Fragment implements ConfirmEnableScalpelDialo
         });
 
         mVersionText.setText(getString(mika.com.android.ac.R.string.about_version_format, BuildConfig.VERSION_NAME));
-        mDoubanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                activity.startActivity(ProfileActivity.makeIntent("douban-douya", activity));
-            }
-        });
     }
 
     @Override
