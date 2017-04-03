@@ -113,10 +113,6 @@
                 <data android:scheme="a_ac" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".account.ui.AcerLoginActivity"
-            android:label="@string/title_activity_acer_login"
-            android:launchMode="singleTop" />
         <activity android:name=".account.ui.AcerSignInActivity" />
         <activity android:name=".quote.ui.QuoteActivity" />
         <!-- ————————————————————————————service—————————————————————————————— -->

@@ -258,7 +258,6 @@ public class ArticleActivity extends BaseWebViewActivity implements
         super.initData();
 //        if(isWebMode){
 //            Uri uri = getIntent().getData();
-//            // TODO: sync cookies to WebView
 //            String url = uri.toString();
 //            mWeb.loadUrl(url);
 //

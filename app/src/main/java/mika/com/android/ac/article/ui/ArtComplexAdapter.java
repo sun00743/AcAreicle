@@ -9,11 +9,10 @@
 
 package mika.com.android.ac.article.ui;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -110,7 +109,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private Request articleRequest;
     private static final String TAG = "Article";
     private static String ARTICLE_PATH;
-    private static final String NAME_ARTICLE_HTML = "a63-article.html";
+    private String name_html ;
     private Article mArticle;
     private Document mDoc;
     private List<String> imgUrls;
@@ -120,7 +119,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private List<Integer> mCommentIdList;
     private SparseArray<Comment> mCommentList;
     private EventListener mEventListener;
-    private ArticleHolder mCurrentHolder;
+    private ArticleHolder mArticleHolder;
     private SubTitleHolder mSubTitleHolder;
     private HeadHolder mHeadHolder;
     //    private int mWebViewHeight;
@@ -128,6 +127,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     private boolean isHeadFirstLoad = true;
     private boolean hasBundle = true;
     private boolean isAutoLoad = false;
+    private BuildDocTask mDocTask;
     /**
      * down load image single thread pool
      */
@@ -140,7 +140,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         public void handleMessage(Message msg) {
             if (msg.what == MSG_IMG_LOADING_STATE) {
                 int index = msg.getData().getInt("proIndex");
-                mCurrentHolder.evaluateJavascript("javascript:(function(){" +
+                mArticleHolder.evaluateJavascript("javascript:(function(){" +
                                 "var images = document.getElementsByTagName(\"img\");" +
                                 "var img = images[" + index + "];" +
                                 "img.src = \"file:///android_asset/img_loading.gif\";" +
@@ -152,7 +152,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             int index = msg.getData().getInt("imgNum");
             int next = index + 1;
             if (imgUrls.get(index) != null) {
-                mCurrentHolder.evaluateJavascript(
+                mArticleHolder.evaluateJavascript(
                         "javascript:(function(){" +
                                 "var images = document.getElementsByTagName(\"img\");" +
                                 "var img = images[" + index + "];" +
@@ -164,7 +164,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 loadImagesExcuse(next);
             } else if (next == imgUrls.size()) {
                 isDownloaded = true;
-                mCurrentHolder.evaluateJavascript(
+                mArticleHolder.evaluateJavascript(
                         "javascript:(function(){"
                                 + "var images = document.getElementsByTagName(\"img\"); "
                                 + "var imgSrc = images[" + index + "].getAttribute(\"loc\"); "
@@ -189,6 +189,12 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         mBundle = bundle;
         mCommentList = new SparseArray<>();
         mCommentIdList = list;
+        init();
+    }
+
+    private void init() {
+        mDocTask = new BuildDocTask();
+        name_html = "ac_" + aid + ".html";
     }
 
     @Override
@@ -263,10 +269,10 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 }
                 break;
             case VIEW_TYPE_ARTICLE:
-                mCurrentHolder = (ArticleHolder) holder;
+                mArticleHolder = (ArticleHolder) holder;
                 if (isContentFirstLoad) {
                     isContentFirstLoad = false;
-                    initView();
+                    initView(((ArticleHolder) holder));
                     requestData();
                 }
                 break;
@@ -493,31 +499,36 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     /**
      * set article views
      */
-    @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
-    private void initView() {
+    private void initView(ArticleHolder holder) {
         //文章缓存路径
         ARTICLE_PATH = AcWenApplication.getInstance().getExternalCacheFiledir("article").getAbsolutePath();
         if (aid == 0)
             throw new IllegalArgumentException("hasn't id");
 
-        mCurrentHolder.mWeb.getSettings().setDisplayZoomControls(false);
-        mCurrentHolder.mWeb.getSettings().setAllowFileAccess(true);
-        mCurrentHolder.mWeb.getSettings().setJavaScriptEnabled(true); // xxs漏洞
-        mCurrentHolder.mWeb.getSettings().setUserAgentString(UA);
-        mCurrentHolder.mWeb.getSettings().setUseWideViewPort(true);
-        mCurrentHolder.mWeb.getSettings().setLoadWithOverviewMode(true);
-        mCurrentHolder.mWeb.getSettings().setAppCachePath(ARTICLE_PATH);
-        mCurrentHolder.mWeb.addJavascriptInterface(new ACJSObject(), "AC"); // api < 17 ,不安全
-        mCurrentHolder.mWeb.getSettings().setSupportZoom(true);
-        mCurrentHolder.mWeb.getSettings().setBuiltInZoomControls(true);
-        mCurrentHolder.mWeb.setWebViewClient(new WebViewClient() {
-            /**
-             * 加载完页面后开始异步加载图片
-             */
-            @Override
-            public void onPageFinished(final WebView view, String url) {
+        WebSettings settings = holder.mWeb.getSettings();
+//        holder.mWeb.getSettings().setAllowFileAccess(true);
+//        holder.mWeb.getSettings().setUserAgentString(UA);
+//        holder.mWeb.getSettings().setAppCachePath(ARTICLE_PATH);
+//        holder.mWeb.getSettings().setSupportZoom(false);  // 支持缩放
+//        holder.mWeb.getSettings().setBuiltInZoomControls(false);  //缩放工具
+//        holder.mWeb.getSettings().setDisplayZoomControls(false);
+        settings.setAllowFileAccess(true);
+        settings.setLoadWithOverviewMode(true);  // 适应屏幕
+        settings.setUserAgentString(UA);
+        settings.setUseWideViewPort(true);
+        settings.setJavaScriptEnabled(true); // xxs漏洞
+        holder.mWeb.addJavascriptInterface(new ACJSObject(), "AC"); // api < 17 ,不安全
+        holder.mWeb.setWebViewClient(new WebViewClient() {
 
-                mCurrentHolder.setArticleFailed(false);
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageCommitVisible(WebView view, String url) {
+
+                mArticleHolder.setArticleFailed(false);
                 mEventListener.ProgressDismiss();
                 //如果不出错
                 mSubTitleHolder.subtitle.setVisibility(View.VISIBLE);
@@ -525,18 +536,41 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                 if (imgUrls == null || imgUrls.isEmpty() || url.startsWith("file:///android_asset")
                         || (Settings.NO_PICTURE.getValue(AcWenApplication.getInstance()) && AcWenApplication.getInstance().CONNECTIVITY_TYPE != NetState.WIFI)) // 无图模式
                     return;
-                if ((url.equals(Constants.HOME) || url.contains(NAME_ARTICLE_HTML))
+                if ((url.equals(Constants.HOME) || url.contains(name_html))
                         && imgUrls.size() > 0
                         && !isDownloaded
                         && (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI || !Settings.NO_PICTURE.getValue(activity))) {
                     loadImagesExcuse(0);
                 }
+
+            }
+
+            /**
+             * 加载完页面后开始异步加载图片
+             */
+            @Override
+            public void onPageFinished(final WebView view, String url) {
+
+//                mArticleHolder.setArticleFailed(false);
+//                mEventListener.ProgressDismiss();
+//                //如果不出错
+//                mSubTitleHolder.subtitle.setVisibility(View.VISIBLE);
+//
+//                if (imgUrls == null || imgUrls.isEmpty() || url.startsWith("file:///android_asset")
+//                        || (Settings.NO_PICTURE.getValue(AcWenApplication.getInstance()) && AcWenApplication.getInstance().CONNECTIVITY_TYPE != NetState.WIFI)) // 无图模式
+//                    return;
+//                if ((url.equals(Constants.HOME) || url.contains(name_html))
+//                        && imgUrls.size() > 0
+//                        && !isDownloaded
+//                        && (AcWenApplication.getInstance().CONNECTIVITY_TYPE == NetState.WIFI || !Settings.NO_PICTURE.getValue(activity))) {
+//                    loadImagesExcuse(0);
+//                }
             }
         });
         //文本缩放
 //        mCurrentHolder.mWeb.getSettings().setTextZoom();
         //重新加载
-        mCurrentHolder.mReloadBtn.setOnClickListener(new View.OnClickListener() {
+        holder.mReloadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (articleRequest != null) {
@@ -562,9 +596,9 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             @Override
             public void onErrorResponse(VolleyError error) {
                 //load failed
-                if (mEventListener != null && mCurrentHolder != null) {
+                if (mEventListener != null && mArticleHolder != null) {
                     mEventListener.onArticleFailed();
-                    mCurrentHolder.setArticleFailed(true);
+                    mArticleHolder.setArticleFailed(true);
                 }
             }
         });
@@ -577,7 +611,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
      * build article and head Content
      */
     private void buildContent() {
-        new BuildDocTask().execute(mArticle);
+        mDocTask.execute(mArticle);
         // bundle中无 关键 数据，说明是从quote点击进入，需要填充head数据
         if (!hasBundle) {
             ImageUtils.loadAvatar(mHeadHolder.avatar, mArticle.poster.avatar);
@@ -585,6 +619,12 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             mHeadHolder.time.setText(DateUtils.formatAgoTimes(System.currentTimeMillis() - mArticle.postTime));
             mHeadHolder.viewCount.setText(mArticle.views + " " + activity.getResources().getString(R.string.article_views));
             mHeadHolder.articleTitle.setText(mArticle.title);
+        }
+    }
+
+    public void deleteCacheHtml(){
+        if (mDocTask != null){
+            mDocTask.deleteFile();
         }
     }
 
@@ -596,12 +636,12 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     }
 
     public void pause() {
-        mCurrentHolder.mWeb.pauseTimers();
+        mArticleHolder.mWeb.pauseTimers();
     }
 
     public void resume() {
-        if (mCurrentHolder != null) {
-            mCurrentHolder.mWeb.resumeTimers();
+        if (mArticleHolder != null) {
+            mArticleHolder.mWeb.resumeTimers();
         }
     }
 
@@ -842,7 +882,6 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
     /**
      * 读取html文档异步任务
      */
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     private class BuildDocTask extends AsyncTask<Article, Void, Boolean> {
         boolean hasUseMap;
         private File cacheFile = null;
@@ -850,7 +889,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
         @Override
         protected void onPreExecute() {
             isDocBuilding.set(true);
-            cacheFile = new File(ARTICLE_PATH, NAME_ARTICLE_HTML);
+            cacheFile = new File(ARTICLE_PATH, name_html);
         }
 
         @Override
@@ -873,9 +912,8 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     //build content
                     handleSubContent(i, content, sub, params[0]);
                 }
-                FileWriter writer = null;
+                FileWriter writer = new FileWriter(cacheFile);
                 try {
-                    writer = new FileWriter(cacheFile);
                     writer.write(mDoc.outerHtml());
                     content.empty(); // release
                 } catch (IOException e) {
@@ -1000,6 +1038,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     return;
                 }
             } catch (Exception ignored) {
+
             }
             if (src.contains("emotion/images/"))
                 return;
@@ -1037,22 +1076,29 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
             if (activity.isFinishing()) return;
             if (result) {
                 if (cacheFile.exists()) {
-                    mCurrentHolder.mWeb.loadUrl(Uri.fromFile(cacheFile).toString());
+                    mArticleHolder.mWeb.loadUrl(Uri.fromFile(cacheFile).toString());
                 } else
-                    mCurrentHolder.mWeb.loadDataWithBaseURL("www.acfun.tv", mDoc.html(), "text/html", "UTF-8", null);
+                    mArticleHolder.mWeb.loadDataWithBaseURL("www.acfun.tv", mDoc.html(), "text/html", "UTF-8", null);
 
                 if (hasUseMap)
-                    mCurrentHolder.mWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+                    mArticleHolder.mWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
                 else
-                    mCurrentHolder.mWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+                    mArticleHolder.mWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     try {
-                        mCurrentHolder.mWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+                        mArticleHolder.mWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
                     } catch (IllegalArgumentException ignored) {
+
                     }
                 }
-            }
 
+            }
+        }
+
+        public void deleteFile(){
+            if (cacheFile != null && cacheFile.exists()){
+                cacheFile.delete();
+            }
         }
     }
 
@@ -1145,7 +1191,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     return;
 
                 int v = values[0];
-                mCurrentHolder.evaluateJavascript("javascript:(function(){" +
+                mArticleHolder.evaluateJavascript("javascript:(function(){" +
                                 "var images = document.getElementsByTagName(\"img\");" +
                                 "var img = images[" + v + "];" +
                                 "img.src = img.getAttribute(\"loc\");" +
@@ -1164,7 +1210,7 @@ public class ArtComplexAdapter extends SimpleAdapter<Integer, RecyclerView.ViewH
                     + "if(imgSrc != null)"
                     + "images[" + index + "].setAttribute(\"src\",imgSrc);"
                     + "})()";
-            mCurrentHolder.evaluateJavascript(javaScript, null);
+            mArticleHolder.evaluateJavascript(javaScript, null);
         }
 
     }

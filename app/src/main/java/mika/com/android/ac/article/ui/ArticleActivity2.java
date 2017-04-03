@@ -551,6 +551,14 @@ public class ArticleActivity2 extends AppCompatActivity implements
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mArtComplexAdapter != null){
+            mArtComplexAdapter.deleteCacheHtml();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         if (isEmoticonLayoutShow) {
             isEmoticonLayoutShow = false;

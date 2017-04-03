@@ -13,7 +13,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -48,7 +47,6 @@ import mika.com.android.ac.util.CardUtils;
 import mika.com.android.ac.util.LogUtils;
 import mika.com.android.ac.util.RecyclerViewUtils;
 import mika.com.android.ac.util.ToastUtil;
-import mika.com.android.ac.util.TransitionUtils;
 import mika.com.android.ac.util.ViewUtils;
 
 /**
@@ -214,9 +212,9 @@ public abstract class BaseArticleDesListFragment extends Fragment implements
             bundle.putInt("userId", mAcer.userId);
         }
         intent.putExtras(bundle);
-        Bundle options = TransitionUtils.makeActivityOptionsBundle(activity, sharedView);
-        ActivityCompat.startActivity(activity, intent, options);
-//        startActivity(intent);
+//        Bundle options = TransitionUtils.makeActivityOptionsBundle(activity, sharedView);
+//        ActivityCompat.startActivity(activity, intent, options);
+        startActivity(intent);
     }
 
     public void scrollToTop() {

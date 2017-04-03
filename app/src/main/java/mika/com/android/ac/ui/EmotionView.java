@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import mika.com.android.ac.AcWenApplication;
+import mika.com.android.ac.util.DensityUtil;
 
 
 public class EmotionView extends View {
@@ -44,7 +45,7 @@ public class EmotionView extends View {
     public EmotionView(Context context) {
         super(context);
         mWidth = mHeight = getResources().getDimensionPixelSize(mika.com.android.ac.R.dimen.emotions_column_width);
-        mPadding = (int) (4 * AcWenApplication.density + 0.5f);
+        mPadding = (int) (4 * DensityUtil.getDensity(context) + 0.5f);
     }
 
     public void setEmotionId(int id, int type) {
