@@ -45,15 +45,13 @@ public class HomeFragment extends Fragment implements AppBarManager {
     private TabFragmentPagerAdapter mTabAdapter;
 
     public static HomeFragment newInstance() {
-        //noinspection deprecation
         return new HomeFragment();
     }
 
     /**
      * @deprecated Use {@link #newInstance()} instead.
      */
-    public HomeFragment() {
-    }
+    public HomeFragment() {}
 
     @Nullable
     @Override
