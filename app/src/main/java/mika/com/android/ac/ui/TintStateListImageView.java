@@ -11,9 +11,11 @@ package mika.com.android.ac.ui;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.TintTypedArray;
 import android.util.AttributeSet;
+
+import mika.com.android.ac.R;
 
 /**
  * Use app:tint instead of android:tint for a ColorStateList.
@@ -24,34 +26,30 @@ public class TintStateListImageView extends AppCompatImageView {
 
     public TintStateListImageView(Context context) {
         super(context);
-
-        init(null, 0, 0);
+        init(null, 0);
     }
 
     public TintStateListImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        init(attrs, 0, 0);
+        init(attrs, 0);
     }
 
     public TintStateListImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        init(attrs, defStyleAttr, 0);
+        init(attrs, defStyleAttr);
     }
 
-    private void init(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        TintTypedArray a = TintTypedArray.obtainStyledAttributes(getContext(), attrs,
-                mika.com.android.ac.R.styleable.TintStateListImageView, defStyleAttr, defStyleRes);
-        mTintList = a.getColorStateList(mika.com.android.ac.R.styleable.TintStateListImageView_tint);
+    private void init(AttributeSet attrs, int defStyleAttr) {
+        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.TintStateListImageView,
+                defStyleAttr, 0);
+        mTintList = ta.getColorStateList(R.styleable.TintStateListImageView_tintColor);
         updateTintColorFilter();
-        a.recycle();
+        ta.recycle();
     }
 
     @Override
     protected void drawableStateChanged() {
         super.drawableStateChanged();
-
         updateTintColorFilter();
     }
 

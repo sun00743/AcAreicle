@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 import mika.com.android.ac.network.api.info.acapi.Acer;
 
 /**
- * Created by Administrator on 2016/9/26.
+ * Created by Administrator on 2016/9/26
  */
 
 public class AcerDB {

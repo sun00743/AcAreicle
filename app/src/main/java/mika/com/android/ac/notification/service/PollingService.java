@@ -67,27 +67,6 @@ public class PollingService extends Service
         return super.onUnbind(intent);
     }
 
-
-//    @Override
-//    public void onErrorResponse(VolleyError error) {
-//    }
-//
-//    @Override
-//    public void onResponse(Mention response) {
-//        if (mMentionListener == null) {
-//            return;
-//        }
-//        mMentionListener.onNewMention(response.mention);
-//
-////        Parcel parcel = Parcel.obtain();
-////        parcel.writeInt(response.mention);
-////        try {
-////            mBinder.transact(IBinder.FIRST_CALL_TRANSACTION, parcel, null, 0);
-////        } catch (RemoteException e) {
-////            e.printStackTrace();
-////        }
-//    }
-
     private void initNotificationManager() {
     }
 

@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements
         TransitionUtils.setupTransitionAfterSetContentView(this);
         ButterKnife.bind(this);
 
+        // 绑定推送
         bindPush();
         //noinspection deprecation
 //        ScalpelHelperFragment.attachTo(this);

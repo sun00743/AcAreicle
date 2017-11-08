@@ -295,8 +295,8 @@ public class BroadcastFragment extends Fragment implements BroadcastAndCommentLi
         Broadcast broadcast = mBroadcastAndCommentListResource.getBroadcast();
         boolean hasBroadcast = broadcast != null;
         mMenu.findItem(mika.com.android.ac.R.id.action_copy_text).setVisible(hasBroadcast);
-        boolean canDelete = hasBroadcast && broadcast.isAuthorOneself(getActivity());
-        mMenu.findItem(mika.com.android.ac.R.id.action_delete).setVisible(canDelete);
+//        boolean canDelete = hasBroadcast && broadcast.isAuthorOneself(getActivity());
+//        mMenu.findItem(R.id.action_delete).setVisible(canDelete);
     }
 
     @Override
@@ -308,9 +308,9 @@ public class BroadcastFragment extends Fragment implements BroadcastAndCommentLi
             case mika.com.android.ac.R.id.action_copy_text:
                 copyText();
                 return true;
-            case mika.com.android.ac.R.id.action_delete:
-                onDeleteBroadcast();
-                return true;
+//            case mika.com.android.ac.R.id.action_delete:
+//                onDeleteBroadcast();
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

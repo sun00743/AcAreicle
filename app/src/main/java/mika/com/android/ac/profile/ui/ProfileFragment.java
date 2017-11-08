@@ -103,10 +103,6 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
         return fragment;
     }
 
-
-    public ProfileFragment() {
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,6 +147,7 @@ public class ProfileFragment extends Fragment implements ProfileResource.Listene
                 getActivity().finish();
             }
         });
+
         if (savedInstanceState == null) {
             mScrollLayout.enter();
         }

@@ -48,11 +48,11 @@
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipToPadding="false"
                 android:paddingLeft="@dimen/card_list_horizontal_padding"
                 android:paddingRight="@dimen/card_list_horizontal_padding"
-                android:clipToPadding="false"
-                android:scrollbars="vertical"
                 android:scrollbarStyle="outsideOverlay"
+                android:scrollbars="vertical"
                 android:theme="@style/Theme.Douya" />
 
             <TextView
@@ -66,4 +66,5 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
         </mika.com.android.ac.profile.ui.ProfileContentLayout>
     </FrameLayout>
+
 </mika.com.android.ac.profile.ui.ProfileLayout>

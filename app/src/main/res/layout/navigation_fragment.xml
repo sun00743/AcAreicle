@@ -8,4 +8,6 @@
     android:layout_gravity="start"
     android:background="@color/window_background_light"
     app:headerLayout="@layout/navigation_header"
-    app:menu="@menu/navigation" />
+    app:menu="@menu/navigation" >
+
+</mika.com.android.ac.ui.FullscreenNavigationView>

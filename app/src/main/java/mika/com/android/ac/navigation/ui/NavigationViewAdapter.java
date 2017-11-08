@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import mika.com.android.ac.R;
 import mika.com.android.ac.util.ViewUtils;
 
 public class NavigationViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -42,22 +43,27 @@ public class NavigationViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             public void onChanged() {
                 notifyDataSetChanged();
             }
+
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount) {
                 onChanged();
             }
+
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
                 onChanged();
             }
+
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 onChanged();
             }
+
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 onChanged();
             }
+
             @Override
             public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
                 onChanged();
@@ -107,7 +113,7 @@ public class NavigationViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ACCOUNT_LIST) {
             AccountListViewHolder holder = new AccountListViewHolder(ViewUtils.inflate(
-                    mika.com.android.ac.R.layout.navigation_account_list, parent));
+                    R.layout.navigation_account_list, parent));
             holder.accountListLayout.setAdapter(mAccountListAdapter);
             holder.accountListLayout.setListener(mAccountListListener);
             return holder;

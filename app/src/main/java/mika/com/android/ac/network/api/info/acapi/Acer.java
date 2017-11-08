@@ -9,24 +9,47 @@
 
 package mika.com.android.ac.network.api.info.acapi;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
  * Created by Administrator on 2016/9/26
  */
+@Entity
+public class Acer implements Parcelable {
 
-public class Acer implements Parcelable{
+    @ColumnInfo(name = "access_token")
     public String access_token;
+
+    @ColumnInfo(name = "user_img")
     public String userImg;
+
+    @ColumnInfo(name = "expires")
     public Long expires;
+
+    @ColumnInfo(name = "user_group_level")
     public int userGroupLevel;
+
+    @ColumnInfo(name = "mobile_check")
     public int mobileCheck;
+
+    /**
+     * user id
+     */
+    @PrimaryKey
     public int userId;
+
+    @ColumnInfo(name = "user_name")
     public String username;
+
+    @ColumnInfo(name = "time")
     public int time;
 
-    public Acer(){}
+    public Acer() {
+    }
 
     protected Acer(Parcel in) {
         access_token = in.readString();

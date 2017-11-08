@@ -273,8 +273,10 @@ public class FlexibleSpaceLayout extends LinearLayout {
 
     private void onPointerDown(MotionEvent event) {
         int pointerIndex = MotionEventCompat.getActionIndex(event);
-        mActivePointerId = MotionEventCompat.getPointerId(event, pointerIndex);
-        mLastMotionY = MotionEventCompat.getY(event, pointerIndex);
+//        mActivePointerId = MotionEventCompat.getPointerId(event, pointerIndex);
+        mActivePointerId = event.findPointerIndex(pointerIndex);
+//        mLastMotionY = MotionEventCompat.getY(event, pointerIndex);
+        mLastMotionY = event.getY(pointerIndex);
     }
 
     private void onPointerUp(MotionEvent event) {
@@ -327,8 +329,7 @@ public class FlexibleSpaceLayout extends LinearLayout {
     }
 
     protected void pullEdgeEffectBottom(MotionEvent event, float delta) {
-        mEdgeEffectBottom.onPull(-delta / getHeight(),
-                1f - getMotionEventX(event) / getWidth());
+        mEdgeEffectBottom.onPull(-delta / getHeight(), 1f - getMotionEventX(event) / getWidth());
         if (!mEdgeEffectBottom.isFinished()) {
             ViewCompat.postInvalidateOnAnimation(this);
         }
@@ -428,7 +429,7 @@ public class FlexibleSpaceLayout extends LinearLayout {
 
     private void updateActivePointerId(MotionEvent event) {
         // ACTION_DOWN always refers to pointer index 0.
-        mActivePointerId = MotionEventCompat.getPointerId(event, 0);
+        mActivePointerId = event.getPointerId(0);
     }
 
     private void updateLastMotion(MotionEvent event) {
@@ -438,8 +439,9 @@ public class FlexibleSpaceLayout extends LinearLayout {
 
     private float getMotionEventX(MotionEvent event) {
         if (mActivePointerId != INVALID_POINTER_ID) {
-            int pointerIndex = MotionEventCompat.findPointerIndex(event,
-                    mActivePointerId);
+//            int pointerIndex = MotionEventCompat.findPointerIndex(event,
+//                    mActivePointerId);
+            int pointerIndex = event.findPointerIndex(mActivePointerId);
             if (pointerIndex != -1) {
                 return MotionEventCompat.getX(event, pointerIndex);
             } else {
@@ -451,10 +453,11 @@ public class FlexibleSpaceLayout extends LinearLayout {
 
     private float getMotionEventY(MotionEvent event) {
         if (mActivePointerId != INVALID_POINTER_ID) {
-            int pointerIndex = MotionEventCompat.findPointerIndex(event,
-                    mActivePointerId);
+//            int pointerIndex = MotionEventCompat.findPointerIndex(event, mActivePointerId);
+            int pointerIndex = event.findPointerIndex(mActivePointerId);
             if (pointerIndex != -1) {
-                return MotionEventCompat.getY(event, pointerIndex);
+//                return MotionEventCompat.getY(event, pointerIndex);
+                return event.getY(pointerIndex);
             } else {
                 // Error!
             }
@@ -536,6 +539,6 @@ public class FlexibleSpaceLayout extends LinearLayout {
     }
 
     private boolean MotionEventCompat_isFromSource(MotionEvent event, int source) {
-        return (MotionEventCompat.getSource(event) & source) == source;
+        return (event.getSource() & source) == source;
     }
 }

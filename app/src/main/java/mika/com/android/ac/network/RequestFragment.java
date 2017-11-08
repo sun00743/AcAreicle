@@ -23,10 +23,10 @@ import mika.com.android.ac.util.FragmentUtils;
 
 /**
  * An one-shot Fragment for performing a {@link Request} safely across Activity re-creation.
- *
+ * <p>
  * <p>Response will only be delivered when this Fragment is in resumed state. This Fragment will be
  * automatically removed once response delivery is done.</p>
- *
+ * <p>
  * <p>Response is not guaranteed to be delivered if this fragment (and its hosting activity) gets
  * destroyed, because it is impossible to continue tracking the request in this case. The recreated
  * instance of this fragment will then remove itself.</p>
@@ -74,7 +74,8 @@ public class RequestFragment<T, S> extends TargetedRetainedFragment {
     /**
      * @deprecated Use {@code startRequest()} instead.
      */
-    public RequestFragment() {}
+    public RequestFragment() {
+    }
 
     @SuppressLint("ValidFragment")
     private RequestFragment(Request<T> request, S requestState) {

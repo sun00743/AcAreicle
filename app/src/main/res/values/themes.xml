@@ -26,10 +26,10 @@
     <style name="ThemeOverlay.Preference" parent="Base.ThemeOverlay.Preference" />
 
     <style name="ThemeOverlay.Design.Dark.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="textColorError">@color/design_textinput_error_color_dark</item>
+        <item name="textColorError">?textColorError</item>
     </style>
     <style name="Theme.Design.Light.DarkActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="textColorError">@color/design_textinput_error_color_light</item>
+        <item name="textColorError">?textColorError</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Design.Dark.ActionBar</item>
     </style>
 

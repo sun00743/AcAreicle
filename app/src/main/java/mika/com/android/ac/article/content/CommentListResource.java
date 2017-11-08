@@ -228,14 +228,12 @@ public class CommentListResource extends ResourceFragment implements
             if (requestState.loadMore) {
                 // load more
                 mCommentIdList = ArrayUtils.toList(mPage.list);
-                Map<String, Comment> maps = new Gson().fromJson(mPage.map, new TypeToken<Map<String, Comment>>() {
-                }.getType());
+                Map<String, Comment> maps = new Gson().fromJson(mPage.map, new TypeToken<Map<String, Comment>>() {}.getType());
                 getListStateListener().onCommentListAppended(requestCode, mCommentIdList, maps);
             } else {
                 // refresh
                 mCommentIdList = ArrayUtils.toList(mPage.list);
-                Map<String, Comment> maps = GsonHelper.get().fromJson(mPage.map, new TypeToken<Map<String, Comment>>() {
-                }.getType());
+                Map<String, Comment> maps = GsonHelper.get().fromJson(mPage.map, new TypeToken<Map<String, Comment>>() {}.getType());
                 mCommentLists = new SparseArray<>();
                 for (Comment com : maps.values()) {
                     mCommentLists.put(com.id, com);

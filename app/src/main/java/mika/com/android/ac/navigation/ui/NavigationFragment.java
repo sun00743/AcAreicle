@@ -81,12 +81,6 @@ public class NavigationFragment extends Fragment implements
         return new NavigationFragment();
     }
 
-    /**
-     * @deprecated Use {@link #newInstance()} instead.
-     */
-    public NavigationFragment() {
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

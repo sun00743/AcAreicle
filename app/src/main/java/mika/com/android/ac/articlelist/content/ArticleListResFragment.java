@@ -328,8 +328,7 @@ public class ArticleListResFragment extends ResourceFragment implements
     protected void setArticleDesList(ArrayList<ArticleList> articleLists) {
         this.mArticleLists = articleLists;
         //通知界面list数据修改
-        getListStateListener().onArticleListChanged(getRequestCode(),
-                Collections.unmodifiableList(articleLists));
+        getListStateListener().onArticleListChanged(getRequestCode(), Collections.unmodifiableList(articleLists));
     }
 
     public void setChannelId(int channelId) {

@@ -10,20 +10,19 @@
 package mika.com.android.ac.db;
 
 import android.content.Context;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Created by Administrator on 2016/9/26.
+ * Created by Administrator on 2016/9/26
  */
 
 public class AcerDBHelper extends SQLiteOpenHelper {
-    public static final String DB_NAME = "acer.db";
+    private static final String DB_NAME = "acer.db";
     public static final int VERSION = 2;
 
-    public static final String TABE_ACER = "acer";
+    static final String TABE_ACER = "acer";
 
     public AcerDBHelper(Context context) {
         this(context, DB_NAME, null, VERSION);
@@ -31,10 +30,6 @@ public class AcerDBHelper extends SQLiteOpenHelper {
 
     public AcerDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
-    }
-
-    public AcerDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
-        super(context, name, factory, version, errorHandler);
     }
 
     @Override
