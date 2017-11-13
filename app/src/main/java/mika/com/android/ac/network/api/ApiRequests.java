@@ -203,7 +203,8 @@ public class ApiRequests {
      * get acer information
      */
     public static ApiRequest<AcerInfoResult2> newAcerInfo() {
-        ApiRequest<AcerInfoResult2> request = new ApiRequest<>(ApiRequest.Method.GET, ApiContract.Request.AcApi.ACER_INFO, AcerInfoResult2.class);
+        ApiRequest<AcerInfoResult2> request = new ApiRequest<>(ApiRequest.Method.GET,
+                ApiContract.Request.AcApi.ACER_INFO, AcerInfoResult2.class);
         request.addParam(Connectivity.UID, getAcerUid());
         return request;
     }

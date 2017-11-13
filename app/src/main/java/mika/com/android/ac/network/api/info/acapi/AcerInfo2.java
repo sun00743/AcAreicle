@@ -9,38 +9,54 @@
 
 package mika.com.android.ac.network.api.info.acapi;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
  * Created by Administrator on 2016/9/27.
  * "userjson":{
- "currExp":3558,
- "stows":312,
- "comments":59,
- "gender":1,
- "level":59,
- "sign":"这个人很撒比，什么都瞎写...",
- "follows":0,
- "lastLoginDate":"2016-09-26 23:07:20.0",
- "avatar":"http://cdn.aixifan.com/dotnet/artemis/u/cms/www/201609/25164557vbmqj58j.jpg",
- "posts":1,
- "followed":0,
- "lastLoginIp":"125.71.161.*",
- "fans":0,
- "uid":623674,
- "regTime":"2013-08-11 23:45:15.0",
- "nextLevelNeed":3800,
- "comeFrom":"山东,不限",
- "name":"月与萧",
- "dTime":"",
- "expPercent":59,
- "isFriend":0,
- "views":8370
- },
+ * "currExp":3558,
+ * "stows":312,
+ * "comments":59,
+ * "gender":1,
+ * "level":59,
+ * "sign":"这个人很撒比，什么都瞎写...",
+ * "follows":0,
+ * "lastLoginDate":"2016-09-26 23:07:20.0",
+ * "avatar":"http://cdn.aixifan.com/dotnet/artemis/u/cms/www/201609/25164557vbmqj58j.jpg",
+ * "posts":1,
+ * "followed":0,
+ * "lastLoginIp":"125.71.161.*",
+ * "fans":0,
+ * "uid":623674,
+ * "regTime":"2013-08-11 23:45:15.0",
+ * "nextLevelNeed":3800,
+ * "comeFrom":"山东,不限",
+ * "name":"月与萧",
+ * "dTime":"",
+ * "expPercent":59,
+ * "isFriend":0,
+ * "views":8370
+ * },
  */
 
-public class AcerInfo2 implements Parcelable{
+@Entity(tableName = "acerinfo",
+        foreignKeys = {
+                @ForeignKey(entity = Acer.class,
+                        parentColumns = "userId",
+                        childColumns = "id",
+                        onDelete = ForeignKey.CASCADE)},
+        indices = @Index(value = "uid"))
+
+public class AcerInfo2 implements Parcelable {
+
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+
     public String name;
     /**
      * 个性签名
@@ -79,9 +95,11 @@ public class AcerInfo2 implements Parcelable{
     public int expPercent;
     public int level;
 
-    public AcerInfo2(){}
+    public AcerInfo2() {
+    }
 
     protected AcerInfo2(Parcel in) {
+        id = in.readInt();
         name = in.readString();
         sign = in.readString();
         avatar = in.readString();
@@ -102,6 +120,7 @@ public class AcerInfo2 implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeString(sign);
         dest.writeString(avatar);

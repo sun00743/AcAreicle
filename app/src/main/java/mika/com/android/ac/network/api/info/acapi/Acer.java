@@ -11,6 +11,7 @@ package mika.com.android.ac.network.api.info.acapi;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -18,7 +19,7 @@ import android.os.Parcelable;
 /**
  * Created by Administrator on 2016/9/26
  */
-@Entity
+@Entity(indices = {@Index(value = {"userId", "user_name"}, unique = true)})
 public class Acer implements Parcelable {
 
     @ColumnInfo(name = "access_token")
@@ -40,6 +41,7 @@ public class Acer implements Parcelable {
      * user id
      */
     @PrimaryKey
+//            (autoGenerate = true)  //自动填充id
     public int userId;
 
     @ColumnInfo(name = "user_name")
@@ -47,6 +49,9 @@ public class Acer implements Parcelable {
 
     @ColumnInfo(name = "time")
     public int time;
+
+//    @Ignore
+//    public Bitmap bitmap
 
     public Acer() {
     }
